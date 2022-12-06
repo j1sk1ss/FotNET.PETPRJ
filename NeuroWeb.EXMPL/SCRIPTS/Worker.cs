@@ -1,12 +1,9 @@
 ﻿using System.IO;
 using NeuroWeb.EXMPL.OBJECTS;
 
-namespace NeuroWeb.EXMPL.SCRIPTS
-{
-    public class Worker
-    {
-        public Data ReadNetworkConfig(string path)
-        {
+namespace NeuroWeb.EXMPL.SCRIPTS {
+    public class Worker {
+        public Data ReadNetworkConfig(string path) {
             var data           = new Data();
             var tempData = File.ReadAllText(path).Split("\n");
 
@@ -25,10 +22,11 @@ namespace NeuroWeb.EXMPL.SCRIPTS
             return data;
         }
 
-        public DataInformation[] ReadData()
-        {
-            DataInformation[] data = new DataInformation[0];
+        public DataInformation[] ReadData(string path, ref Data data, ref int examples) {
+            var dataInformation = new DataInformation[0];
 
+            var tempValues = File.ReadAllText(path);
+            
             return null;
         } 
     }
