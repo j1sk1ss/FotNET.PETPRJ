@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="INTERFACES" />
       <Folder Include="WINDOWS" />
     </ItemGroup>
 
