@@ -10,7 +10,7 @@ namespace NeuroWeb.EXMPL {
         public MainWindow()
         {
             InitializeComponent();
-            MessageBox.Show($"{new Prediction().Predict("")}");
+            while (true) MessageBox.Show($"{new Prediction().Predict("")}");
             /*
             TextUpdate = new DispatcherTimer() {
                 Interval = new TimeSpan(900000)
