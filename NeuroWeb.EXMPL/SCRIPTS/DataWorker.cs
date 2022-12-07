@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using NeuroWeb.EXMPL.OBJECTS;
@@ -7,10 +8,10 @@ namespace NeuroWeb.EXMPL.SCRIPTS
 {
     public static class DataWorker
     {
-        public static Data ReadNetworkConfig(string path) {
+        public static Configuration ReadNetworkConfig(string path) {
             try {
-                var data           = new Data();
-                var tempData = File.ReadAllText(path).Split(new char[] {' ', '\n'},
+                var data           = new Configuration();
+                var tempData = File.ReadAllText(path).Split(new[] {' ', '\n'},
                     StringSplitOptions.RemoveEmptyEntries);
 
                 for (var i = 0; i < tempData.Length; i++) {
@@ -34,32 +35,58 @@ namespace NeuroWeb.EXMPL.SCRIPTS
             }
         }
 
-        public static DataInformation[] ReadData(string path, ref Data data, ref int examples) {
+        public static Number ReadData(string pixelsValue, Configuration configuration) {
             try {
-                var dataInformation = Array.Empty<DataInformation>();
+                var number = new Number {
+                    Digit = 0
+                };
 
-                var tempValues = File.ReadAllText(path).Split(new char[] {' ', '\n'},
+                for (var i = 0; i < configuration.Size[0]; i++) number.Pixels.Add(0);
+                
+                var position = 0;
+                for (var j = 0; j < configuration.Size[0]; j++)
+                    if (double.TryParse(pixelsValue[position++].ToString(), out var db)) {
+                        number.Pixels[j] = db;
+                    }
+                    else number.Pixels[j] = 0d;
+                
+                return number;
+            }
+            catch (Exception e) {
+                MessageBox.Show($"{e}");
+                throw;
+            }
+        }
+        
+        public static List<Number> ReadData(string path, Configuration configuration, ref int examples) {
+            try
+            {
+                var numbers = new List<Number>();
+
+                var tempValues = File.ReadAllText(path).Split(new[] {' ', '\n'},
                     StringSplitOptions.RemoveEmptyEntries);
                 var position = 0;
 
-                if (tempValues[position++] != "Examples") return dataInformation;
+                if (tempValues[position++] != "Examples") return numbers;
                 
                 examples = int.Parse(tempValues[position++]);
-
-                dataInformation = new DataInformation[examples];
-                for (var i = 0; i < examples; i++)
-                    dataInformation[i].Pixels = new double[data.Size[0]];
-
+                for (var i = 0; i < examples; i++) 
+                    numbers.Add(new Number());
+                    
+                for (var i = 0; i < examples; i++) 
+                    for (var j = 0; j < configuration.Size[0]; j++) 
+                        numbers[i].Pixels.Add(0);
+                
                 for (var i = 0; i < examples; i++) {
-                    dataInformation[i].Digit = int.TryParse(tempValues[position++], out var it) ? it : 0;
-                    for (var j = 0; j < data.Size[0]; j++)
+                    numbers[i].Digit = int.TryParse(tempValues[position++], out var it) ? it : 0;
+                    for (var j = 0; j < configuration.Size[0]; j++)
                         if (double.TryParse(tempValues[position++], out var db)) {
-                            dataInformation[i].Pixels[j] = db;
+                            numbers[i].Pixels[j] = db;
                         }
-                        else dataInformation[i].Pixels[j] = 0d;
+                        else numbers[i].Pixels[j] = 0d;
                 }
 
-                return dataInformation;
+                return numbers;
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");

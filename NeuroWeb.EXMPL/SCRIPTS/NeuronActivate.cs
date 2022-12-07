@@ -2,7 +2,7 @@
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public class NeuronActivate {
-        public double[] Neurons { get; set; }
+        public double[] Neurons { get; private set; }
         public void Use(double[] value, int n) { 
             for (var i = 0; i < n; i++)
                 value[i] = 1 / (1 + Math.Exp(-value[i]));
@@ -13,6 +13,6 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 value[i] *= 1 - value[i];
             Neurons = value;
         }
-        public double UseDer(double value) => 1 / (1 + Math.Exp(-value));
+        public static double UseDer(double value) => 1 / (1 + Math.Exp(-value));
     }
 }

@@ -7,14 +7,16 @@ using NeuroWeb.EXMPL.SCRIPTS;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Network {
-        public Network(Data data) {
+        public Network(Configuration configuration) {
             try {
                 NeuronActivate = new NeuronActivate();
-                Layouts        = data.Layout;
+                Layouts        = configuration.Layout;
                 Neurons        = new int[Layouts];
 
-                for (var i = 0; i < Layouts; i++) Neurons[i] = data.Size[i];
+                for (var i = 0; i < Layouts; i++) Neurons[i] = configuration.Size[i];
 
+                Configuration = configuration;
+                
                 Weights = new Matrix[Layouts - 1];
                 Bios    = new double[Layouts - 1][];
 
@@ -46,6 +48,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             }
         }
         
+        public Configuration Configuration { get; }
         private NeuronActivate NeuronActivate { get; }
         private int Layouts { get; }
         private int[] Neurons { get; }
@@ -63,7 +66,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return temp;
         }
         
-        public void InsertInformation(double[] values) {
+        public void InsertInformation(List<double> values) {
             for (var i = 0; i < Neurons[0]; i++) NeuronsValue[0][i] = values[i];
         }
         
@@ -80,6 +83,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     max = temp;
                 }
 
+                MessageBox.Show($"{values[0]} {values[1]} {values[2]} {values[3]} {values[4]} {values[5]} " +
+                                $"{values[6]} {values[7]} {values[8]} {values[9]}");
+                
                 return prediction;
             }
             catch (Exception e) {
@@ -119,15 +125,15 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             }
         }
 
-        public void SetWeights(double lr) {
+        public void SetWeights(double learningRange) {
             for (var i = 0; i < Layouts - 1; ++i)
                 for (var j = 0; j < Neurons[i + 1]; ++j)
                     for (var k = 0; k < Neurons[i]; ++k)
-                        Weights[i].Body[j, k] += NeuronsValue[i][k] * NeuronsError[i + 1][j] * lr;
+                        Weights[i].Body[j, k] += NeuronsValue[i][k] * NeuronsError[i + 1][j] * learningRange;
 
             for (var i = 0; i < Layouts - 1; i++)
                 for (var j = 0; j < Neurons[i + 1]; j++)
-                    Bios[i][j] += NeuronsError[i + 1][j] * lr;
+                    Bios[i][j] += NeuronsError[i + 1][j] * learningRange;
         }
         
         public string Values(int layout) {
@@ -154,34 +160,36 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
 
         public void ReadWeights() {
-            var count = Weights.Sum(t => t.Body.GetLength(0) * t.Body.GetLength(1));
+            try {
+                var tempValues = File.ReadAllText(WeightsPath).Split(" ", 
+                    StringSplitOptions.RemoveEmptyEntries);
 
-            var tempValues = File.ReadAllText(WeightsPath).Split(" ", 
-                StringSplitOptions.RemoveEmptyEntries);
+                var position = 0;
+                
+                for (var l = 0; l < Layouts - 1; l++) {
+                    for (var i = 0; i < Weights[l].Body.GetLength(0); i++) {
+                        for (var j = 0; j < Weights[l].Body.GetLength(1); j++) {
+                            Weights[l].SetValues(tempValues[position++], i, j);
+                        }
+                    }
+                }
 
-            var position = 0;
-            
-            for (var l = 0; l < Layouts - 1; l++) {
-                if (position >= count - 1) break;
-                for (var i = 0; i < Weights[i].Body.GetLength(0); i++) {
-                    for (var j = 0; j < Weights[i].Body.GetLength(1); j++) {
-                        Weights[i].SetValues(tempValues[position++], i, j);
+                for (var l = 0; l < Layouts - 1; l++) {
+                    for (var i = 0; i < Neurons[l + 1]; i++) {
+                        if (double.TryParse(tempValues[position++], out var tempDb)) {
+                            Bios[l][i] = tempDb;
+                        }
                     }
                 }
             }
-
-            for (var l = 0; l < Layouts - 1; l++) {
-                for (var i = 0; i < Neurons[i + 1]; i++) {
-                    if (double.TryParse(tempValues[position++], out var tempDb)) {
-                        Bios[l][i] = tempDb;
-                    }
-                }
+            catch (Exception e) {
+                MessageBox.Show($"{e}");
+                throw;
             }
-            MessageBox.Show("Weights are read!");
         }
     }
     
-    public struct Data {
+    public struct Configuration {
         public int Layout;
         public int[] Size;
     }
