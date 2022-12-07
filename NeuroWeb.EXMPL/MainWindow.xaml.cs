@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using NeuroWeb.EXMPL.SCRIPTS;
 
 namespace NeuroWeb.EXMPL {
     public partial class MainWindow
@@ -8,6 +10,8 @@ namespace NeuroWeb.EXMPL {
         public MainWindow()
         {
             InitializeComponent();
+            MessageBox.Show($"{new Prediction().Predict("")}");
+            /*
             TextUpdate = new DispatcherTimer() {
                 Interval = new TimeSpan(900000)
             };
@@ -19,6 +23,7 @@ namespace NeuroWeb.EXMPL {
             };
             UserInputAnimation.Tick += UpdateInput;
             UserInputAnimation.IsEnabled = true;
+            */
         }
         
         private DispatcherTimer TextUpdate { get; set; }

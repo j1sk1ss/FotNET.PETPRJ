@@ -8,36 +8,42 @@ using NeuroWeb.EXMPL.SCRIPTS;
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Network {
         public Network(Data data) {
-            NeuronActivate = new NeuronActivate();
-            Layouts        = data.Layout;
-            Neurons        = new int[Layouts];
-            
-            for (var i = 0; i < Layouts; i++) Neurons[i] = data.Size[i];
+            try {
+                NeuronActivate = new NeuronActivate();
+                Layouts        = data.Layout;
+                Neurons        = new int[Layouts];
 
-            Weights = new Matrix[Layouts - 1];
-            Bios    = new double[Layouts - 1][];
+                for (var i = 0; i < Layouts; i++) Neurons[i] = data.Size[i];
 
-            for (var i = 0; i < Layouts - 1; i++) {
-                Bios[i]    = new double[Neurons[i + 1]];
-                Weights[i] = new Matrix(Neurons[i + 1], Neurons[i]);
+                Weights = new Matrix[Layouts - 1];
+                Bios    = new double[Layouts - 1][];
+
+                for (var i = 0; i < Layouts - 1; i++) {
+                    Bios[i]    = new double[Neurons[i + 1]];
+                    Weights[i] = new Matrix(Neurons[i + 1], Neurons[i]);
                 
-                Weights[i].FillRandom();
+                    Weights[i].FillRandom();
                 
-                for (var j = 0; j < Neurons[i + 1]; j++) {
-                    Bios[i][j] = new Random().Next() % 50 * .06 / (Neurons[i] + 15);
+                    for (var j = 0; j < Neurons[i + 1]; j++) {
+                        Bios[i][j] = new Random().Next() % 50 * .06 / (Neurons[i] + 15);
+                    }
                 }
-            }
             
-            NeuronsValue = new double[Layouts][];
-            NeuronsError = new double[Layouts][];
+                NeuronsValue = new double[Layouts][];
+                NeuronsError = new double[Layouts][];
 
-            for (var i = 0; i < Layouts; i++) {
-                NeuronsValue[i] = new double[Neurons[i]];
-                NeuronsError[i] = new double[Neurons[i]];
-            }
+                for (var i = 0; i < Layouts; i++) {
+                    NeuronsValue[i] = new double[Neurons[i]];
+                    NeuronsError[i] = new double[Neurons[i]];
+                }
             
-            NeuronsBios = new double[Layouts - 1];
-            for (var i = 0; i < NeuronsBios.Length; i++) NeuronsBios[i] = 1;
+                NeuronsBios = new double[Layouts - 1];
+                for (var i = 0; i < NeuronsBios.Length; i++) NeuronsBios[i] = 1;
+            }
+            catch (Exception e) {
+                MessageBox.Show($"{e}");
+                throw;
+            }
         }
         
         private NeuronActivate NeuronActivate { get; }
@@ -62,18 +68,24 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
         
         private int GetMaxIndex(IReadOnlyList<double> values) {
-            var max = values[0];
-            var prediction = 0;
+            try {
+                var max = values[0];
+                var prediction = 0;
 
-            for (var j = 1; j < Neurons[Layouts - 1]; j++) {
-                var temp = values[j];
-                if (!(temp > max)) continue;
+                for (var j = 1; j < Neurons[Layouts - 1]; j++) {
+                    var temp = values[j];
+                    if (!(temp > max)) continue;
                 
-                prediction = j;
-                max = temp;
-            }
+                    prediction = j;
+                    max = temp;
+                }
 
-            return prediction;
+                return prediction;
+            }
+            catch (Exception e) {
+                MessageBox.Show($"{e}");
+                throw;
+            }
         }
         
         public double ForwardFeed() {
@@ -85,7 +97,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 NeuronsValue[k] = NeuronActivate.Neurons;
             }
 
-            return GetMaxIndex(NeuronsValue[Layouts - 1]);;
+            return GetMaxIndex(NeuronsValue[Layouts - 1]);
         }
 
         public void BackPropagation(double expectedAnswer) {
@@ -101,7 +113,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             }
 
             for (var i = Layouts - 2; i > 0; i--) {
-                NeuronsError[i] = Weights[i].GetTransparent() * NeuronsError[i + 1];
+                NeuronsError[i] = Weights[i].GetTranspose() * NeuronsError[i + 1];
                 for (var j = 0; j < Neurons[i]; j++)
                     NeuronsError[i][j] *= NeuronActivate.UseDer(NeuronsValue[i][j]);
             }
@@ -127,6 +139,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return temp;
         }
 
+        private const string WeightsPath =
+            @"C:\\Users\\j1sk1ss\\RiderProjects\\NeuroWeb.EXMPL\\NeuroWeb.EXMPL\\DATA\\Weights.txt";
+        
         public void SaveWeights() {
             var temp = Weights.Aggregate("", (current, weight) => current + weight.GetValues());
 
@@ -134,20 +149,20 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 for (var j = 0; j < Neurons[i + 1]; ++j)
                         temp += Bios[i][j] + " ";
             
-            File.WriteAllText("Weights.txt", temp);
+            File.WriteAllText(WeightsPath, temp);
             MessageBox.Show("Weights are saved!");
         }
 
         public void ReadWeights() {
             var count = Weights.Sum(t => t.Body.GetLength(0) * t.Body.GetLength(1));
 
-            var tempValues = File.ReadAllText("Weights.txt").Split(" ", 
+            var tempValues = File.ReadAllText(WeightsPath).Split(" ", 
                 StringSplitOptions.RemoveEmptyEntries);
 
             var position = 0;
             
             for (var l = 0; l < Layouts - 1; l++) {
-                if (position >= count) break;
+                if (position >= count - 1) break;
                 for (var i = 0; i < Weights[i].Body.GetLength(0); i++) {
                     for (var j = 0; j < Weights[i].Body.GetLength(1); j++) {
                         Weights[i].SetValues(tempValues[position++], i, j);

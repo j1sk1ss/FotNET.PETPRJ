@@ -23,8 +23,10 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         private int Col { get; }
         public double[,] Body { get; }
         
-        public Matrix GetTransparent() {
-            var temp = (double[,])Body.Clone();
+        public Matrix GetTranspose() {
+            var rows    = Body.GetLength(0);
+            var columns = Body.GetLength(1);
+            var temp = new double[columns, rows];
 
             for (var i = 0; i < temp.GetLength(0); i++) {
                 for (var j = 0; j < temp.GetLength(1); j++) {
