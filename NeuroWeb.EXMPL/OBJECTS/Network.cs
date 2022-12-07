@@ -13,7 +13,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 Layouts        = configuration.Layout;
                 Neurons        = new int[Layouts];
 
-                for (var i = 0; i < Layouts; i++) Neurons[i] = configuration.Size[i];
+                for (var i = 0; i < Layouts; i++) Neurons[i] = configuration.NeuronsLayer[i];
 
                 Configuration = configuration;
                 
@@ -54,7 +54,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         private int[] Neurons { get; }
         private Matrix[] Weights { get; }
         private double[][] Bios { get; }
-        private double[][] NeuronsValue { get; }
+        public double[][] NeuronsValue { get; }
         private double[][] NeuronsError { get; }
         private double[] NeuronsBios { get; }
         
@@ -67,7 +67,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
         
         public void InsertInformation(List<double> values) {
-            for (var i = 0; i < Neurons[0]; i++) NeuronsValue[0][i] = values[i];
+            for (var i = 0; i < values.Count; i++) NeuronsValue[0][i] = values[i];
         }
         
         private int GetMaxIndex(IReadOnlyList<double> values) {
@@ -83,9 +83,6 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     max = temp;
                 }
 
-                MessageBox.Show($"{values[0]} {values[1]} {values[2]} {values[3]} {values[4]} {values[5]} " +
-                                $"{values[6]} {values[7]} {values[8]} {values[9]}");
-                
                 return prediction;
             }
             catch (Exception e) {
@@ -98,7 +95,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             for (var k = 1; k < Layouts; ++k) {
                 NeuronsValue[k] = Weights[k - 1] * NeuronsValue[k - 1];
                 NeuronsValue[k] = new Vector(NeuronsValue[k]) + new Vector(Bios[k - 1]);
-                
+
                 NeuronActivate.Use(NeuronsValue[k], Neurons[k]);
                 NeuronsValue[k] = NeuronActivate.Neurons;
             }
@@ -109,7 +106,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         public void BackPropagation(double expectedAnswer) {
             for (var i = 0; i < Neurons[Layouts - 1]; i++) {
                 if (i != (int)expectedAnswer) {
-                    NeuronsError[Layouts - 1][i] = -NeuronsValue[Layouts - 1][i] *
+                    NeuronsError[Layouts - 1][i] = -NeuronsValue[Layouts - 1][i] * 
                                                    NeuronActivate.UseDer(NeuronsValue[Layouts - 1][i]);
                 }
                 else {
@@ -191,6 +188,6 @@ namespace NeuroWeb.EXMPL.OBJECTS {
     
     public struct Configuration {
         public int Layout;
-        public int[] Size;
+        public int[] NeuronsLayer;
     }
 }

@@ -6,4 +6,8 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="WriteableBitmapEx" Version="1.6.8" />
+    </ItemGroup>
+
 </Project>

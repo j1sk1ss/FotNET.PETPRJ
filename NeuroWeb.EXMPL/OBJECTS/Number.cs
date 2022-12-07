@@ -7,5 +7,20 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
         public List<double> Pixels { get; set; }
         public int Digit { get; set; }
+
+        public string PrintNumber()
+        {
+            var temp = "";
+            var position = 0;
+            for (var i = 0; i < 28; i++) {
+                for (var j = 0; j < 28; j++) {
+                    temp += Pixels[position++] + " ";
+                }
+
+                temp += "\n";
+            }
+
+            return temp;
+        }
     }
 }

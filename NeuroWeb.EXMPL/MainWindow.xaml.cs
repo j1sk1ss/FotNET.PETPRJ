@@ -1,30 +1,13 @@
 ﻿using System;
-using System.IO;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using NeuroWeb.EXMPL.OBJECTS;
-using NeuroWeb.EXMPL.SCRIPTS;
+using NeuroWeb.EXMPL.WINDOWS;
 
 namespace NeuroWeb.EXMPL {
     public partial class MainWindow
     {
         public MainWindow() {
             InitializeComponent();
-
-            const string config = @"C:\Users\j1sk1ss\RiderProjects\NeuroWeb.EXMPL\NeuroWeb.EXMPL\DATA\Config.txt";
-            var networkConfiguration = DataWorker.ReadNetworkConfig(config);
-
-            var network = new Network(networkConfiguration);
-
-            const string numberPath =
-                @"C:\Users\j1sk1ss\RiderProjects\NeuroWeb.EXMPL\NeuroWeb.EXMPL\DATA\TestNumber.txt";
-            
-            network.ReadWeights();
-            //Teaching.HardStudying(network);
-            Teaching.LightStudying(network, File.ReadAllText(numberPath), 1);
-            //network.SaveWeights();
-            MessageBox.Show($"Answer: {Prediction.Predict(network,File.ReadAllText(numberPath))}");
             StartAnimation();
         }
         
@@ -69,9 +52,28 @@ namespace NeuroWeb.EXMPL {
                 UserInput.Content.ToString()!.Replace("|", "");
             
             var temp = e.Key.ToString().ToLower();
+            if (temp == "return") SelectOption(UserInput.Content.ToString());
             
             if (UserInput.Content.ToString()!.Length < 20) UserInput.Content += temp;
             else UserInput.Content = "";
+        }
+
+        private void SelectOption(string optionName) {
+            switch (optionName) {
+                case "1":
+                    new Teacher();
+                    break;
+                case "teaching":
+                    new Teacher();
+                    break;
+                case "2":
+                    new User().Show();
+                    break;
+                case "start":
+                    new User().Show();
+                    break;
+            }
+            Close();
         }
     }
 }

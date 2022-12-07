@@ -20,10 +20,10 @@ namespace NeuroWeb.EXMPL.SCRIPTS
                     var layouts = int.Parse(tempData[i + 1]);
                     
                     data.Layout = layouts;
-                    data.Size   = new int[layouts];
+                    data.NeuronsLayer   = new int[layouts];
 
                     for (var j = 1; j < layouts + 1; j++)
-                        data.Size[j - 1] = int.Parse(tempData[i + 1 + j]);
+                        data.NeuronsLayer[j - 1] = int.Parse(tempData[i + 1 + j]);
                     break;
                 }
 
@@ -37,19 +37,20 @@ namespace NeuroWeb.EXMPL.SCRIPTS
 
         public static Number ReadData(string pixelsValue, Configuration configuration) {
             try {
-                var number = new Number {
-                    Digit = 0
-                };
+                var number = new Number();
 
-                for (var i = 0; i < configuration.Size[0]; i++) number.Pixels.Add(0);
-                
+                for (var i = 0; i < configuration.NeuronsLayer[0]; i++) number.Pixels.Add(0);
+               
                 var position = 0;
-                for (var j = 0; j < configuration.Size[0]; j++)
-                    if (double.TryParse(pixelsValue[position++].ToString(), out var db)) {
+                var pixels = pixelsValue.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+                for (var j = 0; j < configuration.NeuronsLayer[0]; j++) {
+                    if (double.TryParse(pixels[position], out var db)) {
                         number.Pixels[j] = db;
                     }
                     else number.Pixels[j] = 0d;
-                
+                    position++;
+                }
                 return number;
             }
             catch (Exception e) {
@@ -63,7 +64,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS
             {
                 var numbers = new List<Number>();
 
-                var tempValues = File.ReadAllText(path).Split(new[] {' ', '\n'},
+                var tempValues = File.ReadAllText(path).Split(" ",
                     StringSplitOptions.RemoveEmptyEntries);
                 var position = 0;
 
@@ -74,12 +75,12 @@ namespace NeuroWeb.EXMPL.SCRIPTS
                     numbers.Add(new Number());
                     
                 for (var i = 0; i < examples; i++) 
-                    for (var j = 0; j < configuration.Size[0]; j++) 
+                    for (var j = 0; j < configuration.NeuronsLayer[0]; j++) 
                         numbers[i].Pixels.Add(0);
                 
                 for (var i = 0; i < examples; i++) {
                     numbers[i].Digit = int.TryParse(tempValues[position++], out var it) ? it : 0;
-                    for (var j = 0; j < configuration.Size[0]; j++)
+                    for (var j = 0; j < configuration.NeuronsLayer[0]; j++)
                         if (double.TryParse(tempValues[position++], out var db)) {
                             numbers[i].Pixels[j] = db;
                         }
