@@ -31,7 +31,7 @@
                   Width="220"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Bottom"
-                  Margin="265,0,0,0"></Image>
+                  Margin="245,0,0,10"></Image>
            
         <Canvas x:Name = "UserCanvas"
                 MouseMove="UserMoveMouse"
@@ -59,7 +59,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,240,90"
+                      Margin="0,0,240,100"
                       x:Name="One"
                       FontSize="10">
                       100%
@@ -67,7 +67,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,240,72"
+                      Margin="0,0,240,82"
                       x:Name="Two"
                       FontSize="10">
                       100%
@@ -75,7 +75,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,240,54"
+                      Margin="0,0,240,64"
                       x:Name="Three"
                       FontSize="10">
                       100%
@@ -83,7 +83,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,240,36"
+                      Margin="0,0,240,46"
                       x:Name="Four"
                       FontSize="10">
                       100%
@@ -91,7 +91,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,240,18"
+                      Margin="0,0,240,28"
                       x:Name="Five"
                       FontSize="10">
                       100%
@@ -99,7 +99,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,65,90"
+                      Margin="0,0,65,100"
                       x:Name="Six"
                       FontSize="10">
                       100%
@@ -107,7 +107,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,65,72"
+                      Margin="0,0,65,82"
                       x:Name="Seven"
                       FontSize="10">
                       100%
@@ -115,7 +115,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,65,54"
+                      Margin="0,0,65,64"
                       x:Name="Eight"
                       FontSize="10">
                       100%
@@ -123,7 +123,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,65,36"
+                      Margin="0,0,65,46"
                       x:Name="Nine"
                       FontSize="10">
                       100%
@@ -131,7 +131,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,65,18"
+                      Margin="0,0,65,28"
                       x:Name="Zero"
                       FontSize="10">
                       100%
@@ -145,7 +145,7 @@
                Width="125"
                HorizontalAlignment="Right"
                VerticalAlignment="Bottom"
-               Margin="0,0,2.5,52"></Image>
+               Margin="0,0,12.5,62"></Image>
         
         <Image Source="../IMAGES/UserWindow/Кнопка_Задать.png"
                Stretch="Fill"
@@ -153,7 +153,7 @@
                Width="120"
                HorizontalAlignment="Right"
                VerticalAlignment="Bottom"
-               Margin="0,0,5,55"
+               Margin="0,0,15,65"
                MouseDown="BackPropagation"
                Cursor="Hand"
                ToolTip="Задать нужный ответ"></Image>
@@ -164,7 +164,7 @@
                Width="120"
                HorizontalAlignment="Right"
                VerticalAlignment="Bottom"
-               Margin="0,0,5,105"></Image>
+               Margin="0,0,15,115"></Image>
         
         <Image Source="../IMAGES/UserWindow/Кнопка_Выход.png"
                Stretch="Fill"
@@ -172,7 +172,7 @@
                Width="120"
                HorizontalAlignment="Right"
                VerticalAlignment="Bottom"
-               Margin="0,0,5,5"
+               Margin="0,0,15,15"
                MouseDown="SaveAndExit"
                Cursor="Hand"
                ToolTip="Выйти и сохранить веса нейронов"></Image>
@@ -182,7 +182,7 @@
                  x:Name="ExpectedAnswer"
                  HorizontalAlignment="Right"
                  VerticalAlignment="Bottom"
-                 Margin="0,0,7,110"
+                 Margin="0,0,17,120"
                  Background="Transparent"></TextBox>
         
         <Image Source="../IMAGES/UserWindow/Кнопка_Очистка.png"

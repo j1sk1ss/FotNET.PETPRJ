@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using Microsoft.Win32;
 using NeuroWeb.EXMPL.SCRIPTS;
+using System.Collections.Generic;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Network {
@@ -17,7 +17,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 for (var i = 0; i < Layouts; i++) Neurons[i] = configuration.NeuronsLayer[i];
 
                 Configuration = configuration;
-                
+
                 Weights = new Matrix[Layouts - 1];
                 Bios    = new double[Layouts - 1][];
 
@@ -143,12 +143,13 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     Bios[i][j] += NeuronsError[i + 1][j] * learningRange;
         }
 
-        private static string GetWeightsPAth() {
+        private static string GetWeightsPath() {
             var file = new OpenFileDialog();
             MessageBox.Show("Укажите файл весов!");
             return file.ShowDialog() != true ? "" : file.FileName;
         }
-        
+
+        private string _weightPath;
         public void SaveWeights() {
             try {
                 var temp = Weights.Aggregate("", (current, weight) => current + weight.GetValues());
@@ -157,7 +158,13 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     for (var j = 0; j < Neurons[i + 1]; ++j)
                             temp += Bios[i][j] + " ";
                 
-                File.WriteAllText(GetWeightsPAth(), temp);
+                if (File.Exists(_weightPath)) File.WriteAllText(_weightPath, temp);
+                else {
+                    var file = new SaveFileDialog();
+                    MessageBox.Show("Укажите место для сохранения весов!");
+                    if (file.ShowDialog() == true) File.WriteAllText(file.FileName, temp);
+                    return;
+                }
                 MessageBox.Show("Веса обновлены!");
             }
             catch (Exception e) {
@@ -168,7 +175,10 @@ namespace NeuroWeb.EXMPL.OBJECTS {
 
         public void ReadWeights() {
             try {
-                var tempValues = File.ReadAllText(GetWeightsPAth()).Split(" ", 
+                _weightPath = GetWeightsPath();
+                if (!File.Exists(_weightPath)) return;
+                
+                var tempValues = File.ReadAllText(_weightPath).Split(" ", 
                     StringSplitOptions.RemoveEmptyEntries);
 
                 var position = 0;

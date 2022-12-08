@@ -23,7 +23,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             }
         }
 
-        [SuppressMessage("ReSharper.DPA", "DPA0002: Excessive memory allocations in SOH", MessageId = "type: System.Double[]")]
+
+        [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         public static void HardStudying(Network network) {
             try {
                 double rightAnswersCount = 0d, maxRightAnswers = 0d;
@@ -37,7 +38,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 
                 var dataInformation = DataWorker.ReadData(file.FileName, network.Configuration, ref examples);
                 
-                MessageBox.Show($"Загруженно приверов: {examples}");
+                MessageBox.Show($"Загруженно приверов: {examples}\n" +
+                                $"Обучение начато...");
                 while (rightAnswersCount / examples * 100 < 100) {
                     rightAnswersCount = 0;
                     for (var i = 0; i < examples; ++i) {

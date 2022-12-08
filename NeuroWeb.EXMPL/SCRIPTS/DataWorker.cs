@@ -64,7 +64,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS
             {
                 var numbers = new List<Number>();
 
-                var tempValues = File.ReadAllText(path).Split(" ",
+                var tempValues = File.ReadAllText(path).Split(new[] {' ', '\n'},
                     StringSplitOptions.RemoveEmptyEntries);
                 var position = 0;
 

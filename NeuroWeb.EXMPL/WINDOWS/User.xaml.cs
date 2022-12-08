@@ -6,26 +6,27 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Microsoft.Win32;
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.SCRIPTS;
 
 namespace NeuroWeb.EXMPL.WINDOWS {
     public partial class User {
-        private const string ConfigPath =
-            @"C:\Users\j1sk1ss\RiderProjects\NeuroWeb.EXMPL\NeuroWeb.EXMPL\DATA\Config.txt";
-        
         public User() {
-            InitializeComponent();
-
-            var netConfig = DataWorker.ReadNetworkConfig(ConfigPath);
-            Network = new Network(netConfig);
-            Network.ReadWeights();
-            
-            Update = new DispatcherTimer {
-                Interval = new TimeSpan(0,0,0,1)
-            };
-            Update.Tick += AnalyzeUserInput;
-            Update.IsEnabled = true;
+            MessageBox.Show("Укажите файл конфигурации нейронной сети!");
+            var file = new OpenFileDialog();
+            if (file.ShowDialog() == true) {
+                InitializeComponent();
+                var netConfig = DataWorker.ReadNetworkConfig(file.FileName);
+                Network = new Network(netConfig);
+                Network.ReadWeights();
+                
+                Update = new DispatcherTimer {
+                    Interval = new TimeSpan(0,0,0,1)
+                };
+                Update.Tick += AnalyzeUserInput;
+                Update.IsEnabled = true;
+            } else Close();
         }
         
         private Network Network { get; }

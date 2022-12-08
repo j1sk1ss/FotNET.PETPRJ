@@ -24,7 +24,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         }
 
         private void CloseTeacher(object sender, MouseButtonEventArgs e) {
-            Configuration.WriteConfig(NetworkStructure.Content as Grid, _size);
+            Configuration.WriteConfig(NetworkStructure.Content as Grid, _size + 2);
             Close();
         }
 

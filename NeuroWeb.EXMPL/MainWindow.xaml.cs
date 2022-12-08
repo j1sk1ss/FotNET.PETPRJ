@@ -60,7 +60,7 @@ namespace NeuroWeb.EXMPL {
                     return;
                 case "back":
                     var str = UserInput.Content.ToString();
-                    if (str!.Length <= 1) return;
+                    if (str!.Length <= 0) return;
                     UserInput.Content = UserInput.Content.ToString()!.Remove(str!.Length - 1);
                     return;
             }
