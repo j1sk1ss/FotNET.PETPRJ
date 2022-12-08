@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Icon="IMAGES/command-line-icon-1.png"
+        Icon="IMAGES/Icons/command-line-icon-1.png"
         Title="Command Prompt" Height="400" Width="320"
         ResizeMode="NoResize"
         KeyDown="UserPressKey">

@@ -20,7 +20,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
         
         private int Row { get; }
+        
         private int Col { get; }
+        
         public double[,] Body { get; }
         
         public Matrix GetTranspose() {
@@ -63,18 +65,15 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         public string GetValues() {
             var tempValues = "";
 
-            for (var i = 0; i < Row; i++) { // maybe should add \n
+            for (var i = 0; i < Row; i++) 
                 for (var j = 0; j < Col; j++)
                     tempValues += Body[i, j] + " ";
-            }
-
+            
             return tempValues;
         }
 
         public void SetValues(string value, int x, int y) {
-            if (double.TryParse(value, out var db)) {
-                Body[x, y] = db;
-            }
+            if (double.TryParse(value, out var db)) Body[x, y] = db;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NeuroWeb.EXMPL.WINDOWS;
@@ -15,7 +16,7 @@ namespace NeuroWeb.EXMPL {
         private DispatcherTimer UserInputAnimation { get; set; }
 
         private const string Text = ">> >> >> Меню\n\n>> Приветствую!\n\n>> Выберите действие:\n\n" +
-                                    ">> Обучение(1/teaching)\n\n>> Работа(2/start)";
+                                    ">> Обучение (teaching)\n\n>> Работа (start)";
         private int _position;
 
         private void StartAnimation() {
@@ -56,10 +57,10 @@ namespace NeuroWeb.EXMPL {
             switch (temp) {
                 case "return":
                     SelectOption(UserInput.Content.ToString());
-                    break;
+                    return;
                 case "back":
                     var str = UserInput.Content.ToString();
-                    if (str!.Length <= 1) break;
+                    if (str!.Length <= 1) return;
                     UserInput.Content = UserInput.Content.ToString()!.Remove(str!.Length - 1);
                     return;
             }
@@ -70,18 +71,14 @@ namespace NeuroWeb.EXMPL {
 
         private void SelectOption(string optionName) {
             switch (optionName) {
-                case "1":
-                    new Teacher();
-                    break;
                 case "teaching":
-                    new Teacher();
-                    break;
-                case "2":
-                    new User().Show();
+                    new Teacher().Show();
                     break;
                 case "start":
                     new User().Show();
                     break;
+                default:
+                    return;
             }
             Close();
         }

@@ -3,8 +3,14 @@
         public double[] Neurons { get; private set; }
         public void Use(double[] value, int n) {
             for (var i = 0; i < n; i++) 
-                if (value[i] < 0) value[i] *= 0.01d;
-                else if (value[i] > 1) value[i] = 1d + .01d * (value[i] - 1d);
+                switch (value[i]) {
+                    case < 0:
+                        value[i] *= 0.01d;
+                        break;
+                    case > 1:
+                        value[i] = 1d + .01d * (value[i] - 1d);
+                        break;
+                }
             
             Neurons = value;
         }

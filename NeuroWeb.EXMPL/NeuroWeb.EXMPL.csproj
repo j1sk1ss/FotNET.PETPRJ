@@ -12,43 +12,83 @@
 
     <ItemGroup>
       <None Remove="IMAGES\Кнопка_Выход.png" />
-      <Resource Include="IMAGES\Кнопка_Выход.png">
+      <Resource Include="IMAGES\Icons\command-line-icon-1.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <Resource Include="IMAGES\Icons\Иконка.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
       <None Remove="IMAGES\Кнопка_Задать.png" />
-      <Resource Include="IMAGES\Кнопка_Задать.png">
+      <Resource Include="IMAGES\UserWindow\Кнопка_Выход.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
       <None Remove="IMAGES\Кнопка_Очистка.png" />
-      <Resource Include="IMAGES\Кнопка_Очистка.png">
+      <Resource Include="IMAGES\UserWindow\Кнопка_Задать.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
       <None Remove="IMAGES\Окно_ответ.png" />
-      <Resource Include="IMAGES\Окно_ответ.png">
+      <Resource Include="IMAGES\UserWindow\Кнопка_Очистка.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
       <None Remove="IMAGES\Окно_представления.png" />
-      <Resource Include="IMAGES\Окно_представления.png">
+      <Resource Include="IMAGES\UserWindow\Окно_ответ.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
       <None Remove="IMAGES\Поле_Ответа.png" />
-      <Resource Include="IMAGES\Поле_Ответа.png">
+      <Resource Include="IMAGES\UserWindow\Окно_представления.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
       <None Remove="IMAGES\Фон_ответа.png" />
-      <Resource Include="IMAGES\Фон_ответа.png">
+      <Resource Include="IMAGES\UserWindow\Поле_Ответа.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
       <None Remove="IMAGES\Холст_Рисования.png" />
-      <Resource Include="IMAGES\Холст_Рисования.png">
+      <Resource Include="IMAGES\UserWindow\Фон_ответа.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
       <None Remove="IMAGES\command-line-icon-1.png" />
-      <Resource Include="IMAGES\command-line-icon-1.png">
+      <None Remove="IMAGES\Иконка.png" />
+      <Resource Include="IMAGES\UserWindow\Холст_Рисования.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
-      <None Remove="IMAGES\Иконка.png" />
-      <Resource Include="IMAGES\Иконка.png">
+      <None Remove="IMAGES\TeacherWindow\БысОбуч_Управление.png" />
+      <Resource Include="IMAGES\TeacherWindow\БысОбуч_Управление.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\TeacherWindow\Входные_Структура.png" />
+      <Resource Include="IMAGES\TeacherWindow\Входные_Структура.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\TeacherWindow\Выходные_Структура.png" />
+      <Resource Include="IMAGES\TeacherWindow\Выходные_Структура.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\TeacherWindow\Кнопка_Закрыть.png" />
+      <Resource Include="IMAGES\TeacherWindow\Кнопка_Закрыть.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\TeacherWindow\ПолноеОбучение_Управление.png" />
+      <Resource Include="IMAGES\TeacherWindow\ПолноеОбучение_Управление.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\TeacherWindow\Скрытый_Структура.png" />
+      <Resource Include="IMAGES\TeacherWindow\Скрытый_Структура.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\TeacherWindow\Увеличить_Структура.png" />
+      <Resource Include="IMAGES\TeacherWindow\Увеличить_Структура.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\TeacherWindow\Уменьшить_Структура.png" />
+      <Resource Include="IMAGES\TeacherWindow\Уменьшить_Структура.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\TeacherWindow\Фон_Структура.png" />
+      <Resource Include="IMAGES\TeacherWindow\Фон_Структура.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\TeacherWindow\Фон_Управление.png" />
+      <Resource Include="IMAGES\TeacherWindow\Фон_Управление.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
     </ItemGroup>

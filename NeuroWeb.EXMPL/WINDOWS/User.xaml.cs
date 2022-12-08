@@ -9,10 +9,8 @@ using System.Windows.Threading;
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.SCRIPTS;
 
-namespace NeuroWeb.EXMPL.WINDOWS
-{
-    public partial class User
-    {
+namespace NeuroWeb.EXMPL.WINDOWS {
+    public partial class User {
         private const string ConfigPath =
             @"C:\Users\j1sk1ss\RiderProjects\NeuroWeb.EXMPL\NeuroWeb.EXMPL\DATA\Config.txt";
         
@@ -29,13 +27,16 @@ namespace NeuroWeb.EXMPL.WINDOWS
             Update.Tick += AnalyzeUserInput;
             Update.IsEnabled = true;
         }
+        
         private Network Network { get; }
         private DispatcherTimer Update { get; }
         private string Number { get; set; }
         
         private readonly Brush _userBrush = Brushes.Black;
         private int _pred = 1;
+        
         [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
+        
         private void AnalyzeUserInput(object sender, EventArgs eventArgs) {
             var renderTargetBitmap = new RenderTargetBitmap(28,28, 6.5d, 6.5d, 
                 PixelFormats.Pbgra32);
@@ -55,7 +56,7 @@ namespace NeuroWeb.EXMPL.WINDOWS
                     
                     numberValue += matrix[i, j]+ "  ";
                 }
-
+                
                 temp += "\n";
             } 
             
@@ -76,8 +77,8 @@ namespace NeuroWeb.EXMPL.WINDOWS
         }
         
         private Point _currentPoint;
-        private void UserMoveMouse(object sender, MouseEventArgs e)
-        {
+        
+        private void UserMoveMouse(object sender, MouseEventArgs e) {
             AnalyzeUserInput(null, null);
             if (e.LeftButton != MouseButtonState.Pressed) return;
             
@@ -92,7 +93,6 @@ namespace NeuroWeb.EXMPL.WINDOWS
             };
 
             _currentPoint = e.GetPosition(this);
-
             UserCanvas.Children.Add(line);
         }
 

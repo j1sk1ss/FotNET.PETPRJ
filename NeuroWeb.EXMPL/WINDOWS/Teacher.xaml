@@ -4,9 +4,111 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
-        Title="Teacher" Height="450" Width="800">
+        Title="Меню нейронной сети" Height="490" Width="830"
+        Background="White"
+        Icon="../IMAGES/Icons/Иконка.png">
     <Grid>
+        <Image Source="../IMAGES/TeacherWindow/Фон_Структура.png"
+               Stretch="Fill"
+               Height="450"
+               Width="440"
+               HorizontalAlignment="Left"
+               Margin="10,0,0,0"></Image>
+        <ScrollViewer x:Name="NetworkStructure"
+                      Height="450"
+                      Width="440"
+                      HorizontalAlignment="Left"
+                      Margin="10,0,0,0">
+            <Grid>
+                <Image Source="../IMAGES/TeacherWindow/Входные_Структура.png"
+                       Stretch="Fill"
+                       Height="70"
+                       Width="120"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Margin="0,30,0,0"></Image>
+                
+                <Image Source="../IMAGES/TeacherWindow/Скрытый_Структура.png"
+                       Stretch="Fill"
+                       Height="100"
+                       Width="120"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Margin="0,100,0,0"></Image>
+                   
+                <TextBox Height="25"
+                         Width="100"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Top"
+                         Margin="0,103,0,0"
+                         Background="Transparent"></TextBox>
+                   
+                <Image Source="../IMAGES/TeacherWindow/Увеличить_Структура.png"
+                       Stretch="Fill"
+                       Height="20"
+                       Width="20"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Margin="150,140,0,0"
+                       Cursor="Hand"
+                       ToolTip="Добавить скрытый слой"
+                       MouseDown="IncreaseStructure"></Image>
+                <Image Source="../IMAGES/TeacherWindow/Уменьшить_Структура.png"
+                       Stretch="Fill"
+                       Height="20"
+                       Width="20"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Margin="150,110,0,0"
+                       Cursor="Hand"
+                       ToolTip="Убрать скрытый слой"
+                       MouseDown="DecreaseStructure"></Image>
+                   
+                   <Image Source="../IMAGES/TeacherWindow/Выходные_Структура.png"
+                          Stretch="Fill"
+                          Height="30"
+                          Width="120"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Top"
+                          Margin="0,200,0,0"></Image>
+                   
+            </Grid>
+        </ScrollViewer>
         
-        
+        <Image Source="../IMAGES/TeacherWindow/Фон_Управление.png"
+               Stretch="Fill"
+               Height="450"
+               Width="300"
+               HorizontalAlignment="Right"
+               Margin="0,0,25,0"></Image>
+           
+           <Image Source="../IMAGES/TeacherWindow/БысОбуч_Управление.png"
+                  Stretch="Fill"
+                  Height="50"
+                  Width="280"
+                  HorizontalAlignment="Right"
+                  Margin="0,0,33,350"
+                  Cursor="Hand"
+                  ToolTip="Начать обучение нейронной сети без стороннего
+                  файла"
+                  MouseDown="FastTeaching"></Image>   
+           <Image Source="../IMAGES/TeacherWindow/ПолноеОбучение_Управление.png"
+                  Stretch="Fill"
+                  Height="50"
+                  Width="280"
+                  HorizontalAlignment="Right"
+                  Margin="0,0,33,200"
+                  Cursor="Hand"
+                  ToolTip="Загрузить файл и начать полное обучение"
+                  MouseDown="HardTeaching"></Image>   
+           <Image Source="../IMAGES/TeacherWindow/Кнопка_Закрыть.png"
+                  Stretch="Fill"
+                  Height="50"
+                  Width="280"
+                  HorizontalAlignment="Right"
+                  Margin="0,370,33,0"
+                  Cursor="Hand"
+                  ToolTip="Закрыть и сохранить конфигурацию"
+                  MouseDown="CloseTeacher"></Image>   
     </Grid>
 </Window>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Microsoft.Win32;
 using NeuroWeb.EXMPL.SCRIPTS;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
@@ -43,7 +44,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 for (var i = 0; i < NeuronsBios.Length; i++) NeuronsBios[i] = 1;
             }
             catch (Exception e) {
-                MessageBox.Show($"{e}");
+                MessageBox.Show($"{e}","Сбой инициализации сети!");
                 throw;
             }
         }
@@ -86,39 +87,48 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 return prediction;
             }
             catch (Exception e) {
-                MessageBox.Show($"{e}");
+                MessageBox.Show($"{e}","Сбой получения максимального индекса!");
                 throw;
             }
         }
         
         public double ForwardFeed() {
-            for (var k = 1; k < Layouts; ++k) {
-                NeuronsValue[k] = Weights[k - 1] * NeuronsValue[k - 1];
-                NeuronsValue[k] = new Vector(NeuronsValue[k]) + new Vector(Bios[k - 1]);
+            try {
+                for (var k = 1; k < Layouts; ++k) {
+                    NeuronsValue[k] = Weights[k - 1] * NeuronsValue[k - 1];
+                    NeuronsValue[k] = new Vector(NeuronsValue[k]) + new Vector(Bios[k - 1]);
 
-                NeuronActivate.Use(NeuronsValue[k], Neurons[k]);
-                NeuronsValue[k] = NeuronActivate.Neurons;
+                    NeuronActivate.Use(NeuronsValue[k], Neurons[k]);
+                    NeuronsValue[k] = NeuronActivate.Neurons;
+                }
+
+                return GetMaxIndex(NeuronsValue[Layouts - 1]);
             }
-
-            return GetMaxIndex(NeuronsValue[Layouts - 1]);
+            catch (Exception e) {
+                MessageBox.Show($"{e}","Сбой анализа данных!");
+                throw;
+            }
         }
 
         public void BackPropagation(double expectedAnswer) {
-            for (var i = 0; i < Neurons[Layouts - 1]; i++) {
-                if (i != (int)expectedAnswer) {
-                    NeuronsError[Layouts - 1][i] = -NeuronsValue[Layouts - 1][i] * 
-                                                   NeuronActivate.UseDer(NeuronsValue[Layouts - 1][i]);
-                }
-                else {
-                    NeuronsError[Layouts - 1][i] = (1.0 - NeuronsValue[Layouts - 1][i]) * 
-                                                   NeuronActivate.UseDer(NeuronsValue[Layouts - 1][i]);
+            try {
+                for (var i = 0; i < Neurons[Layouts - 1]; i++) 
+                    if (i != (int)expectedAnswer) 
+                        NeuronsError[Layouts - 1][i] = -NeuronsValue[Layouts - 1][i] * 
+                                                       NeuronActivate.UseDer(NeuronsValue[Layouts - 1][i]);
+                    else 
+                        NeuronsError[Layouts - 1][i] = (1.0 - NeuronsValue[Layouts - 1][i]) * 
+                                                       NeuronActivate.UseDer(NeuronsValue[Layouts - 1][i]);
+                
+                for (var i = Layouts - 2; i > 0; i--) {
+                    NeuronsError[i] = Weights[i].GetTranspose() * NeuronsError[i + 1];
+                    for (var j = 0; j < Neurons[i]; j++)
+                        NeuronsError[i][j] *= NeuronActivate.UseDer(NeuronsValue[i][j]);
                 }
             }
-
-            for (var i = Layouts - 2; i > 0; i--) {
-                NeuronsError[i] = Weights[i].GetTranspose() * NeuronsError[i + 1];
-                for (var j = 0; j < Neurons[i]; j++)
-                    NeuronsError[i][j] *= NeuronActivate.UseDer(NeuronsValue[i][j]);
+            catch (Exception e) {
+                MessageBox.Show($"{e}","Сбой обратного обучения!");
+                throw;
             }
         }
 
@@ -133,45 +143,49 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     Bios[i][j] += NeuronsError[i + 1][j] * learningRange;
         }
 
-        private const string WeightsPath =
-            @"C:\\Users\\j1sk1ss\\RiderProjects\\NeuroWeb.EXMPL\\NeuroWeb.EXMPL\\DATA\\Weights.txt";
+        private static string GetWeightsPAth() {
+            var file = new OpenFileDialog();
+            MessageBox.Show("Укажите файл весов!");
+            return file.ShowDialog() != true ? "" : file.FileName;
+        }
         
         public void SaveWeights() {
-            var temp = Weights.Aggregate("", (current, weight) => current + weight.GetValues());
+            try {
+                var temp = Weights.Aggregate("", (current, weight) => current + weight.GetValues());
 
-            for (var i = 0; i < Layouts - 1; i++)
-                for (var j = 0; j < Neurons[i + 1]; ++j)
-                        temp += Bios[i][j] + " ";
-            
-            File.WriteAllText(WeightsPath, temp);
-            MessageBox.Show("Weights are saved!");
+                for (var i = 0; i < Layouts - 1; i++)
+                    for (var j = 0; j < Neurons[i + 1]; ++j)
+                            temp += Bios[i][j] + " ";
+                
+                File.WriteAllText(GetWeightsPAth(), temp);
+                MessageBox.Show("Веса обновлены!");
+            }
+            catch (Exception e) {
+                MessageBox.Show($"{e}","Сбой при записи весов!");
+                throw;
+            }
         }
 
         public void ReadWeights() {
             try {
-                var tempValues = File.ReadAllText(WeightsPath).Split(" ", 
+                var tempValues = File.ReadAllText(GetWeightsPAth()).Split(" ", 
                     StringSplitOptions.RemoveEmptyEntries);
 
                 var position = 0;
                 
-                for (var l = 0; l < Layouts - 1; l++) {
-                    for (var i = 0; i < Weights[l].Body.GetLength(0); i++) {
-                        for (var j = 0; j < Weights[l].Body.GetLength(1); j++) {
+                for (var l = 0; l < Layouts - 1; l++) 
+                    for (var i = 0; i < Weights[l].Body.GetLength(0); i++) 
+                        for (var j = 0; j < Weights[l].Body.GetLength(1); j++) 
                             Weights[l].SetValues(tempValues[position++], i, j);
-                        }
-                    }
-                }
 
-                for (var l = 0; l < Layouts - 1; l++) {
-                    for (var i = 0; i < Neurons[l + 1]; i++) {
-                        if (double.TryParse(tempValues[position++], out var tempDb)) {
+                for (var l = 0; l < Layouts - 1; l++) 
+                    for (var i = 0; i < Neurons[l + 1]; i++) 
+                        if (double.TryParse(tempValues[position++], out var tempDb)) 
                             Bios[l][i] = tempDb;
-                        }
-                    }
-                }
+                
             }
             catch (Exception e) {
-                MessageBox.Show($"{e}");
+                MessageBox.Show($"{e}","Сбой при чтении весов!");
                 throw;
             }
         }
