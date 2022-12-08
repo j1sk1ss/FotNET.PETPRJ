@@ -10,4 +10,47 @@
       <PackageReference Include="WriteableBitmapEx" Version="1.6.8" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="IMAGES\Кнопка_Выход.png" />
+      <Resource Include="IMAGES\Кнопка_Выход.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\Кнопка_Задать.png" />
+      <Resource Include="IMAGES\Кнопка_Задать.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\Кнопка_Очистка.png" />
+      <Resource Include="IMAGES\Кнопка_Очистка.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\Окно_ответ.png" />
+      <Resource Include="IMAGES\Окно_ответ.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\Окно_представления.png" />
+      <Resource Include="IMAGES\Окно_представления.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\Поле_Ответа.png" />
+      <Resource Include="IMAGES\Поле_Ответа.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\Фон_ответа.png" />
+      <Resource Include="IMAGES\Фон_ответа.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\Холст_Рисования.png" />
+      <Resource Include="IMAGES\Холст_Рисования.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\command-line-icon-1.png" />
+      <Resource Include="IMAGES\command-line-icon-1.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="IMAGES\Иконка.png" />
+      <Resource Include="IMAGES\Иконка.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
+
 </Project>

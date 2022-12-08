@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NeuroWeb.EXMPL.SCRIPTS {
+﻿namespace NeuroWeb.EXMPL.SCRIPTS {
     public class NeuronActivate {
         public double[] Neurons { get; private set; }
         public void Use(double[] value, int n) {

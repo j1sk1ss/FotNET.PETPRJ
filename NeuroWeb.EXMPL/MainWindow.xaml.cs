@@ -52,7 +52,17 @@ namespace NeuroWeb.EXMPL {
                 UserInput.Content.ToString()!.Replace("|", "");
             
             var temp = e.Key.ToString().ToLower();
-            if (temp == "return") SelectOption(UserInput.Content.ToString());
+            
+            switch (temp) {
+                case "return":
+                    SelectOption(UserInput.Content.ToString());
+                    break;
+                case "back":
+                    var str = UserInput.Content.ToString();
+                    if (str!.Length <= 1) break;
+                    UserInput.Content = UserInput.Content.ToString()!.Remove(str!.Length - 1);
+                    return;
+            }
             
             if (UserInput.Content.ToString()!.Length < 20) UserInput.Content += temp;
             else UserInput.Content = "";

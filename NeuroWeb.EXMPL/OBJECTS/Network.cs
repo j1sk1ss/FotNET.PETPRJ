@@ -132,15 +132,6 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 for (var j = 0; j < Neurons[i + 1]; j++)
                     Bios[i][j] += NeuronsError[i + 1][j] * learningRange;
         }
-        
-        public string Values(int layout) {
-            var temp = "";
-            
-            for (var i = 0; i < Neurons[layout]; i++)
-                temp += $"{i}) {NeuronsValue[layout][i]}\n";
-            
-            return temp;
-        }
 
         private const string WeightsPath =
             @"C:\\Users\\j1sk1ss\\RiderProjects\\NeuroWeb.EXMPL\\NeuroWeb.EXMPL\\DATA\\Weights.txt";

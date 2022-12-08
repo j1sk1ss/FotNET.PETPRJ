@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -28,11 +29,13 @@ namespace NeuroWeb.EXMPL.WINDOWS
             Update.Tick += AnalyzeUserInput;
             Update.IsEnabled = true;
         }
-        private Network Network { get; set; }
-        private DispatcherTimer Update { get; set; }
+        private Network Network { get; }
+        private DispatcherTimer Update { get; }
+        private string Number { get; set; }
         
         private readonly Brush _userBrush = Brushes.Black;
         private int _pred = 1;
+        [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         private void AnalyzeUserInput(object sender, EventArgs eventArgs) {
             var renderTargetBitmap = new RenderTargetBitmap(28,28, 6.5d, 6.5d, 
                 PixelFormats.Pbgra32);
@@ -48,21 +51,28 @@ namespace NeuroWeb.EXMPL.WINDOWS
                 for (var j = 0; j < 28; j++) {
                     matrix[i,j] = writeableBitmap.GetPixel(j, i).A / 255d;
                     if (matrix[i, j] > 0) temp += _pred + "  ";
-                    else temp += " " + "  ";
+                    else temp += "  " + "  ";
                     
                     numberValue += matrix[i, j]+ "  ";
                 }
 
                 temp += "\n";
-            }
-
-            Answers.Content = "";
+            } 
             
-            for (var i = 0; i < 10; i++)
-                Answers.Content += $"\n\n{i} - {Math.Abs(Math.Round(Network.NeuronsValue[2][i] * 100, 1))}%";
+            One.Content   = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][1] * 100, 1))}%";
+            Two.Content   = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][2] * 100, 1))}%";
+            Three.Content = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][3] * 100, 1))}%";
+            Four.Content  = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][4] * 100, 1))}%";
+            Five.Content  = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][5] * 100, 1))}%";
+            Six.Content   = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][6] * 100, 1))}%";
+            Seven.Content = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][7] * 100, 1))}%";
+            Eight.Content = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][8] * 100, 1))}%";
+            Nine.Content  = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][9] * 100, 1))}%";
+            Zero.Content  = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][0] * 100, 1))}%";
             
             Matrix.Content = temp;
-            _pred = Prediction.Predict(Network, numberValue);
+            Number         = numberValue;
+            _pred          = Prediction.Predict(Network, numberValue);
         }
         
         private Point _currentPoint;
@@ -93,17 +103,18 @@ namespace NeuroWeb.EXMPL.WINDOWS
 
         private void BackPropagation(object sender, RoutedEventArgs e) {
             Update.IsEnabled = false;
-            var number = int.Parse(ExpectedAnswer.Text);
-            ExpectedAnswer.Text = "";
+            if (int.TryParse(ExpectedAnswer.Text, out var number)) {
+                ExpectedAnswer.Text = "";
+                Teaching.LightStudying(Network, Number, number);
+            }
+            else MessageBox.Show("Введённое число не корректно!");
             
-            Network.BackPropagation(number);
-            Network.SetWeights(.01);
             Update.IsEnabled = true;
         }
 
         private void Clear(object sender, RoutedEventArgs e) => UserCanvas.Children.Clear();
         
-        private void SaveAdnExit(object sender, RoutedEventArgs e) {
+        private void SaveAndExit(object sender, RoutedEventArgs e) {
             MessageBox.Show("Сохранение начато...");
             Network.SaveWeights();
             Close();

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Matrix {

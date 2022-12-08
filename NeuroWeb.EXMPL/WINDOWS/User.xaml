@@ -4,62 +4,196 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
-        Title="User" Height="450" Width="800"
-        ResizeMode="NoResize">
+        Title="Нейронная сеть" Height="480" Width="800"
+        ResizeMode="NoResize"
+        Background="White"
+        Icon="../IMAGES/Иконка.png">
     <Grid>
+        <Image Source="../IMAGES/Холст_Рисования.png"
+               Stretch="Fill"
+               Height="400"
+               Width="380"
+               HorizontalAlignment="Left"
+               Margin="10,0,0,0">
+        </Image>
+           
+           <Image Source="../IMAGES/Окно_представления.png"
+                  HorizontalAlignment="Right"
+                  Stretch="Fill"
+                  Height="260"
+                  Width="370"
+                  Margin="0,0,10,140">
+           </Image>
+           
+           <Image Source="../IMAGES/Окно_ответ.png"
+                  Stretch="Fill"
+                  Height="150"
+                  Width="220"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Bottom"
+                  Margin="265,0,0,0"></Image>
+           
         <Canvas x:Name = "UserCanvas"
                 MouseMove="UserMoveMouse"
                 MouseDown="UserClick"
                 HorizontalAlignment="Left"
-                Width="400">
+                Width="375"
+                Height="400"
+                Margin="0,0,0,5">
             <Canvas.Background>
-                <SolidColorBrush Color="White" Opacity="0"/>
+                <SolidColorBrush Color="Transparent" Opacity="0"/>
             </Canvas.Background>
         </Canvas>
-        <Line X1 = "410" Y1 = "0"
-              X2 = "410" Y2 = "450"
-              Stroke="Black"></Line>
+        
         <Grid Width="385"
-              HorizontalAlignment="Right">
-            <Label HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           Margin="10,0,0,0"
-                           x:Name="Matrix"
-                           FontSize="7"></Label>
-            <Label HorizontalAlignment="Right"
-                   VerticalAlignment="Top"
-                   Margin="0,20,20,0"
-                   x:Name="Answers"
-                   FontSize="10"></Label>
+              Height="450"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Top">
+               
+               <Label HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Margin="10,5,0,0"
+                      x:Name="Matrix"
+                      FontSize="7">
+              </Label>
+               
+               <Label HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0,0,240,90"
+                      x:Name="One"
+                      FontSize="10">
+                      100%
+               </Label>
+               
+               <Label HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0,0,240,72"
+                      x:Name="Two"
+                      FontSize="10">
+                      100%
+               </Label>
+               
+               <Label HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0,0,240,54"
+                      x:Name="Three"
+                      FontSize="10">
+                      100%
+               </Label>
+               
+               <Label HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0,0,240,36"
+                      x:Name="Four"
+                      FontSize="10">
+                      100%
+               </Label>
+               
+               <Label HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0,0,240,18"
+                      x:Name="Five"
+                      FontSize="10">
+                      100%
+               </Label>
+               
+               <Label HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0,0,65,90"
+                      x:Name="Six"
+                      FontSize="10">
+                      100%
+               </Label>
+               
+               <Label HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0,0,65,72"
+                      x:Name="Seven"
+                      FontSize="10">
+                      100%
+               </Label>
+               
+               <Label HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0,0,65,54"
+                      x:Name="Eight"
+                      FontSize="10">
+                      100%
+               </Label>
+               
+               <Label HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0,0,65,36"
+                      x:Name="Nine"
+                      FontSize="10">
+                      100%
+               </Label>
+               
+               <Label HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0,0,65,18"
+                      x:Name="Zero"
+                      FontSize="10">
+                      100%
+               </Label>
         </Grid>
-        <Button Height="20"
-                Width="100"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Margin="0,0,0,30"
-                Click="BackPropagation">
-            Задать ответ
-        </Button>
-        <Button Height="20"
-                Width="100"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Margin="0,0,0,0"
-                Click="SaveAdnExit">
-            Сохранить и выйти
-        </Button>
+
+        
+        <Image Source="../IMAGES/Фон_ответа.png"
+               Stretch="Fill"
+               Height="90"
+               Width="125"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Bottom"
+               Margin="0,0,2.5,52"></Image>
+        
+        <Image Source="../IMAGES/Кнопка_Задать.png"
+               Stretch="Fill"
+               Height="40"
+               Width="120"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Bottom"
+               Margin="0,0,5,55"
+               MouseDown="BackPropagation"
+               Cursor="Hand"
+               ToolTip="Задать нужный ответ"></Image>
+        
+        <Image Source="../IMAGES/Поле_Ответа.png"
+               Stretch="Fill"
+               Height="30"
+               Width="120"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Bottom"
+               Margin="0,0,5,105"></Image>
+        
+        <Image Source="../IMAGES/Кнопка_Выход.png"
+               Stretch="Fill"
+               Height="40"
+               Width="120"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Bottom"
+               Margin="0,0,5,5"
+               MouseDown="SaveAndExit"
+               Cursor="Hand"
+               ToolTip="Выйти и сохранить веса нейронов"></Image>
+        
         <TextBox Height="20"
-                 Width="50"
+                 Width="115"
                  x:Name="ExpectedAnswer"
                  HorizontalAlignment="Right"
                  VerticalAlignment="Bottom"
-                 Margin="0,0,120,30"></TextBox>
-        <Button Height="20"
-                Width="100"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Click="Clear">
-            Очистить
-        </Button>
+                 Margin="0,0,7,110"
+                 Background="Transparent"></TextBox>
+        
+        <Image Source="../IMAGES/Кнопка_Очистка.png"
+               Stretch="Fill"
+               Height="40"
+               Width="40"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Bottom"
+               Margin="15,0,0,19"
+               MouseDown="Clear"
+               Cursor="Hand"
+               ToolTip="Очистка холста"></Image>
     </Grid>
 </Window>
