@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Input;
 using System.Windows.Threading;
+
 using NeuroWeb.EXMPL.WINDOWS;
 
 namespace NeuroWeb.EXMPL {

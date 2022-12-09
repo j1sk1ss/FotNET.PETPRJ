@@ -7,7 +7,7 @@ using Microsoft.Win32;
 namespace NeuroWeb.EXMPL.Gui {
     public static class Configuration {
         public static void WriteConfig(Grid configGrid, int size) {
-            var tempConfig = $"NetWork {size}\n";
+            var tempConfig = $"Нейронка {size}\n";
             var tempArray = new List<int>();
             
             foreach (var element in configGrid.Children) {

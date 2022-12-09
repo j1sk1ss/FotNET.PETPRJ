@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Windows.Media.Imaging;
+using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.Win32;
+
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.SCRIPTS;
 
@@ -15,10 +17,11 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         public User() {
             MessageBox.Show("Укажите файл конфигурации нейронной сети!");
             var file = new OpenFileDialog();
+            
             if (file.ShowDialog() == true) {
                 InitializeComponent();
-                var netConfig = DataWorker.ReadNetworkConfig(file.FileName);
-                Network = new Network(netConfig);
+
+                Network = new Network(DataWorker.ReadNetworkConfig(file.FileName));
                 Network.ReadWeights();
                 
                 Update = new DispatcherTimer {
@@ -34,6 +37,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         private string Number { get; set; }
         
         private readonly Brush _userBrush = Brushes.Black;
+        
         private int _pred = 1;
         
         [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]

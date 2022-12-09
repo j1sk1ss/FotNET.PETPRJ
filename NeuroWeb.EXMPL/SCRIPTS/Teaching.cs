@@ -18,19 +18,19 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 network.SetWeights(.08);
             }
             catch (Exception e) {
-                MessageBox.Show($"{e}");
+                MessageBox.Show($"{e}", "Ошибка при обучении!");
                 throw;
             }
         }
 
 
         [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
-        public static void HardStudying(Network network) {
+        public static void HardStudying(Network network, int teachingCounts) {
             try {
                 double rightAnswersCount = 0d, maxRightAnswers = 0d;
                 
-                var epoch    = 0;
-                var examples = 0;
+                var teachingCount = 0;
+                var examples      = 0;
 
                 MessageBox.Show("Укажите файл обучения!");
                 var file = new OpenFileDialog();
@@ -38,8 +38,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 
                 var dataInformation = DataWorker.ReadData(file.FileName, network.Configuration, ref examples);
                 
-                MessageBox.Show($"Загруженно приверов: {examples}\n" +
-                                $"Обучение начато...");
+                MessageBox.Show($"Загруженно приверов: {examples}\n");
                 while (rightAnswersCount / examples * 100 < 100) {
                     rightAnswersCount = 0;
                     for (var i = 0; i < examples; ++i) {
@@ -49,21 +48,21 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                         var prediction = network.ForwardFeed();
                         if (!prediction.Equals(right)) {
                             network.BackPropagation(right);
-                            network.SetWeights(.15d * Math.Exp(-epoch / 20d));
+                            network.SetWeights(.15d * Math.Exp(-teachingCount / 20d));
                         }
                         else rightAnswersCount++;
                     }
                     if (rightAnswersCount > maxRightAnswers) maxRightAnswers = rightAnswersCount;
-                    MessageBox.Show($"Right Answers: {Math.Round(rightAnswersCount / examples * 100, 3)}%\n" +
-                                    $"Maximum Right Answers: {Math.Round(maxRightAnswers / examples * 100, 3)}%\n" +
-                                    $"Generation: {epoch}");
+                    MessageBox.Show($"Правильно: {Math.Round(rightAnswersCount / examples * 100, 3)}%\n" +
+                                    $"Максимум правильных: {Math.Round(maxRightAnswers / examples * 100, 3)}%\n" +
+                                    $"Цикл обучения №{teachingCount}");
                     
-                    if (++epoch == 20) break;
+                    if (++teachingCount == teachingCounts) break;
                 }
                 network.SaveWeights();
             }
             catch (Exception e) {
-                MessageBox.Show($"{e}");
+                MessageBox.Show($"{e}", "Ошибка при глубоком обучении!");
                 throw;
             }
         }

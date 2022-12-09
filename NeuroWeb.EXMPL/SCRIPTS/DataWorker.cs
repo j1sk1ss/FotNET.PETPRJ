@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using System.Collections.Generic;
+
 using NeuroWeb.EXMPL.OBJECTS;
 
 namespace NeuroWeb.EXMPL.SCRIPTS
@@ -16,7 +17,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS
 
                 for (var i = 0; i < tempData.Length; i++) {
 
-                    if (tempData[i] != "NetWork") continue;
+                    if (tempData[i] != "Нейронка") continue;
                     var layouts = int.Parse(tempData[i + 1]);
                     
                     data.Layout = layouts;
