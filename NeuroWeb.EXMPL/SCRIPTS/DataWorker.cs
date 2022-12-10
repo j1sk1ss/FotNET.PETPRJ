@@ -2,13 +2,11 @@
 using System.IO;
 using System.Windows;
 using System.Collections.Generic;
-
+using System.Diagnostics.CodeAnalysis;
 using NeuroWeb.EXMPL.OBJECTS;
 
-namespace NeuroWeb.EXMPL.SCRIPTS
-{
-    public static class DataWorker
-    {
+namespace NeuroWeb.EXMPL.SCRIPTS {
+    public static class DataWorker {
         public static Configuration ReadNetworkConfig(string path) {
             try {
                 var data           = new Configuration();
@@ -36,6 +34,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS
             }
         }
 
+        [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         public static Number ReadData(string pixelsValue, Configuration configuration) {
             try {
                 var number = new Number();

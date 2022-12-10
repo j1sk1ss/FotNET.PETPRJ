@@ -33,7 +33,10 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
                             Margin="0,10,0,0"
-                            Background="Transparent"></TextBox>
+                            Background="Transparent"
+                            Text="786"
+                            IsEnabled="False"
+                            TextAlignment="Center"></TextBox>
                    
                 <Image Source="../IMAGES/TeacherWindow/Скрытый_Структура.png"
                        Stretch="Fill"
@@ -48,7 +51,8 @@
                          HorizontalAlignment="Center"
                          VerticalAlignment="Top"
                          Margin="0,108,0,0"
-                         Background="Transparent"></TextBox>
+                         Background="Transparent"
+                         TextAlignment="Center"></TextBox>
                    
                 <Image Source="../IMAGES/TeacherWindow/Увеличить_Структура.png"
                        Stretch="Fill"
@@ -83,7 +87,10 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Top"
                             Margin="0,208,0,0"
-                            Background="Transparent"></TextBox>
+                            Background="Transparent"
+                            Text="10"
+                            IsEnabled="False"
+                            TextAlignment="Center"></TextBox>
                    
             </Grid>
         </ScrollViewer>

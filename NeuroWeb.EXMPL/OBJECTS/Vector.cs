@@ -1,14 +1,12 @@
-﻿namespace NeuroWeb.EXMPL.OBJECTS
-{
-    public class Vector
-    {
+﻿namespace NeuroWeb.EXMPL.OBJECTS {
+    public class Vector {
         public Vector(double[] array) {
             Body = array;
             Size = array.Length;
         }
-        public double[] Body { get; set; }
-        public int Size { get; set; }
-        public double this[int key] {
+        private double[] Body { get; }
+        private int Size { get; }
+        private double this[int key] {
             get => Body[key];
             set => SetElement(key, value);
         }

@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Windows;
+using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.Win32;
+
 using NeuroWeb.EXMPL.OBJECTS;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {

@@ -1,5 +1,5 @@
 ﻿namespace NeuroWeb.EXMPL.SCRIPTS {
-    public class NeuronActivate {
+    public static class NeuronActivate {
         public static double[] Activation(double[] value) {
             for (var i = 0; i < value.Length; i++) 
                 switch (value[i]) {

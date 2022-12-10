@@ -41,7 +41,6 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         private int _pred = 1;
         
         [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
-        
         private void AnalyzeUserInput(object sender, EventArgs eventArgs) {
             var renderTargetBitmap = new RenderTargetBitmap(28,28, 6.5d, 6.5d, 
                 PixelFormats.Pbgra32);
