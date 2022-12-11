@@ -183,11 +183,11 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 for (var l = 0; l < Layouts - 1; l++) 
                     for (var i = 0; i < Weights[l].Body.GetLength(0); i++) 
                         for (var j = 0; j < Weights[l].Body.GetLength(1); j++) 
-                            Weights[l].SetValues(tempValues[position++], i, j);
+                            Weights[l].SetValues(tempValues[position++].Replace(".",","), i, j);
 
                 for (var l = 0; l < Layouts - 1; l++) 
                     for (var i = 0; i < Neurons[l + 1]; i++) 
-                        if (double.TryParse(tempValues[position++], out var tempDb)) 
+                        if (double.TryParse(tempValues[position++].Replace(".", ","), out var tempDb)) 
                             Bias[l][i] = tempDb;
                 
             }
