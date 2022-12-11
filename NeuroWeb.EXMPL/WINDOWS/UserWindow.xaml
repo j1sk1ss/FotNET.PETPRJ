@@ -39,7 +39,7 @@
                 HorizontalAlignment="Left"
                 Width="375"
                 Height="400"
-                Margin="0,0,0,5">
+                Margin="8,0,0,9">
             <Canvas.Background>
                 <SolidColorBrush Color="Transparent" Opacity="0"/>
             </Canvas.Background>
@@ -183,7 +183,8 @@
                  HorizontalAlignment="Right"
                  VerticalAlignment="Bottom"
                  Margin="0,0,17,120"
-                 Background="Transparent"></TextBox>
+                 Background="Transparent"
+                 TextAlignment="Center"></TextBox>
         
         <Image Source="../IMAGES/UserWindow/Кнопка_Очистка.png"
                Stretch="Fill"

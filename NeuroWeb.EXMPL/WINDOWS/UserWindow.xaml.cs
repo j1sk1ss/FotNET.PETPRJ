@@ -3,7 +3,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Controls;
 using System.Windows.Threading;
+using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Diagnostics.CodeAnalysis;
 
@@ -21,6 +23,10 @@ namespace NeuroWeb.EXMPL.WINDOWS {
             if (file.ShowDialog() == true) {
                 InitializeComponent();
 
+                Answers = new List<Label> {
+                    Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
+                };  
+                
                 Network = new Network(DataWorker.ReadNetworkConfig(file.FileName));
                 Network.ReadWeights();
                 
@@ -35,7 +41,8 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         private Network Network { get; }
         private DispatcherTimer Update { get; }
         private string Number { get; set; }
-        
+        private List<Label> Answers { get; }
+
         private readonly Brush _userBrush = Brushes.Black;
         
         private int _pred = 1;
@@ -64,16 +71,8 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                 temp += "\n";
             } 
             
-            One.Content   = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][1] * 100, 1))}%";
-            Two.Content   = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][2] * 100, 1))}%";
-            Three.Content = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][3] * 100, 1))}%";
-            Four.Content  = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][4] * 100, 1))}%";
-            Five.Content  = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][5] * 100, 1))}%";
-            Six.Content   = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][6] * 100, 1))}%";
-            Seven.Content = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][7] * 100, 1))}%";
-            Eight.Content = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][8] * 100, 1))}%";
-            Nine.Content  = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][9] * 100, 1))}%";
-            Zero.Content  = $"{Math.Abs(Math.Round(Network.NeuronsValue[2][0] * 100, 1))}%";
+            for (var i = 0; i < Answers.Count; i++) Answers[i].Content = 
+                $"{Math.Abs(Math.Round(Network.NeuronsValue[2][i] * 100, 1))}%";            
             
             Matrix.Content = temp;
             Number         = numberValue;

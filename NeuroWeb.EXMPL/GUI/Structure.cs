@@ -31,6 +31,7 @@ namespace NeuroWeb.EXMPL.Gui {
                     
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment   = VerticalAlignment.Top,
+                    TextAlignment       = TextAlignment.Center,
                     Margin              = new Thickness(0,10,0,0),
                     
                     Background = Brushes.Transparent,
