@@ -13,29 +13,35 @@ using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.SCRIPTS;
+using Path = System.IO.Path;
 
 namespace NeuroWeb.EXMPL.WINDOWS {
     public partial class User {
         public User() {
-            MessageBox.Show("Укажите файл конфигурации нейронной сети!");
-            var file = new OpenFileDialog();
+            const string defaultConfig = @"..\..\..\DATA\ThreeLayers\Config.txt";
+            var message = MessageBox.Show("Использовать стандартную конфигарацию вместо другой?", 
+                "Укажите конфигурацию!", MessageBoxButton.YesNo);
+            if (message == MessageBoxResult.Yes)
+                Network = new Network(DataWorker.ReadNetworkConfig(defaultConfig));
+            else {
+                  var file = new OpenFileDialog();
+                  if (file.ShowDialog() == true)
+                      Network = new Network(DataWorker.ReadNetworkConfig(file.FileName));
+            }
             
-            if (file.ShowDialog() == true) {
-                InitializeComponent();
-
-                Answers = new List<Label> {
-                    Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
-                };  
-                
-                Network = new Network(DataWorker.ReadNetworkConfig(file.FileName));
-                Network.ReadWeights();
-                
-                Update = new DispatcherTimer {
-                    Interval = new TimeSpan(0,0,0,1)
-                };
-                Update.Tick += AnalyzeUserInput;
-                Update.IsEnabled = true;
-            } else Close();
+            InitializeComponent();
+            
+            Answers = new List<Label> {
+                 Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
+            };  
+            
+            Network.ReadWeights();
+            
+            Update = new DispatcherTimer {
+                Interval = new TimeSpan(0,0,0,1)
+            };
+            Update.Tick += AnalyzeUserInput;
+            Update.IsEnabled = true;
         }
         
         private Network Network { get; }

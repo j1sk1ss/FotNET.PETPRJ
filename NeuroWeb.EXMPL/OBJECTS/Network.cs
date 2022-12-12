@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Collections.Generic;
-
+using System.Globalization;
 using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.SCRIPTS;
@@ -140,8 +140,11 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
 
         private static string GetWeightsPath() {
+            const string defaultWeights = @"..\..\..\DATA\ThreeLayers\Weights.txt";
             var file = new OpenFileDialog();
-            MessageBox.Show("Укажите файл весов!");
+            var message = MessageBox.Show("Использовать стандартные веса вместо " +
+                                          "других", "Укажите файл весов!", MessageBoxButton.YesNo);
+            if (message == MessageBoxResult.Yes) return defaultWeights;
             return file.ShowDialog() != true ? "" : file.FileName;
         }
 
@@ -183,13 +186,12 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 for (var l = 0; l < Layouts - 1; l++) 
                     for (var i = 0; i < Weights[l].Body.GetLength(0); i++) 
                         for (var j = 0; j < Weights[l].Body.GetLength(1); j++) 
-                            Weights[l].SetValues(tempValues[position++].Replace(".",","), i, j);
+                            Weights[l].SetValues(tempValues[position++], i, j);
 
-                for (var l = 0; l < Layouts - 1; l++) 
-                    for (var i = 0; i < Neurons[l + 1]; i++) 
-                        if (double.TryParse(tempValues[position++].Replace(".", ","), out var tempDb)) 
-                            Bias[l][i] = tempDb;
-                
+                for (var l = 0; l < Layouts - 1; l++)
+                    for (var i = 0; i < Neurons[l + 1]; i++)
+                        Bias[l][i] = double.Parse(tempValues[position++], CultureInfo.InvariantCulture);
+
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}","Сбой при чтении весов!");

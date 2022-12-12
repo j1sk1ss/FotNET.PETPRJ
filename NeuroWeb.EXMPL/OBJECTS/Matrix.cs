@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Matrix {
@@ -62,6 +64,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 }
         }
 
+        [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         public string GetValues() {
             var tempValues = "";
 
@@ -73,7 +76,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
 
         public void SetValues(string value, int x, int y) {
-            if (double.TryParse(value, out var db)) Body[x, y] = db;
+            Body[x, y] = double.Parse(value, CultureInfo.InvariantCulture);
         }
     }
 }
