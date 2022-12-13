@@ -109,8 +109,7 @@
                   HorizontalAlignment="Right"
                   Margin="0,0,50,350"
                   Cursor="Hand"
-                  ToolTip="Начать обучение нейронной сети без стороннего
-                  файла"
+                  ToolTip="Начать обучение нейронной сети без стороннего файла"
                   MouseDown="FastTeaching"></Image>   
            <Image Source="../IMAGES/TeacherWindow/ПолноеОбучение_Управление.png"
                   Stretch="Fill"
