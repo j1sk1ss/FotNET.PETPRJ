@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
-        Title="Меню нейронной сети" Height="490" Width="830"
+        Title="Меню нейронной сети" Height="490" Width="800"
         Background="White"
         Icon="../IMAGES/Icons/Иконка.png">
     <Grid>
@@ -13,12 +13,12 @@
                Height="450"
                Width="440"
                HorizontalAlignment="Left"
-               Margin="10,0,0,0"></Image>
+               Margin="40,0,0,0"></Image>
         <ScrollViewer x:Name="NetworkStructure"
                       Height="450"
                       Width="440"
                       HorizontalAlignment="Left"
-                      Margin="10,0,0,0">
+                      Margin="40,0,0,0">
             <Grid>
                 <Image Source="../IMAGES/TeacherWindow/Входные_Структура.png"
                        Stretch="Fill"
@@ -95,38 +95,38 @@
             </Grid>
         </ScrollViewer>
         
-        <Image Source="../IMAGES/TeacherWindow/Фон_Управление.png"
-               Stretch="Fill"
-               Height="450"
-               Width="300"
-               HorizontalAlignment="Right"
-               Margin="0,0,25,0"></Image>
+       <Image Source="../IMAGES/TeacherWindow/Фон_Управление.png"
+        Stretch="Fill"
+        Height="450"
+        Width="200"
+        HorizontalAlignment="Right"
+        Margin="0,0,35,0"></Image>
            
            <Image Source="../IMAGES/TeacherWindow/БысОбуч_Управление.png"
                   Stretch="Fill"
-                  Height="50"
-                  Width="280"
+                  Height="35"
+                  Width="170"
                   HorizontalAlignment="Right"
-                  Margin="0,0,33,350"
+                  Margin="0,0,50,350"
                   Cursor="Hand"
                   ToolTip="Начать обучение нейронной сети без стороннего
                   файла"
                   MouseDown="FastTeaching"></Image>   
            <Image Source="../IMAGES/TeacherWindow/ПолноеОбучение_Управление.png"
                   Stretch="Fill"
-                  Height="50"
-                  Width="280"
+                  Height="35"
+                  Width="170"
                   HorizontalAlignment="Right"
-                  Margin="0,0,33,200"
+                  Margin="0,0,50,200"
                   Cursor="Hand"
                   ToolTip="Загрузить файл и начать полное обучение"
                   MouseDown="HardTeaching"></Image>   
            <Image Source="../IMAGES/TeacherWindow/Кнопка_Закрыть.png"
                   Stretch="Fill"
-                  Height="50"
-                  Width="280"
+                  Height="35"
+                  Width="170"
                   HorizontalAlignment="Right"
-                  Margin="0,370,33,0"
+                  Margin="0,370,50,0"
                   Cursor="Hand"
                   ToolTip="Закрыть и сохранить конфигурацию"
                   MouseDown="CloseTeacher"></Image>   

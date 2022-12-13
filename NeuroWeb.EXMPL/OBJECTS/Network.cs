@@ -172,9 +172,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             try {
                 var tempValues = GetWeights().Split(" ", 
                     StringSplitOptions.RemoveEmptyEntries);
-
-                var position = 0;
+                if (tempValues.Length < 10) return;
                 
+                var position = 0;
                 for (var l = 0; l < Layouts - 1; l++) 
                     for (var i = 0; i < Weights[l].Body.GetLength(0); i++) 
                         for (var j = 0; j < Weights[l].Body.GetLength(1); j++) 
@@ -183,6 +183,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 for (var l = 0; l < Layouts - 1; l++)
                     for (var i = 0; i < Neurons[l + 1]; i++)
                         Bias[l][i] = double.Parse(tempValues[position++], CultureInfo.InvariantCulture);
+
+                if (position < tempValues.Length) MessageBox.Show("Веса считанны некорректно!", "Ошибка!");
 
             }
             catch (Exception e) {

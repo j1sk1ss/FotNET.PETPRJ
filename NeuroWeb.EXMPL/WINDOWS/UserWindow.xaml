@@ -7,6 +7,7 @@
         Title="Нейронная сеть" Height="480" Width="800"
         ResizeMode="NoResize"
         Background="White"
+        WindowStyle="None"
         Icon="../IMAGES/Icons/Иконка.png">
     <Grid>
         <Image Source="../IMAGES/UserWindow/Холст_Рисования.png"
@@ -59,7 +60,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,240,100"
+                      Margin="0,0,240,62"
                       x:Name="One"
                       FontSize="10">
                       100%
@@ -67,7 +68,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,240,82"
+                      Margin="0,0,240,44"
                       x:Name="Two"
                       FontSize="10">
                       100%
@@ -75,7 +76,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,240,64"
+                      Margin="0,0,240,26"
                       x:Name="Three"
                       FontSize="10">
                       100%
@@ -83,7 +84,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,240,46"
+                      Margin="0,0,240,8"
                       x:Name="Four"
                       FontSize="10">
                       100%
@@ -91,7 +92,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,240,28"
+                      Margin="0,0,240,-10"
                       x:Name="Five"
                       FontSize="10">
                       100%
@@ -99,7 +100,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,65,100"
+                      Margin="0,0,65,62"
                       x:Name="Six"
                       FontSize="10">
                       100%
@@ -107,7 +108,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,65,82"
+                      Margin="0,0,65,44"
                       x:Name="Seven"
                       FontSize="10">
                       100%
@@ -115,7 +116,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,65,64"
+                      Margin="0,0,65,26"
                       x:Name="Eight"
                       FontSize="10">
                       100%
@@ -123,7 +124,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,65,46"
+                      Margin="0,0,65,8"
                       x:Name="Nine"
                       FontSize="10">
                       100%
@@ -131,7 +132,7 @@
                
                <Label HorizontalAlignment="Center"
                       VerticalAlignment="Bottom"
-                      Margin="0,0,65,28"
+                      Margin="0,0,65,-10"
                       x:Name="Zero"
                       FontSize="10">
                       100%
@@ -173,9 +174,9 @@
                HorizontalAlignment="Right"
                VerticalAlignment="Bottom"
                Margin="0,0,15,15"
-               MouseDown="SaveAndExit"
+               MouseDown="Exit"
                Cursor="Hand"
-               ToolTip="Выйти и сохранить веса нейронов"></Image>
+               ToolTip="Выйти"></Image>
         
         <TextBox Height="20"
                  Width="115"
@@ -192,9 +193,26 @@
                Width="40"
                HorizontalAlignment="Left"
                VerticalAlignment="Bottom"
-               Margin="15,0,0,19"
+               Margin="15,0,0,45"
                MouseDown="Clear"
                Cursor="Hand"
                ToolTip="Очистка холста"></Image>
+       <Menu Height="25"
+             Background="Azure"
+             VerticalAlignment="Top">
+              <MenuItem Header="Нейронная сеть">
+                     <MenuItem Click="SaveWeights"
+                               Header="Сохранить веса">
+                     </MenuItem>
+                     <MenuItem Click="LoadWeights"
+                               Header="Изменить веса">
+                     </MenuItem>
+              </MenuItem>
+       </Menu>
+       <Canvas Height="25"
+               Width="400"
+               MouseLeftButtonDown="DragWindow"
+               VerticalAlignment="Top"
+               Background="Azure"></Canvas>
     </Grid>
 </Window>

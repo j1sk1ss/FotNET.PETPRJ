@@ -124,10 +124,20 @@ namespace NeuroWeb.EXMPL.WINDOWS {
 
         private void Clear(object sender, RoutedEventArgs e) => UserCanvas.Children.Clear();
         
-        private void SaveAndExit(object sender, RoutedEventArgs e) {
+        private void Exit(object sender, RoutedEventArgs e) => Close();
+        
+        private void SaveWeights(object sender, RoutedEventArgs e) {
             MessageBox.Show("Сохранение начато...");
             Network.SaveWeights();
-            Close();
         }
+        
+        private void LoadWeights(object sender, RoutedEventArgs e) => Network.ReadWeights();
+        
+        private void DragWindow(object sender, MouseButtonEventArgs e) {
+            base.OnMouseLeftButtonDown(e); 
+            DragMove();
+        }
+
+
     }
 }
