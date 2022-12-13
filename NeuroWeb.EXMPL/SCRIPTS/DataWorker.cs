@@ -7,10 +7,10 @@ using NeuroWeb.EXMPL.OBJECTS;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class DataWorker {
-        public static Configuration ReadNetworkConfig(string path) {
+        public static Configuration ReadNetworkConfig(string config) {
             try {
-                var data           = new Configuration();
-                var tempData = File.ReadAllText(path).Split(new[] {' ', '\n'},
+                var data     = new Configuration();
+                var tempData = config.Split(new[] {' ', '\n'},
                     StringSplitOptions.RemoveEmptyEntries);
 
                 for (var i = 0; i < tempData.Length; i++) {
@@ -59,12 +59,11 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             }
         }
         
-        public static List<Number> ReadData(string path, Configuration configuration, ref int examples) {
-            try
-            {
+        public static List<Number> ReadData(string config, Configuration configuration, ref int examples) {
+            try {
                 var numbers = new List<Number>();
 
-                var tempValues = File.ReadAllText(path).Split(new[] {' ', '\n'},
+                var tempValues = config.Split(new[] {' ', '\n'},
                     StringSplitOptions.RemoveEmptyEntries);
                 var position = 0;
 

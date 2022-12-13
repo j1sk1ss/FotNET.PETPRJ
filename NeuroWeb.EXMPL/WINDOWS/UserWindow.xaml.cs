@@ -13,18 +13,21 @@ using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.SCRIPTS;
+using System.IO;
+using System.Reflection;
 
 namespace NeuroWeb.EXMPL.WINDOWS {
     public partial class User {
         public User() {
-            const string defaultConfig = @"Config.txt";
+            var defaultConfig = Properties.Resources.defaultConfig;
+
             if (MessageBox.Show("Использовать стандартную конфигарацию вместо другой?", 
                     "Укажите конфигурацию!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 Network = new Network(DataWorker.ReadNetworkConfig(defaultConfig));
             else {
                   var file = new OpenFileDialog();
                   if (file.ShowDialog() == true)
-                      Network = new Network(DataWorker.ReadNetworkConfig(file.FileName));
+                      Network = new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(file.FileName)));
             }
             
             InitializeComponent();
