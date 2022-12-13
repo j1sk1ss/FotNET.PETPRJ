@@ -3,22 +3,30 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
+    /// <summary>
+    /// Обьект матрицы
+    /// </summary>
     public class Matrix {
+        
+        /// <summary>
+        /// Конструктор матрицы, который принимает уже готовый двумерный массив    
+        /// </summary>
+        /// <param name="body"> Тело матрицы, двумерный массив </param>
         private Matrix(double[,] body) {
             Row  = body.GetLength(0);
             Col  = body.GetLength(1);
             Body = body;
         }
         
+        /// <summary>
+        ///  Конструктор матрицы, который принимает только размерности матрицы
+        /// </summary>
+        /// <param name="row">Строки</param>
+        /// <param name="col">Колонки</param>
         public Matrix(int row, int col) {
             Row  = row;
             Col  = col;
             Body = new double[row, col];
-            
-            for (var i = 0; i < Row; i++)
-                for (var j = 0; j < Col; j++) {
-                    Body[i, j] = 0.0;
-                }
         }
         
         private int Row { get; }
@@ -27,6 +35,10 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         
         public double[,] Body { get; }
         
+        /// <summary>
+        /// Метод возвращающий транспонированную матрицу
+        /// </summary>
+        /// <returns> Транспонированная матрица </returns>
         public Matrix GetTranspose() {
             var rows    = Body.GetLength(0);
             var columns = Body.GetLength(1);
@@ -57,6 +69,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return c;
         }
 
+        /// <summary>
+        /// Метод, заполняющий матрицу случайными числами
+        /// </summary>
         public void FillRandom() {
             for (var i = 0; i < Row; i++)
                 for (var j = 0; j < Col; j++) {
@@ -64,6 +79,10 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 }
         }
 
+        /// <summary>
+        /// Компанует все значения матрицы в строку
+        /// </summary>
+        /// <returns> Строка значений </returns>
         [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         public string GetValues() {
             var tempValues = "";

@@ -57,15 +57,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         public double[][] NeuronsValue { get; }
         private double[][] NeuronsError { get; }
         private double[] NeuronsBios { get; }
-        
-        public string GetConfiguration() {
-            var temp = $"Сеть имеет {Layouts} слоёв\nРазмерность:\n";
-            
-            for (var i = 0; i < Layouts; i++) temp += $"{Neurons[i]}";
-            
-            return temp;
-        }
-        
+
         public void InsertInformation(List<double> values) {
             for (var i = 0; i < values.Count; i++) NeuronsValue[0][i] = values[i];
         }
@@ -140,7 +132,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
 
         private static string GetWeightsPath() {
-            const string defaultWeights = @"..\..\..\DATA\ThreeLayers\Weights.txt";
+            const string defaultWeights = @"Weights.txt";
             var file = new OpenFileDialog();
             var message = MessageBox.Show("Использовать стандартные веса вместо " +
                                           "других", "Укажите файл весов!", MessageBoxButton.YesNo);

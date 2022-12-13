@@ -13,15 +13,13 @@ using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.SCRIPTS;
-using Path = System.IO.Path;
 
 namespace NeuroWeb.EXMPL.WINDOWS {
     public partial class User {
         public User() {
-            const string defaultConfig = @"..\..\..\DATA\ThreeLayers\Config.txt";
-            var message = MessageBox.Show("Использовать стандартную конфигарацию вместо другой?", 
-                "Укажите конфигурацию!", MessageBoxButton.YesNo);
-            if (message == MessageBoxResult.Yes)
+            const string defaultConfig = @"Config.txt";
+            if (MessageBox.Show("Использовать стандартную конфигарацию вместо другой?", 
+                    "Укажите конфигурацию!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 Network = new Network(DataWorker.ReadNetworkConfig(defaultConfig));
             else {
                   var file = new OpenFileDialog();
