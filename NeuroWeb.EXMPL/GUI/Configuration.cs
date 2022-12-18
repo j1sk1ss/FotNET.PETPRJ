@@ -27,8 +27,8 @@ namespace NeuroWeb.EXMPL.Gui {
             }
 
             for (var i = 0; i < tempArray.Count - 1; i++) {
-                if (tempArray[i] >= tempArray[i + 1]) continue;
-                MessageBox.Show("Некоректные размерности скрытыхte слоёв. Идут не по убыванию!");
+                if (tempArray[i] >= tempArray[i + 1] / 3) continue;
+                MessageBox.Show("Некоректные размерности скрытыхte слоёв. Идут не правилу!");
                 break;
             }
 

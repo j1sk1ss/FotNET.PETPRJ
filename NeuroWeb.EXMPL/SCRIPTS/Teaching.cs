@@ -31,8 +31,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             try {
                 double rightAnswersCount = 0d, maxRightAnswers = 0d;
                 
-                var teachingCount = 0;
-                var examples      = 0;
+                var era      = 0;
+                var examples = 0;
 
                 MessageBox.Show("Укажите файл обучения!");
                 var file = new OpenFileDialog();
@@ -50,16 +50,16 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                         var prediction = network.ForwardFeed();
                         if (!prediction.Equals(right)) {
                             network.BackPropagation(right);
-                            network.SetWeights(.15d * Math.Exp(-teachingCount / 20d));
+                            network.SetWeights(.15d * Math.Exp(-era / 20d));
                         }
                         else rightAnswersCount++;
                     }
                     if (rightAnswersCount > maxRightAnswers) maxRightAnswers = rightAnswersCount;
                     MessageBox.Show($"Правильно: {Math.Round(rightAnswersCount / examples * 100, 3)}%\n" +
                                     $"Максимум правильных: {Math.Round(maxRightAnswers / examples * 100, 3)}%\n" +
-                                    $"Цикл обучения №{teachingCount}");
+                                    $"Цикл обучения №{era}");
                     
-                    if (++teachingCount == teachingCounts) break;
+                    if (++era == teachingCounts) break;
                 }
                 network.SaveWeights();
             }

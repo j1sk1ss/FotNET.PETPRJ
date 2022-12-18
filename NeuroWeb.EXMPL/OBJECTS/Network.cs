@@ -2,19 +2,19 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Collections.Generic;
 using System.Globalization;
+using System.Collections.Generic;
+
 using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.SCRIPTS;
-using System.Reflection;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Network {
         public Network(Configuration configuration) {
             try {
-                Layouts        = configuration.Layout;
-                Neurons        = new int[Layouts];
+                Layouts = configuration.Layout;
+                Neurons = new int[Layouts];
 
                 for (var i = 0; i < Layouts; i++) Neurons[i] = configuration.NeuronsLayer[i];
 
@@ -105,9 +105,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     if (i != (int)expectedAnswer) 
                         NeuronsError[Layouts - 1][i] = -NeuronsValue[Layouts - 1][i] * 
                                                        NeuronActivate.GetDerivative(NeuronsValue[Layouts - 1][i]);
-                    else 
-                        NeuronsError[Layouts - 1][i] = (1.0 - NeuronsValue[Layouts - 1][i]) * 
-                                                       NeuronActivate.GetDerivative(NeuronsValue[Layouts - 1][i]);
+                    else NeuronsError[Layouts - 1][i] = (1.0 - NeuronsValue[Layouts - 1][i]) * 
+                                                        NeuronActivate.GetDerivative(NeuronsValue[Layouts - 1][i]);
                 
                 for (var i = Layouts - 2; i > 0; i--) {
                     NeuronsError[i] = Weights[i].GetTranspose() * NeuronsError[i + 1];

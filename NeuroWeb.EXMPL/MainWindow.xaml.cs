@@ -20,13 +20,13 @@ namespace NeuroWeb.EXMPL {
         private int _position;
 
         private void StartAnimation() {
-            TextUpdate = new DispatcherTimer() {
+            TextUpdate = new DispatcherTimer {
                 Interval = new TimeSpan(900000)
             };
             TextUpdate.Tick += UpdateText;
             TextUpdate.IsEnabled = true;
             
-            UserInputAnimation = new DispatcherTimer() {
+            UserInputAnimation = new DispatcherTimer {
                 Interval = new TimeSpan(0,0,0,1)
             };
             UserInputAnimation.Tick += UpdateInput;

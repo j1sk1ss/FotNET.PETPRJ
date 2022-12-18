@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\NeuroWeb.EXMPL",
+    "\\NeuroWeb.EXMPL\\SCRIPTS"
   ],
-  "SelectedNode": "\\NeuroWeb.EXMPL.sln",
+  "SelectedNode": "\\NeuroWeb.EXMPL",
   "PreviewInSolutionExplorer": false
 }
