@@ -37,10 +37,9 @@
         <Canvas x:Name = "UserCanvas"
                 MouseMove="UserMoveMouse"
                 MouseDown="UserClick"
-                HorizontalAlignment="Left"
-                Width="375"
                 Height="400"
-                Margin="8,0,0,9">
+                Width="380"
+                Margin="0,0,410,0">
             <Canvas.Background>
                 <SolidColorBrush Color="Transparent" Opacity="0"/>
             </Canvas.Background>

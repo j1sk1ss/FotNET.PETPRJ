@@ -95,19 +95,19 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                 Stroke = _userBrush,
                 X1     = _currentPoint.X,
                 Y1     = _currentPoint.Y,
-                X2     = e.GetPosition(this).X,
-                Y2     = e.GetPosition(this).Y,
+                X2     = e.GetPosition(UserCanvas).X,
+                Y2     = e.GetPosition(UserCanvas).Y,
                 
                 StrokeThickness = 8
             };
 
-            _currentPoint = e.GetPosition(this);
+            _currentPoint = e.GetPosition(UserCanvas);
             UserCanvas.Children.Add(line);
         }
 
         private void UserClick(object sender, MouseButtonEventArgs e) {
             if (e.ButtonState == MouseButtonState.Pressed)
-                _currentPoint = e.GetPosition(this);
+                _currentPoint = e.GetPosition(UserCanvas);
         }
 
         private void BackPropagation(object sender, RoutedEventArgs e) {
@@ -136,7 +136,5 @@ namespace NeuroWeb.EXMPL.WINDOWS {
             base.OnMouseLeftButtonDown(e); 
             DragMove();
         }
-
-
     }
 }

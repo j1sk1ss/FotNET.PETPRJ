@@ -28,7 +28,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 return data;
             }
             catch (Exception e) {
-                MessageBox.Show($"{e}");
+                MessageBox.Show($"{e}", "Ошибка считывания конфиг. файла",MessageBoxButton.OK, 
+                    MessageBoxImage.Error);
                 throw;
             }
         }
@@ -48,7 +49,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 return number;
             }
             catch (Exception e) {
-                MessageBox.Show($"{e}");
+                MessageBox.Show($"{e}","Ошибка создания обьекта числа", MessageBoxButton.OK, 
+                    MessageBoxImage.Error);
                 throw;
             }
         }
@@ -81,7 +83,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 return numbers;
             }
             catch (Exception e) {
-                MessageBox.Show($"{e}");
+                MessageBox.Show($"{e}","Ошибка создания обьекта числа", MessageBoxButton.OK, 
+                    MessageBoxImage.Error);
                 throw;
             }
         }
