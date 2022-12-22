@@ -28,11 +28,13 @@ namespace NeuroWeb.EXMPL.Gui {
 
             for (var i = 0; i < tempArray.Count - 1; i++) {
                 if (tempArray[i] >= tempArray[i + 1] / 3) continue;
-                MessageBox.Show("Некоректные размерности скрытыхte слоёв. Идут не правилу!");
+                MessageBox.Show("Некоректные размерности скрытых слоёв. Идут не правилу!");
                 break;
             }
 
-            var openFile = new SaveFileDialog();
+            var openFile = new SaveFileDialog {
+                Filter = "TXT files | *.txt"
+            };
             if (openFile.ShowDialog() == true) File.WriteAllText(openFile.FileName, tempConfig);
         }
     }

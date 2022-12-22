@@ -24,9 +24,14 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                     "Укажите конфигурацию!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 Network = new Network(DataWorker.ReadNetworkConfig(defaultConfig));
             else {
-                  var file = new OpenFileDialog();
+                  var file = new OpenFileDialog {
+                      Filter = "TXT files | *.txt"
+                  };
                   if (file.ShowDialog() == true)
                       Network = new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(file.FileName)));
+                  else
+                      MessageBox.Show("Конфигурация не была загружена!", "Ошибка!", MessageBoxButton.OK,
+                          MessageBoxImage.Error);
             }
             
             InitializeComponent();

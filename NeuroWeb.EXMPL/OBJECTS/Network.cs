@@ -21,28 +21,35 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 Configuration = configuration;
 
                 Weights = new Matrix[Layouts - 1];
-                Bias    = new double[Layouts - 1][];
+                Bias = new double[Layouts - 1][];
 
-                for (var i = 0; i < Layouts - 1; i++) {
-                    Bias[i]    = new double[Neurons[i + 1]];
+                for (var i = 0; i < Layouts - 1; i++)
+                {
+                    Bias[i] = new double[Neurons[i + 1]];
                     Weights[i] = new Matrix(Neurons[i + 1], Neurons[i]);
-                
+
                     Weights[i].FillRandom();
-                
-                    for (var j = 0; j < Neurons[i + 1]; j++) 
+
+                    for (var j = 0; j < Neurons[i + 1]; j++)
                         Bias[i][j] = new Random().Next() % 50 * .06 / (Neurons[i] + 15);
                 }
-            
+
                 NeuronsValue = new double[Layouts][];
                 NeuronsError = new double[Layouts][];
 
-                for (var i = 0; i < Layouts; i++) {
+                for (var i = 0; i < Layouts; i++)
+                {
                     NeuronsValue[i] = new double[Neurons[i]];
                     NeuronsError[i] = new double[Neurons[i]];
                 }
-            
+
                 NeuronsBios = new double[Layouts - 1];
                 for (var i = 0; i < NeuronsBios.Length; i++) NeuronsBios[i] = 1;
+            }
+            catch (OverflowException e) {
+                MessageBox.Show($"{e}","Неккоректная конфигурация!", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}","Сбой инициализации сети!", MessageBoxButton.OK,
@@ -139,7 +146,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         private static string GetWeights() {
             var defaultWeights = Properties.Resources.defaultWeights;
 
-            var file = new OpenFileDialog();
+            var file = new OpenFileDialog {
+                Filter = "TXT files | *.txt"
+            };
             var message = MessageBox.Show("Использовать стандартные веса вместо " +
                                           "других", "Укажите файл весов!", MessageBoxButton.YesNo);
             if (message == MessageBoxResult.Yes) return defaultWeights;
@@ -158,7 +167,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 
                 if (File.Exists(_weights)) File.WriteAllText(_weights, temp);
                 else {
-                    var file = new SaveFileDialog();
+                    var file = new SaveFileDialog {
+                        Filter = "TXT files | *.txt"
+                    };
                     MessageBox.Show("Укажите место для сохранения весов!");
                     if (file.ShowDialog() == true) File.WriteAllText(file.FileName, temp);
                     return;
@@ -176,7 +187,12 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             try {
                 var tempValues = GetWeights().Split(" ", 
                     StringSplitOptions.RemoveEmptyEntries);
-                if (tempValues.Length < 10) return;
+                
+                if (tempValues.Length < 10) {
+                    MessageBox.Show("Веса не загружены!", "Внимание!", MessageBoxButton.OK,
+                        MessageBoxImage.Asterisk);
+                    return;
+                }
                 
                 var position = 0;
                 for (var l = 0; l < Layouts - 1; l++) 

@@ -23,11 +23,9 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         public void IncreaseStructure(object sender, MouseButtonEventArgs e) =>
             NetworkStructure.Content = Structure.GetStructure(this, ++_size);
         
-        private void CloseTeacher(object sender, MouseButtonEventArgs e) {
+        private void SaveStructure(object sender, MouseButtonEventArgs e) =>
             Configuration.WriteConfig(NetworkStructure.Content as Grid, _size + 2);
-            Close();
-        }
-
+        
         private void FastTeaching(object sender, MouseButtonEventArgs e) {
             new User().Show();
             Close();
@@ -35,7 +33,9 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         
         private void HardTeaching(object sender, MouseButtonEventArgs e) {
             MessageBox.Show("Укажите файл конфигурации сети!");
-            var file = new OpenFileDialog();
+            var file = new OpenFileDialog {
+                Filter = "TXT files | *.txt"
+            };
             if (file.ShowDialog() == true) 
                 Teaching.HardStudying(new Network(DataWorker.ReadNetworkConfig(file.FileName)), 20);
         }
