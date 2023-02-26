@@ -6,7 +6,7 @@ using System.Windows;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Matrix {
-        private Matrix(double[,] body) {
+        public Matrix(double[,] body) {
             Row  = body.GetLength(0);
             Col  = body.GetLength(1);
             Body = body;
@@ -19,11 +19,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
         
         private int Row { get; }
-        
         private int Col { get; }
-        
         public double[,] Body { get; }
-        
+
         public Matrix GetTranspose() {
             var rows    = Body.GetLength(0);
             var columns = Body.GetLength(1);
@@ -55,25 +53,15 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
 
         public static Matrix operator *(Matrix matrix1, Matrix matrix2) {
-            if (matrix1.Body.GetLength(0) != matrix2.Body.GetLength(1)) {
-                MessageBox.Show("Матрицы не могут быть перемножены. Их размерности не не подходят условию!");
-                return new Matrix(new double[1,1]);
-            }
-
             var xSize = matrix1.Body.GetLength(0);
             var ySize = matrix2.Body.GetLength(1);
             
             var endMatrix = new Matrix(new double[xSize, ySize]);
 
-            for (var i = 0; i < xSize; i++) {
-                for (var j = 0; j < ySize; j++) {
-                    endMatrix.Body[i, j] = 0;
-                    for (var k = 0; k < matrix1.Body.GetLength(0); k++) {
-                        endMatrix.Body[i, j] += matrix1.Body[i, k] * matrix2.Body[k, j];
-                    }
-                }
-            }
-                
+            for (var i = 0; i < xSize; i++) 
+                for (var j = 0; j < ySize; j++) 
+                    endMatrix.Body[i, j] = matrix1.Body[i, j] * matrix2.Body[i, j];
+
             return endMatrix;
         }
 

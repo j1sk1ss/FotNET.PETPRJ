@@ -33,5 +33,16 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             
             return temp;
         }
+
+        public Matrix GetAsMatrix() {
+            var temp = new Matrix(new double[28, 28]);
+            var position = 0;
+
+            for (var i = 0; i < 28; i++)
+                for (var j = 0; j < 28; j++)
+                    temp.Body[i, j] = Pixels[position++];
+            
+            return temp;
+        }
     }
 }
