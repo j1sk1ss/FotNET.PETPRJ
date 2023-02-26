@@ -35,7 +35,7 @@ namespace NeuroWeb.EXMPL.Gui {
                     Margin              = new Thickness(0,10,0,0),
                     
                     Background = Brushes.Transparent,
-                    Text       = "786",
+                    Text       = "784",
                     IsEnabled  = false
                 });
 

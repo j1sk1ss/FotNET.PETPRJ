@@ -39,17 +39,19 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             try {
                 var number = new Number();
                 for (var i = 0; i < configuration.NeuronsLayer[0]; i++) number.Pixels.Add(0);
-                
+
                 var pixels = pixelsValue.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-                for (var j = 0; j < configuration.NeuronsLayer[0]; j++) 
+                for (var j = 0; j < configuration.NeuronsLayer[0]; j++)
                     if (double.TryParse(pixels[j], out var db)) number.Pixels[j] = db;
                     else number.Pixels[j] = 0d;
-                
+
                 return number;
             }
-            catch (Exception e) {
-                MessageBox.Show($"{e}","Ошибка создания обьекта числа", MessageBoxButton.OK, 
+            catch (IndexOutOfRangeException e) {
+                MessageBox.Show("Ошибка создания обьекта числа. " +
+                                "Структура принимает другое колличество входных значений.", "Ошибка",
+                    MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 throw;
             }

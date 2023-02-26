@@ -65,10 +65,12 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         private double[][] Bias { get; }
         public double[][] NeuronsValue { get; }
         private double[][] NeuronsError { get; }
+        private Matrix[][] Filters { get; }
         private double[] NeuronsBios { get; }
 
-        public void InsertInformation(List<double> values) {
-            for (var i = 0; i < values.Count; i++) NeuronsValue[0][i] = values[i];
+        public void InsertInformation(Number number) {
+            
+            //for (var i = 0; i < number.Pixels.Count; i++) NeuronsValue[0][i] = number.Pixels[i];
         }
         
         private int GetMaxIndex(IReadOnlyList<double> values) {
@@ -204,8 +206,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     for (var i = 0; i < Neurons[l + 1]; i++)
                         Bias[l][i] = double.Parse(tempValues[position++], CultureInfo.InvariantCulture);
 
-                if (position < tempValues.Length) MessageBox.Show("Веса считанны некорректно!", "Ошибка!");
-
+                if (position < tempValues.Length) MessageBox.Show("Веса считанны некорректно или не считанны",
+                    "Предупреждение!");
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}","Сбой при чтении весов!", MessageBoxButton.OK, 

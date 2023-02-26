@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net5.0-windows</TargetFramework>
         <UseWPF>true</UseWPF>
         <LangVersion>9</LangVersion>
         <SignAssembly>true</SignAssembly>
@@ -14,6 +13,7 @@
         <FileVersion>0.1</FileVersion>
         <NeutralLanguage>ru</NeutralLanguage>
         <ApplicationIcon>IMAGES\Icons\Иконка.ico</ApplicationIcon>
+        <TargetFrameworks>net5.0-windows;net7.0-windows</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>

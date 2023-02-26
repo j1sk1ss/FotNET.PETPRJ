@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-
+using NeuroWeb.EXMPL.SCRIPTS;
 using NeuroWeb.EXMPL.WINDOWS;
+using Matrix = NeuroWeb.EXMPL.OBJECTS.Matrix;
 
 namespace NeuroWeb.EXMPL {
     public partial class MainWindow

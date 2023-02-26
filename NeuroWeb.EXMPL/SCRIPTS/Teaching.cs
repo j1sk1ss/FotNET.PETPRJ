@@ -11,7 +11,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
         public static void LightStudying(Network network, string number, int expected) {
             try {
                 var dataInformation = DataWorker.ReadData(number, network.Configuration);
-                network.InsertInformation(dataInformation.Pixels);
+                network.InsertInformation(dataInformation);
                 
                 var prediction = network.ForwardFeed();
                 if (expected.Equals((int)prediction)) return;
@@ -45,7 +45,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 while (rightAnswersCount / examples * 100 < 100) {
                     rightAnswersCount = 0;
                     for (var i = 0; i < examples; ++i) {
-                        network.InsertInformation(dataInformation[i].Pixels);
+                        network.InsertInformation(dataInformation[i]);
                         double right = dataInformation[i].Digit;
                         
                         var prediction = network.ForwardFeed();

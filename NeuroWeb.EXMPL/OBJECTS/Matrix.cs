@@ -1,28 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Windows;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
-    /// <summary>
-    /// Обьект матрицы
-    /// </summary>
     public class Matrix {
-        
-        /// <summary>
-        /// Конструктор матрицы, который принимает уже готовый двумерный массив    
-        /// </summary>
-        /// <param name="body"> Тело матрицы, двумерный массив </param>
         private Matrix(double[,] body) {
             Row  = body.GetLength(0);
             Col  = body.GetLength(1);
             Body = body;
         }
         
-        /// <summary>
-        ///  Конструктор матрицы, который принимает только размерности матрицы
-        /// </summary>
-        /// <param name="row">Строки</param>
-        /// <param name="col">Колонки</param>
         public Matrix(int row, int col) {
             Row  = row;
             Col  = col;
@@ -35,10 +24,6 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         
         public double[,] Body { get; }
         
-        /// <summary>
-        /// Метод возвращающий транспонированную матрицу
-        /// </summary>
-        /// <returns> Транспонированная матрица </returns>
         public Matrix GetTranspose() {
             var rows    = Body.GetLength(0);
             var columns = Body.GetLength(1);
@@ -69,20 +54,55 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return c;
         }
 
-        /// <summary>
-        /// Метод, заполняющий матрицу случайными числами
-        /// </summary>
-        public void FillRandom() {
-            for (var i = 0; i < Row; i++)
-                for (var j = 0; j < Col; j++) {
-                    Body[i, j] = new Random().Next() % 100 * 0.03 / (Row + 35);
+        public static Matrix operator *(Matrix matrix1, Matrix matrix2) {
+            if (matrix1.Body.GetLength(0) != matrix2.Body.GetLength(1)) {
+                MessageBox.Show("Матрицы не могут быть перемножены. Их размерности не не подходят условию!");
+                return new Matrix(new double[1,1]);
+            }
+
+            var xSize = matrix1.Body.GetLength(0);
+            var ySize = matrix2.Body.GetLength(1);
+            
+            var endMatrix = new Matrix(new double[xSize, ySize]);
+
+            for (var i = 0; i < xSize; i++) {
+                for (var j = 0; j < ySize; j++) {
+                    endMatrix.Body[i, j] = 0;
+                    for (var k = 0; k < matrix1.Body.GetLength(0); k++) {
+                        endMatrix.Body[i, j] += matrix1.Body[i, k] * matrix2.Body[k, j];
+                    }
                 }
+            }
+                
+            return endMatrix;
         }
 
-        /// <summary>
-        /// Компанует все значения матрицы в строку
-        /// </summary>
-        /// <returns> Строка значений </returns>
+        public double GetSum() {
+            var sum = 0d;
+            for (var i = 0; i < Body.GetLength(0); i++)
+                for (var j = 0; j < Body.GetLength(1); j++)
+                    sum += Body[i, j];
+            return sum;
+        }
+
+        public Matrix GetSubMatrix(int x1, int y1, int x2, int y2) {
+            var subMatrix = new Matrix(x2 - x1, y2 - y1);
+            
+            for (var i = x1; i < x2; i++) {
+                for (var j = y1; j < y2; j++) {
+                    subMatrix.Body[i - x1, j - y1] = Body[i, j];
+                }
+            }
+
+            return subMatrix;
+        }
+
+        public void FillRandom() {
+            for (var i = 0; i < Row; i++)
+                for (var j = 0; j < Col; j++) 
+                    Body[i, j] = new Random().Next() % 100 * 0.03 / (Row + 35);
+        }
+
         [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         public string GetValues() {
             var tempValues = "";
@@ -94,6 +114,16 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return tempValues;
         }
 
+        public List<double> GetAsList() {
+            var tempValues = new List<double>();
+
+            for (var i = 0; i < Row; i++) 
+            for (var j = 0; j < Col; j++)
+                tempValues.Add(Body[i,j]);
+            
+            return tempValues;
+        }
+        
         public void SetValues(string value, int x, int y) {
             Body[x, y] = double.Parse(value, CultureInfo.InvariantCulture);
         }
