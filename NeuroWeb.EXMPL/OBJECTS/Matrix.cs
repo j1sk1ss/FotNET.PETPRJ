@@ -132,8 +132,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             var tempValues = new List<double>();
 
             for (var i = 0; i < Row; i++) 
-            for (var j = 0; j < Col; j++)
-                tempValues.Add(Body[i,j]);
+                for (var j = 0; j < Col; j++)
+                    tempValues.Add(Body[i,j]);
             
             return tempValues;
         }

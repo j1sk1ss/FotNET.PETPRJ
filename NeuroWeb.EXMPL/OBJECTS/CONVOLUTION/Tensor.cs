@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Tensor {
@@ -9,9 +10,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         
         public List<Matrix> Channels { get; set; }
         
-        
         public List<double> GetValues() {
             var a = new List<double>();
+            MessageBox.Show(Channels[0].Print() + " это в GetValue() Tensor");
             foreach (var matrix in Channels) a.AddRange(matrix.GetAsList());
             return a;
         }

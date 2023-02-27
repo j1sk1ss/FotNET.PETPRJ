@@ -30,6 +30,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             for (var i = 0; i < Configuration.ForwardLayout - 1; i++) 
                 PerceptronLayers[i] =
                     new PerceptronLayer(Configuration.NeuronsLayer[i], Configuration.NeuronsLayer[i + 1]);
+            PerceptronLayers[^1] = new PerceptronLayer(Configuration.NeuronsLayer[^1]);
         }
 
         public Configuration Configuration { get; }        
@@ -43,24 +44,21 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         
         public void InsertInformation(Tensor tensor) {
             DataTensor = new Tensor(tensor.Channels);
-            MessageBox.Show(DataTensor.Channels[0].Print());
         }
 
         public void ForwardFeed() {
             try {
                 for (var i = 0; i < ConvolutionLayers.Length; i++) {
                     DataTensor = ConvolutionLayers[i].GetNextLayer(DataTensor);
-                    MessageBox.Show(DataTensor.Channels[0].Body.GetLength(0) + "   " + DataTensor.Channels[0].Body.GetLength(1));
+                    MessageBox.Show("x: " + DataTensor.Channels[0].Body.GetLength(0) + "  y: " +
+                                    DataTensor.Channels[0].Body.GetLength(1) + $"\n d: {DataTensor.Channels.Count}");
                 }
 
                 var perceptronInput = DataTensor.GetValues().ToArray();
                 for (var i = 0; i < PerceptronLayers.Length; i++) {
-                    if (perceptronInput.Length <= 10) break;
-                    
                     PerceptronLayers[i].Neurons = perceptronInput;
                     perceptronInput = PerceptronLayers[i].GetNextLayer();
                 }
-                MessageBox.Show(new Vector(perceptronInput).Print() + ";");
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");

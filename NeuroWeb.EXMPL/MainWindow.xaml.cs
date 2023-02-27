@@ -51,21 +51,19 @@ namespace NeuroWeb.EXMPL {
                     Stride = 1
                 };
 
-                var matrix = new Matrix(28, 28);
+                var matrix = new Matrix(784, 784);
                 for (var i = 0; i < matrix.Body.GetLength(0); i++) {
                     for (var j = 0; j < matrix.Body.GetLength(1); j++) {
                         matrix.Body[i, j] = (float)new Random().Next() % 10 - 5; 
                     }
                 }
-
-                MessageBox.Show(matrix.Print());
+                
                 var tensor = new Tensor(matrix);
 
                 var network = new Network(config);
                 network.InsertInformation(tensor);
             
                 network.ForwardFeed();
-                MessageBox.Show("ГОТОВО БЛЯТЬ!");
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");

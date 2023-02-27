@@ -9,12 +9,16 @@ namespace NeuroWeb.EXMPL.OBJECTS.FORWARD {
             Neurons      = new double[size];
             NeuronsError = new double[size];
             Bias         = new double[size];
-            MessageBox.Show(Neurons.Length + "");
+
             Weights = new Matrix(nextSize, size);
             Weights.FillRandom();
             
             for (var i = 0; i < size; i++)
                 Bias[i] = new Random().Next() % 50 * .06 / (Neurons[i] + 15);
+        }
+        
+        public PerceptronLayer(int size) {
+            Neurons = new double[size];
         }
         
         public double[] Neurons { get; set; }
