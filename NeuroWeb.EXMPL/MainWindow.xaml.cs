@@ -27,7 +27,7 @@ namespace NeuroWeb.EXMPL {
                     ConvolutionConfigurations = new ConvolutionConfiguration[3],
                     ConvolutionLayouts = 3,
                     ForwardLayout = 3,
-                    NeuronsLayer = new[]{784, 256, 10}
+                    NeuronsLayer = new[]{288, 144, 10}
                 };
                 config.ConvolutionConfigurations[0] = new ConvolutionConfiguration {
                     FilterColumn = 3,
@@ -51,7 +51,7 @@ namespace NeuroWeb.EXMPL {
                     Stride = 1
                 };
 
-                var matrix = new Matrix(784, 784);
+                var matrix = new Matrix(64, 64);
                 for (var i = 0; i < matrix.Body.GetLength(0); i++) {
                     for (var j = 0; j < matrix.Body.GetLength(1); j++) {
                         matrix.Body[i, j] = (float)new Random().Next() % 10 - 5; 
@@ -64,6 +64,7 @@ namespace NeuroWeb.EXMPL {
                 network.InsertInformation(tensor);
             
                 network.ForwardFeed();
+                network.BackPropagation(1, .08);
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");

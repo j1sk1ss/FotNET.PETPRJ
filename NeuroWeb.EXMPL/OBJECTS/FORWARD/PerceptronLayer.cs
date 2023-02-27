@@ -18,7 +18,9 @@ namespace NeuroWeb.EXMPL.OBJECTS.FORWARD {
         }
         
         public PerceptronLayer(int size) {
-            Neurons = new double[size];
+            Neurons      = new double[size];
+            NeuronsError = new double[size];
+            Bias         = new double[size];
         }
         
         public double[] Neurons { get; set; }
@@ -32,8 +34,8 @@ namespace NeuroWeb.EXMPL.OBJECTS.FORWARD {
         }
         
         public void SetWeights(double learningRange) {
-            for (var j = 0; j < Weights.Body.GetLength(1); ++j)
-                for (var k = 0; k < Weights.Body.GetLength(0); ++k)
+            for (var j = 0; j < Weights.Body.GetLength(0); ++j)
+                for (var k = 0; k < Weights.Body.GetLength(1); ++k)
                     Weights.Body[j, k] += Neurons[k] * NeuronsError[j] * learningRange;
             
             for (var j = 0; j < Weights.Body.GetLength(1); j++)
