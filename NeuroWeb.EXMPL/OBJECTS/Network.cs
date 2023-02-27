@@ -8,6 +8,7 @@ using Microsoft.Win32;
 using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 using NeuroWeb.EXMPL.OBJECTS.FORWARD;
 using NeuroWeb.EXMPL.SCRIPTS;
+using NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Network {
@@ -19,108 +20,86 @@ namespace NeuroWeb.EXMPL.OBJECTS {
 
         private void CNNInitialization() {
             ConvolutionLayers = new ConvolutionLayer[Configuration.ConvolutionLayouts];
-            for (var i = 0; i < ConvolutionLayers.Length; i++) {
+            for (var i = 0; i < ConvolutionLayers.Length; i++) 
                 ConvolutionLayers[i] = 
-                    new ConvolutionLayer(4, 4 * i + 1, Configuration.ConvolutionConfigurations[i]);
-            }   
+                    new ConvolutionLayer(Configuration.ConvolutionConfigurations[i]);
         }
         
         private void FNNInitialization() {
             PerceptronLayers = new PerceptronLayer[Configuration.ForwardLayout];
-            for (var i = 0; i < Configuration.ForwardLayout - 1; i++) {
+            for (var i = 0; i < Configuration.ForwardLayout - 1; i++) 
                 PerceptronLayers[i] =
                     new PerceptronLayer(Configuration.NeuronsLayer[i], Configuration.NeuronsLayer[i + 1]);
-            }
         }
 
+        public Configuration Configuration { get; }        
         private Tensor DataTensor { get; set; }
         private ConvolutionLayer[] ConvolutionLayers { get; set; }
-        private int ConvolutionLayouts { get; }
-        public Configuration Configuration { get; }
-        public PerceptronLayer[] PerceptronLayers { get; private set; }
-
-
+        public PerceptronLayer[] PerceptronLayers { get; private set; }        
+        
         public void InsertInformation(Number number) {
             DataTensor = new Tensor(number.GetAsMatrix());
         }
         
-        private int GetMaxIndex(IReadOnlyList<double> values) {
-            var max = values[0];
-            var prediction = 0;
-
-            for (var j = 1; j < values.Count; j++) {
-                var temp = values[j];
-                if (!(temp > max)) continue;
-            
-                prediction = j;
-                max = temp;
-            }
-
-            return prediction;
+        public void InsertInformation(Tensor tensor) {
+            DataTensor = new Tensor(tensor.Channels);
+            MessageBox.Show(DataTensor.Channels[0].Print());
         }
 
-        public double ConvolutionFeed() {
-            for (var i = 0; i < ConvolutionLayouts - 1; i++) {
-                DataTensor = ConvolutionLayers[i].GetNextLayer(DataTensor);
-            }
-
-            PerceptronLayers[0].Neurons = DataTensor.GetValues().ToArray();
-            return ForwardFeed();
-        }
-        
-        public double ForwardFeed() {
-            for (var k = 1; k < PerceptronLayers.Length; ++k) {
-                PerceptronLayers[k].Neurons = PerceptronLayers[k - 1].GetNextLayer();
-            }
-
-            return GetMaxIndex(PerceptronLayers[^1].Neurons);
-        }
-
-        public void ForwardBackPropagation(double expectedAnswer) {
+        public void ForwardFeed() {
             try {
-                for (var i = 0; i < PerceptronLayers.Length - 1; i++) 
-                    if (i != (int)expectedAnswer) 
-                        PerceptronLayers[^1].NeuronsError[i] = -PerceptronLayers[^1].NeuronsError[i] * 
-                                                                  NeuronActivate.GetDerivative(PerceptronLayers[^1].NeuronsError[i]);
-                    else PerceptronLayers[^1].NeuronsError[i] = (1.0 - PerceptronLayers[^1].NeuronsError[i]) * 
-                                                                NeuronActivate.GetDerivative(PerceptronLayers[^1].NeuronsError[i]);
-                
-                for (var i = PerceptronLayers.Length - 2; i >= 0; i--) {
-                    PerceptronLayers[i].NeuronsError = PerceptronLayers[i].Weights.GetTranspose() * PerceptronLayers[i + 1].NeuronsError;
-                    for (var j = 0; j < PerceptronLayers[i].Neurons.Length; j++)
-                        PerceptronLayers[i].NeuronsError[j] *= NeuronActivate.GetDerivative(PerceptronLayers[i].NeuronsError[j]);
+                for (var i = 0; i < ConvolutionLayers.Length; i++) {
+                    DataTensor = ConvolutionLayers[i].GetNextLayer(DataTensor);
+                    MessageBox.Show(DataTensor.Channels[0].Body.GetLength(0) + "   " + DataTensor.Channels[0].Body.GetLength(1));
                 }
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+
+                var perceptronInput = DataTensor.GetValues().ToArray();
+                for (var i = 0; i < PerceptronLayers.Length; i++) {
+                    if (perceptronInput.Length <= 10) break;
+                    
+                    PerceptronLayers[i].Neurons = perceptronInput;
+                    perceptronInput = PerceptronLayers[i].GetNextLayer();
+                }
+                MessageBox.Show(new Vector(perceptronInput).Print() + ";");
             }
             catch (Exception e) {
-                MessageBox.Show($"{e}","Сбой обратного обучения!", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show($"{e}");
                 throw;
             }
-        }
 
-        public void SetForwardWeights(double learningRange) { 
+        }
+        
+        public void BackPropagation(double expectedAnswer, double learningRange) {
+            for (var i = 0; i < PerceptronLayers[^1].Neurons.Length - 1; i++) 
+                if (i != (int)expectedAnswer) 
+                    PerceptronLayers[^1].NeuronsError[i] = -PerceptronLayers[^1].NeuronsError[i] * 
+                                                              NeuronActivate.GetDerivative(PerceptronLayers[^1].NeuronsError[i]);
+                else PerceptronLayers[^1].NeuronsError[i] = (1.0 - PerceptronLayers[^1].NeuronsError[i]) * 
+                                                            NeuronActivate.GetDerivative(PerceptronLayers[^1].NeuronsError[i]);
+            
+            for (var i = PerceptronLayers.Length - 2; i >= 0; i--) {
+                PerceptronLayers[i].NeuronsError = PerceptronLayers[i].Weights.GetTranspose() * PerceptronLayers[i + 1].NeuronsError;
+                for (var j = 0; j < PerceptronLayers[i].Neurons.Length; j++)
+                    PerceptronLayers[i].NeuronsError[j] *= NeuronActivate.GetDerivative(PerceptronLayers[i].NeuronsError[j]);
+            }
+            
             for (var i = 0; i < PerceptronLayers.Length - 1; ++i)
                 PerceptronLayers[i].SetWeights(learningRange);
+            
+            var inputTensor = ConvolutionLayers[^1].Output;
+            var errorTensor = new Tensor(new Vector(PerceptronLayers[0].NeuronsError)
+                .AsMatrix(inputTensor.Channels[0].Body.GetLength(0), inputTensor.Channels[0].Body.GetLength(1)));
+            
+            for (var i = ConvolutionLayers.Length - 1; i >= 0; i--) {
+                ConvolutionLayers[i].Output = NeuronActivate.Activation(ConvolutionLayers[i].Output);
+                var prevErrorTensor = Convolution.GetConvolution(errorTensor, ConvolutionLayers[i].Filters.GetFlipped(), 1);
+                var filterGradientTensor = Convolution.GetConvolution(inputTensor, prevErrorTensor.GetFlipped(), 1);
+                
+                ConvolutionLayers[i].Filters      = (Filter)(ConvolutionLayers[i].Filters - filterGradientTensor * learningRange);
+                ConvolutionLayers[i].Filters.Bias = (Bias)(ConvolutionLayers[i].Filters.Bias - errorTensor.TensorSum() * learningRange);
+                
+                errorTensor = prevErrorTensor;
+            }
         }
 
         private static string _weights;
@@ -136,7 +115,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             _weights = file.FileName;
             return file.ShowDialog() != true ? "" : File.ReadAllText(file.FileName);
         }
-
+        
+        /*
         public void SaveForwardWeights() {
             try {
                 MessageBox.Show("Начата запись весов!");
@@ -194,6 +174,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 throw;
             }
         }
+        */
     }
     
     public struct Configuration {
@@ -209,7 +190,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         public int FilterColumn;
         public int FilterRow;
 
-        public int[] FilterCount;
+        public int FilterCount;
         public int PoolSize;
         public int Stride;
     }

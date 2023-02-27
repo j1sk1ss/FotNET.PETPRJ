@@ -1,4 +1,6 @@
-﻿namespace NeuroWeb.EXMPL.OBJECTS {
+﻿using System.Linq;
+
+namespace NeuroWeb.EXMPL.OBJECTS {
     public class Vector {
         public Vector(double[] array) {
             Body = array;
@@ -19,5 +21,22 @@
             }
             return vector1.Body;
         }
+
+        public Matrix AsMatrix(int x, int y) {
+            var matrix   = new Matrix(x, y);
+            var position = 0;
+            
+            for (var i = 0; i < x; i++) {
+                for (var j = 0; j < y; j++) {
+                    if (Body.Length <= position) return null;
+                    matrix.Body[i, j] = Body[position++];
+                }
+            }
+
+            return matrix;
+        }
+
+        public string Print() =>
+            Body.Aggregate("", (current, t) => current + (" " + t));
     }
 }

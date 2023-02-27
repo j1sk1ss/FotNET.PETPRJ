@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using NeuroWeb.EXMPL.SCRIPTS;
 
 namespace NeuroWeb.EXMPL.OBJECTS.FORWARD {
@@ -8,8 +9,8 @@ namespace NeuroWeb.EXMPL.OBJECTS.FORWARD {
             Neurons      = new double[size];
             NeuronsError = new double[size];
             Bias         = new double[size];
-            
-            Weights = new Matrix(new double[size, nextSize]);
+            MessageBox.Show(Neurons.Length + "");
+            Weights = new Matrix(nextSize, size);
             Weights.FillRandom();
             
             for (var i = 0; i < size; i++)

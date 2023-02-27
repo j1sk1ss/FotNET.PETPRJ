@@ -13,11 +13,10 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 var dataInformation = DataWorker.ReadData(number, network.Configuration);
                 network.InsertInformation(dataInformation);
                 
-                var prediction = network.ForwardFeed();
-                if (expected.Equals((int)prediction)) return;
+                //var prediction = network.ForwardFeed();
+                //if (expected.Equals((int)prediction)) return;
                 
-                network.ForwardBackPropagation(expected);
-                network.SetForwardWeights(.08);
+                network.BackPropagation(expected, .08d);
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при обучении!", MessageBoxButton.OK, 
@@ -48,12 +47,12 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                         network.InsertInformation(dataInformation[i]);
                         double right = dataInformation[i].Digit;
                         
-                        var prediction = network.ForwardFeed();
-                        if (!prediction.Equals(right)) {
-                            network.ForwardBackPropagation(right);
-                            network.SetForwardWeights(.15d * Math.Exp(-era / 20d));
-                        }
-                        else rightAnswersCount++;
+                        //var prediction = network.ForwardFeed();
+                        //if (!prediction.Equals(right)) {
+                          //  network.ForwardBackPropagation(right);
+                         //   network.SetForwardWeights(.15d * Math.Exp(-era / 20d));
+                       // }
+                        //else rightAnswersCount++;
                     }
                     if (rightAnswersCount > maxRightAnswers) maxRightAnswers = rightAnswersCount;
                     MessageBox.Show($"Правильно: {Math.Round(rightAnswersCount / examples * 100, 3)}%\n" +
@@ -62,7 +61,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                     
                     if (++era == teachingCounts) break;
                 }
-                network.SaveForwardWeights();
+                //network.SaveForwardWeights();
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при глубоком обучении!", MessageBoxButton.OK, 

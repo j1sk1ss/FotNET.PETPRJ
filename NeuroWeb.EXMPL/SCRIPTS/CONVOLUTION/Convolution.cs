@@ -2,9 +2,9 @@
 using System.Linq;
 using NeuroWeb.EXMPL.OBJECTS;
 
-namespace NeuroWeb.EXMPL.SCRIPTS {
+namespace NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION {
     public static class Convolution {
-        private static Matrix GetConvolution(Matrix matrix, Matrix filter, int stride, double bias) {
+        private static Matrix GetConvolution(Matrix matrix, Matrix filter, int stride, Tensor bias) {
             var xFilterSize = filter.Body.GetLength(0);
             var yFilterSize = filter.Body.GetLength(1);
             
@@ -14,7 +14,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             for (var i = 0; i < conMat.Body.GetLength(0); i += stride) {
                 for (var j = 0; j < conMat.Body.GetLength(1); j += stride) {
                     var subMatrix = matrix.GetSubMatrix(i, j, i + xFilterSize, j + yFilterSize);
-                    conMat.Body[i,j] = (filter * subMatrix).GetSum();
+                    conMat.Body[i,j] = (filter * subMatrix).GetSum() + bias.TensorSum();
                 }
             }
             

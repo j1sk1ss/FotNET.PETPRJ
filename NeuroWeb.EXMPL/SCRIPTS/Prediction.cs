@@ -5,7 +5,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
         public static int Predict(Network network, string number) {
             var dataInformation = DataWorker.ReadData(number, network.Configuration);
             network.InsertInformation(dataInformation);
-            return (int)network.ForwardFeed();
+            //return (int)network.ForwardFeed();
+            return 0;
         }
     }
 }

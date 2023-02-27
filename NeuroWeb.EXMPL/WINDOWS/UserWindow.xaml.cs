@@ -40,7 +40,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                  Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
             };  
             
-            Network.ReadForwardWeights();
+            //Network.ReadForwardWeights();
             
             Update = new DispatcherTimer {
                 Interval = new TimeSpan(0,0,0,1)
@@ -132,10 +132,10 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         
         private void SaveWeights(object sender, RoutedEventArgs e) {
             MessageBox.Show("Сохранение начато...");
-            Network.SaveForwardWeights();
+            //Network.SaveForwardWeights();
         }
         
-        private void LoadWeights(object sender, RoutedEventArgs e) => Network.ReadForwardWeights();
+        //private void LoadWeights(object sender, RoutedEventArgs e) => Network.ReadForwardWeights();
         
         private void DragWindow(object sender, MouseButtonEventArgs e) {
             base.OnMouseLeftButtonDown(e); 

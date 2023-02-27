@@ -203,8 +203,10 @@
                      <MenuItem Click="SaveWeights"
                                Header="Сохранить веса">
                      </MenuItem>
-                     <MenuItem Click="LoadWeights"
-                               Header="Изменить веса">
+                     <MenuItem  
+                               Header="Изменить веса
+                               Click=;LoadWeights;
+                               ">
                      </MenuItem>
               </MenuItem>
        </Menu>

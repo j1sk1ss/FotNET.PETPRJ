@@ -35,6 +35,18 @@ namespace NeuroWeb.EXMPL.OBJECTS {
 
             return new Matrix(temp);
         }
+
+        public Matrix GetFlip() {
+            var rotatedMatrix = new Matrix(new double[Row, Col]);
+            
+            for (var i = 0; i < rotatedMatrix.Row; i++) {
+                for (var j = 0; j < rotatedMatrix.Col; j++) {
+                    rotatedMatrix.Body[j,i] = Body[Row - j - 1,Col - i - 1];
+                }
+            }
+
+            return rotatedMatrix;
+        }
         
         public static double[] operator *(Matrix matrix, double[] neuron) {
             if (matrix.Col != neuron.Length) throw new Exception();
@@ -102,6 +114,20 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return tempValues;
         }
 
+        public string Print() {
+            var tempValues = "";
+
+            for (var i = 0; i < Row; i++) {
+                for (var j = 0; j < Col; j++) {
+                    tempValues += Body[i, j] + " ";
+                }
+
+                tempValues += "\n";
+            }
+            
+            return tempValues;
+        }
+        
         public List<double> GetAsList() {
             var tempValues = new List<double>();
 
