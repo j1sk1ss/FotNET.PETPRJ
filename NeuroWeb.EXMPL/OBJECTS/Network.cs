@@ -30,63 +30,59 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
 
         private void CNNInitialization() {
-            Filters = new Filter[Configuration.FilterCount.Length];
-            
-            for (var i = 0; i < Configuration.FilterCount.Length; i++) {
-                for (var j = 0; j < Configuration.FilterCount[i]; j++) {
-                     Filters[i].Body.Add(new Matrix(new double[Configuration.FilterRow, Configuration.FilterColumn]));
-                     Filters[i].Body[^1].FillRandom();                   
-                }
-            }
-            
-            Tensors = new List<Tensor>();
-            for (var i = 0; i < ConvolutionLayouts; i++) Tensors.Add(new Tensor(new Matrix(null)));    
+            ConvolutionLayers = new ConvolutionLayer[Configuration.ConvolutionLayouts];
+            for (var i = 0; i < ConvolutionLayers.Length; i++) {
+                ConvolutionLayers[i] = new ConvolutionLayer(Configuration, Configuration.ConvolutionConfigurations[i]);
+            }   
         }
         
         private void FNNInitialization() {
             ForwardLayouts = Configuration.ForwardLayout;
-            Neurons = new int[ForwardLayouts];
-            for (var i = 0; i < ForwardLayouts; i++) Neurons[i] = Configuration.NeuronsLayer[i];
+            ForwardNeurons = new int[ForwardLayouts];
+            for (var i = 0; i < ForwardLayouts; i++) ForwardNeurons[i] = Configuration.NeuronsLayer[i];
                 
             ForwardWeights = new Matrix[ForwardLayouts - 1];
             ForwardBias    = new double[ForwardLayouts - 1][];
 
             for (var i = 0; i < ForwardLayouts - 1; i++) {
-                ForwardBias[i]    = new double[Neurons[i + 1]];
-                ForwardWeights[i] = new Matrix(Neurons[i + 1], Neurons[i]);
+                ForwardBias[i]    = new double[ForwardNeurons[i + 1]];
+                ForwardWeights[i] = new Matrix(ForwardNeurons[i + 1], ForwardNeurons[i]);
 
                 ForwardWeights[i].FillRandom();
 
-                for (var j = 0; j < Neurons[i + 1]; j++)
-                    ForwardBias[i][j] = new Random().Next() % 50 * .06 / (Neurons[i] + 15);
+                for (var j = 0; j < ForwardNeurons[i + 1]; j++)
+                    ForwardBias[i][j] = new Random().Next() % 50 * .06 / (ForwardNeurons[i] + 15);
             }
 
-            NeuronsValue = new double[ForwardLayouts][];
-            NeuronsError = new double[ForwardLayouts][];
+            ForwardNeuronsValue = new double[ForwardLayouts][];
+            ForwardNeuronsError = new double[ForwardLayouts][];
 
             for (var i = 0; i < ForwardLayouts; i++) {
-                NeuronsValue[i] = new double[Neurons[i]];
-                NeuronsError[i] = new double[Neurons[i]];
+                ForwardNeuronsValue[i] = new double[ForwardNeurons[i]];
+                ForwardNeuronsError[i] = new double[ForwardNeurons[i]];
             }
 
-            NeuronsBios = new double[ForwardLayouts - 1];
-            for (var i = 0; i < NeuronsBios.Length; i++) NeuronsBios[i] = 1;
+            ForwardNeuronsBios = new double[ForwardLayouts - 1];
+            for (var i = 0; i < ForwardNeuronsBios.Length; i++) ForwardNeuronsBios[i] = 1;
         }
         
+        public Tensor DataTensor { get; set; }
+        public ConvolutionLayer[] ConvolutionLayers { get; set; }
+        private int ConvolutionLayouts { get; }
+       
+
+
         public Configuration Configuration { get; }
         private int ForwardLayouts { get; set; }
-        private int ConvolutionLayouts { get; }
-        private int[] Neurons { get; set; }
+        private int[] ForwardNeurons { get; set; }
         private Matrix[] ForwardWeights { get; set; }
         private double[][] ForwardBias { get; set; }
-        public double[][] NeuronsValue { get; set; }
-        private double[][] NeuronsError { get; set; }
-        private Filter[] Filters { get; set; }
-        private List<Tensor> Tensors { get; set; }
-        private double[] NeuronsBios { get; set; }
+        public double[][] ForwardNeuronsValue { get; set; }
+        private double[][] ForwardNeuronsError { get; set; }
+        private double[] ForwardNeuronsBios { get; set; }
 
         public void InsertInformation(Number number) {
-            Tensors[0] = new Tensor(number.GetAsMatrix());            
+            DataTensor = new Tensor(number.GetAsMatrix());
         }
         
         private int GetMaxIndex(IReadOnlyList<double> values) {
@@ -94,7 +90,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 var max = values[0];
                 var prediction = 0;
 
-                for (var j = 1; j < Neurons[ForwardLayouts - 1]; j++) {
+                for (var j = 1; j < ForwardNeurons[ForwardLayouts - 1]; j++) {
                     var temp = values[j];
                     if (!(temp > max)) continue;
                 
@@ -114,13 +110,11 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         public double ConvolutionFeed() {
             try {
                 for (var i = 0; i < ConvolutionLayouts - 1; i++) {
-                    Tensors[i + 1] = Convolution.GetConvolution(Tensors[i], Filters[i], Configuration.Stride);
-                    Tensors[i + 1] = NeuronActivate.Activation(Tensors[i + 1]);
-                    Tensors[i + 1] = Pooling.MaxPool(Tensors[i + 1], Configuration.PoolSize);
+                    DataTensor = ConvolutionLayers[i].GetNextLayer(DataTensor);
                 }
                 
-                NeuronsValue[0] = new double[Tensors[^1].Body[0].GetAsList().Count];
-                for (var i = 0; i < Tensors[^1].GetValues().Count; i++) NeuronsValue[0][i] = Tensors[^1].GetValues()[i];
+                ForwardNeuronsValue[0] = new double[Tensors[^1].Body[0].GetAsList().Count];
+                for (var i = 0; i < Tensors[^1].GetValues().Count; i++) ForwardNeuronsValue[0][i] = Tensors[^1].GetValues()[i];
                 return ForwardFeed();
             }
             catch (Exception e) {
@@ -133,11 +127,11 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         public double ForwardFeed() {
             try {
                 for (var k = 1; k < ForwardLayouts; ++k) {
-                    NeuronsValue[k] = new Vector(ForwardWeights[k - 1] * NeuronsValue[k - 1]) + new Vector(ForwardBias[k - 1]);
-                    NeuronsValue[k] = NeuronActivate.Activation(NeuronsValue[k]);
+                    ForwardNeuronsValue[k] = new Vector(ForwardWeights[k - 1] * ForwardNeuronsValue[k - 1]) + new Vector(ForwardBias[k - 1]);
+                    ForwardNeuronsValue[k] = NeuronActivate.Activation(ForwardNeuronsValue[k]);
                 }
 
-                return GetMaxIndex(NeuronsValue[ForwardLayouts - 1]);
+                return GetMaxIndex(ForwardNeuronsValue[ForwardLayouts - 1]);
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}","Сбой активации нейронов в прямо-связанных слоях!", MessageBoxButton.OK,
@@ -148,17 +142,17 @@ namespace NeuroWeb.EXMPL.OBJECTS {
 
         public void ForwardBackPropagation(double expectedAnswer) {
             try {
-                for (var i = 0; i < Neurons[ForwardLayouts - 1]; i++) 
+                for (var i = 0; i < ForwardNeurons[ForwardLayouts - 1]; i++) 
                     if (i != (int)expectedAnswer) 
-                        NeuronsError[ForwardLayouts - 1][i] = -NeuronsValue[ForwardLayouts - 1][i] * 
-                                                       NeuronActivate.GetDerivative(NeuronsValue[ForwardLayouts - 1][i]);
-                    else NeuronsError[ForwardLayouts - 1][i] = (1.0 - NeuronsValue[ForwardLayouts - 1][i]) * 
-                                                        NeuronActivate.GetDerivative(NeuronsValue[ForwardLayouts - 1][i]);
+                        ForwardNeuronsError[ForwardLayouts - 1][i] = -ForwardNeuronsValue[ForwardLayouts - 1][i] * 
+                                                       NeuronActivate.GetDerivative(ForwardNeuronsValue[ForwardLayouts - 1][i]);
+                    else ForwardNeuronsError[ForwardLayouts - 1][i] = (1.0 - ForwardNeuronsValue[ForwardLayouts - 1][i]) * 
+                                                        NeuronActivate.GetDerivative(ForwardNeuronsValue[ForwardLayouts - 1][i]);
                 
                 for (var i = ForwardLayouts - 2; i > 0; i--) {
-                    NeuronsError[i] = ForwardWeights[i].GetTranspose() * NeuronsError[i + 1];
-                    for (var j = 0; j < Neurons[i]; j++)
-                        NeuronsError[i][j] *= NeuronActivate.GetDerivative(NeuronsValue[i][j]);
+                    ForwardNeuronsError[i] = ForwardWeights[i].GetTranspose() * ForwardNeuronsError[i + 1];
+                    for (var j = 0; j < ForwardNeurons[i]; j++)
+                        ForwardNeuronsError[i][j] *= NeuronActivate.GetDerivative(ForwardNeuronsValue[i][j]);
                 }
             }
             catch (Exception e) {
@@ -170,13 +164,13 @@ namespace NeuroWeb.EXMPL.OBJECTS {
 
         public void SetForwardWeights(double learningRange) {
             for (var i = 0; i < ForwardLayouts - 1; ++i)
-                for (var j = 0; j < Neurons[i + 1]; ++j)
-                    for (var k = 0; k < Neurons[i]; ++k)
-                        ForwardWeights[i].Body[j, k] += NeuronsValue[i][k] * NeuronsError[i + 1][j] * learningRange;
+                for (var j = 0; j < ForwardNeurons[i + 1]; ++j)
+                    for (var k = 0; k < ForwardNeurons[i]; ++k)
+                        ForwardWeights[i].Body[j, k] += ForwardNeuronsValue[i][k] * ForwardNeuronsError[i + 1][j] * learningRange;
 
             for (var i = 0; i < ForwardLayouts - 1; i++)
-                for (var j = 0; j < Neurons[i + 1]; j++)
-                    ForwardBias[i][j] += NeuronsError[i + 1][j] * learningRange;
+                for (var j = 0; j < ForwardNeurons[i + 1]; j++)
+                    ForwardBias[i][j] += ForwardNeuronsError[i + 1][j] * learningRange;
         }
 
         private static string _weights;
@@ -199,7 +193,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 var temp = ForwardWeights.Aggregate("", (current, weight) => current + weight.GetValues());
 
                 for (var i = 0; i < ForwardLayouts - 1; i++)
-                    for (var j = 0; j < Neurons[i + 1]; ++j)
+                    for (var j = 0; j < ForwardNeurons[i + 1]; ++j)
                             temp += ForwardBias[i][j] + " ";
                 
                 if (File.Exists(_weights)) File.WriteAllText(_weights, temp);
@@ -238,7 +232,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                             ForwardWeights[l].SetValues(tempValues[position++], i, j);
 
                 for (var l = 0; l < ForwardLayouts - 1; l++)
-                    for (var i = 0; i < Neurons[l + 1]; i++)
+                    for (var i = 0; i < ForwardNeurons[l + 1]; i++)
                         ForwardBias[l][i] = double.Parse(tempValues[position++], CultureInfo.InvariantCulture);
 
                 if (position < tempValues.Length) MessageBox.Show("Веса считанны некорректно или не считанны",
@@ -256,13 +250,18 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         public int ConvolutionLayouts;
         public int ForwardLayout;
 
+        public ConvolutionConfiguration[] ConvolutionConfigurations;
+
+        public int[] NeuronsLayer;
+    }
+
+    public struct ConvolutionConfiguration
+    {
         public int FilterColumn;
         public int FilterRow;
-        
-        public int[] FilterCount;
+
+        public int FilterCount;
         public int PoolSize;
         public int Stride;
-        
-        public int[] NeuronsLayer;
     }
 }

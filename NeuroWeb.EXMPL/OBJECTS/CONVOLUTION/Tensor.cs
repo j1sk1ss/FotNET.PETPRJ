@@ -7,7 +7,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         
         public Tensor(List<Matrix> matrix) => Body = matrix;
         
-        public List<Matrix> Body { get; init; }
+        public List<Matrix> Body { get; set; }
 
         public List<double> GetValues() {
             var a = new List<double>();
