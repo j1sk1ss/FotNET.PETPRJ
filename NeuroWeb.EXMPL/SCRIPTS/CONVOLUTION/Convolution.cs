@@ -4,7 +4,7 @@ using NeuroWeb.EXMPL.OBJECTS;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class Convolution {
-        private static Matrix GetConvolution(Matrix matrix, Matrix filter, int stride) {
+        private static Matrix GetConvolution(Matrix matrix, Matrix filter, int stride, double bias) {
             var xFilterSize = filter.Body.GetLength(0);
             var yFilterSize = filter.Body.GetLength(1);
             
@@ -21,15 +21,15 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             return conMat;
         }
         
-        public static Tensor GetConvolution(Matrix matrix, Tensor filters, int stride) {
-            return new Tensor(filters.Body.Select(t => GetConvolution(matrix, t, stride)).ToList());
+        public static Tensor GetConvolution(Matrix matrix, Filter filters, int stride) {
+            return new Tensor(filters.Channels.Select(t => GetConvolution(matrix, t, stride, filters.Bias)).ToList());
         }
         
-        public static Tensor GetConvolution(Tensor matrix, Tensor filters, int stride) {
+        public static Tensor GetConvolution(Tensor matrix, Filter filters, int stride) {
             var newMatrix = new List<Matrix>();
 
-            foreach (var t1 in matrix.Body) 
-                newMatrix.AddRange(filters.Body.Select(t => GetConvolution(t1, t, stride)));
+            foreach (var t1 in matrix.Channels) 
+                newMatrix.AddRange(filters.Channels.Select(t => GetConvolution(t1, t, stride, filters.Bias)));
             
             return new Tensor(newMatrix);
         }

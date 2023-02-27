@@ -7,8 +7,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
         public static Tensor MaxPool(Tensor picture, int poolSize) {
             var tensor = new Tensor(new List<Matrix>());
             
-            foreach (var matrix in picture.Body) {
-                tensor.Body.Add(MatrixMaxPool(matrix, poolSize));
+            foreach (var matrix in picture.Channels) {
+                tensor.Channels.Add(MatrixMaxPool(matrix, poolSize));
             }
             
             return tensor;
@@ -17,8 +17,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
         public static Tensor AveragePool(Tensor picture) {
             var tensor = new Tensor(new List<Matrix>());
             
-            foreach (var matrix in picture.Body) {
-                tensor.Body.Add(MatrixAveragePool(matrix, 3, 1));
+            foreach (var matrix in picture.Channels) {
+                tensor.Channels.Add(MatrixAveragePool(matrix, 3, 1));
             }
             
             return tensor;

@@ -83,7 +83,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
             } 
             
             for (var i = 0; i < Answers.Count; i++) Answers[i].Content = 
-                $"{Math.Abs(Math.Round(Network.ForwardNeuronsValue[2][i] * 100, 1))}%";            
+                $"{Math.Abs(Math.Round(Network.PerceptronLayers[2].Neurons[i] * 100, 1))}%";            
             
             Matrix.Content = temp;
             Number         = numberValue;
