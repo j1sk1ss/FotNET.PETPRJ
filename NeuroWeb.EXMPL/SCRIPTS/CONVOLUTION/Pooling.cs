@@ -4,11 +4,11 @@ using NeuroWeb.EXMPL.OBJECTS;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class Pooling {
-        public static Tensor MaxPool(Tensor picture) {
+        public static Tensor MaxPool(Tensor picture, int poolSize) {
             var tensor = new Tensor(new List<Matrix>());
             
             foreach (var matrix in picture.Body) {
-                tensor.Body.Add(MatrixMaxPool(matrix, 5));
+                tensor.Body.Add(MatrixMaxPool(matrix, poolSize));
             }
             
             return tensor;

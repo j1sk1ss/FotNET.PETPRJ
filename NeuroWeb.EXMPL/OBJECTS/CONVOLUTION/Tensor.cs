@@ -14,4 +14,14 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return Body.Aggregate(a, (current, matrix) => (List<double>)current.Concat(matrix.GetAsList()));
         }
     }
+
+    public class Filter : Tensor {
+        public Filter(Matrix matrix) : base(matrix) {
+            Body = new List<Matrix> { matrix };
+        }
+
+        public Filter(List<Matrix> matrix) : base(matrix) {
+            Body = matrix;
+        }
+    }
 }

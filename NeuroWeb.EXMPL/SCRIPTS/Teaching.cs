@@ -16,8 +16,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 var prediction = network.ForwardFeed();
                 if (expected.Equals((int)prediction)) return;
                 
-                network.BackPropagation(expected);
-                network.SetWeights(.08);
+                network.ForwardBackPropagation(expected);
+                network.SetForwardWeights(.08);
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при обучении!", MessageBoxButton.OK, 
@@ -50,8 +50,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                         
                         var prediction = network.ForwardFeed();
                         if (!prediction.Equals(right)) {
-                            network.BackPropagation(right);
-                            network.SetWeights(.15d * Math.Exp(-era / 20d));
+                            network.ForwardBackPropagation(right);
+                            network.SetForwardWeights(.15d * Math.Exp(-era / 20d));
                         }
                         else rightAnswersCount++;
                     }
@@ -62,7 +62,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                     
                     if (++era == teachingCounts) break;
                 }
-                network.SaveWeights();
+                network.SaveForwardWeights();
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при глубоком обучении!", MessageBoxButton.OK, 

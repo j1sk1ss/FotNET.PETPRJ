@@ -17,7 +17,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                     if (tempData[i] != "Нейронка") continue;
                     var layouts = int.Parse(tempData[i + 1]);
                     
-                    data.Layout       = layouts;
+                    data.ForwardLayout       = layouts;
                     data.NeuronsLayer = new int[layouts];
 
                     for (var j = 1; j < layouts + 1; j++)
