@@ -4,8 +4,9 @@
 CNN with FNN that analyze reali-time video sighnal and says what she sees.
 
 TODO List:
-~~1) BackPropagation for Convolution and Perceptorn~~
 
+   ~~1) BackPropagation for Convolution and Perceptorn~~
+   
   2) Rebuild architecture 
       1) Studying refactor
       2) Saving\Reading Weights
