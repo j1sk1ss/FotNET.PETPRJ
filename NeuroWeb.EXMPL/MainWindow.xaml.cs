@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using NeuroWeb.EXMPL.OBJECTS;
-using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 using NeuroWeb.EXMPL.WINDOWS;
 
 

@@ -2,8 +2,8 @@
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class Prediction {
-        public static int Predict(Network network, string number) {
-            var dataInformation = DataWorker.ReadData(number, network.Configuration);
+        public static int Predict(Network network, double[] number) {
+            var dataInformation = DataWorker.ReadImage(number);
             network.InsertInformation(dataInformation);
             return network.ForwardFeed();
         }

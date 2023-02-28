@@ -13,7 +13,7 @@ using NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION;
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Network {
         public Network(Configuration configuration) {
-            Configuration = configuration;                
+            Configuration = configuration;
             CNNInitialization();
             FNNInitialization();
         }

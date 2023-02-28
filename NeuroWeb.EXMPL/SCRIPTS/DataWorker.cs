@@ -4,60 +4,75 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 using NeuroWeb.EXMPL.OBJECTS;
+using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
+using Vector = NeuroWeb.EXMPL.OBJECTS.Vector;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class DataWorker {
         public static Configuration ReadNetworkConfig(string config) {
-            try {
-                var data     = new Configuration();
-                var tempData = config.Split(new[] {' ', '\n'},
-                    StringSplitOptions.RemoveEmptyEntries);
+            var data = new Configuration();
+            var tempData = config.Split("\n",
+                StringSplitOptions.RemoveEmptyEntries);
 
-                for (var i = 0; i < tempData.Length; i++) {
-                    if (tempData[i] != "Нейронка") continue;
-                    var layouts = int.Parse(tempData[i + 1]);
-                    
-                    data.ForwardLayout       = layouts;
-                    data.NeuronsLayer = new int[layouts];
+            data.ConvolutionConfigurations = new ConvolutionConfiguration[(tempData.Length - 2) / 3];
+            var layer = 0;
 
-                    for (var j = 1; j < layouts + 1; j++)
-                        data.NeuronsLayer[j - 1] = int.Parse(tempData[i + 1 + j]);
-                    break;
+            for (var i = 0; i < tempData.Length - 1; i++) {
+                var lineSymbols = tempData[i].Split(" ");
+                var option = lineSymbols[0];
+                
+                switch (option) {
+                    case "Нейронка":
+                        data.ForwardLayout      = int.Parse(lineSymbols[1]);
+                        data.ConvolutionLayouts = int.Parse(lineSymbols[2]);
+                        break;
+                    case "Фильтр:":
+                        data.ConvolutionConfigurations[layer].FilterColumn = int.Parse(lineSymbols[1]);
+                        data.ConvolutionConfigurations[layer].FilterRow    = int.Parse(lineSymbols[2]);
+                        data.ConvolutionConfigurations[layer].FilterDepth  = int.Parse(lineSymbols[3]);
+                        data.ConvolutionConfigurations[layer].FilterCount  = int.Parse(lineSymbols[4]);
+                        break;
+                    case "Шаг:":
+                        data.ConvolutionConfigurations[layer].Stride = int.Parse(lineSymbols[1]);
+                        break;
+                    case "Пул:":
+                        data.ConvolutionConfigurations[layer++].PoolSize = int.Parse(lineSymbols[1]);
+                        break;
                 }
-
-                return data;
             }
-            catch (Exception e) {
-                MessageBox.Show($"{e}", "Ошибка считывания конфиг. файла",MessageBoxButton.OK, 
-                    MessageBoxImage.Error);
-                throw;
-            }
-        }
+            
+            var perceptronLine = tempData[^1].Split(" ");
+            data.NeuronsLayer = new int[perceptronLine.Length];
 
-        [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
-        public static Number ReadData(string pixelsValue, Configuration configuration) {
-            try {
-                var number = new Number();
-                for (var i = 0; i < configuration.NeuronsLayer[0]; i++) number.Pixels.Add(0);
+            for (var i = 0; i < perceptronLine.Length; i++) 
+                data.NeuronsLayer[i] = int.Parse(perceptronLine[i]);
 
-                var pixels = pixelsValue.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-
-                for (var j = 0; j < configuration.NeuronsLayer[0]; j++)
-                    if (double.TryParse(pixels[j], out var db)) number.Pixels[j] = db;
-                    else number.Pixels[j] = 0d;
-
-                return number;
-            }
-            catch (IndexOutOfRangeException e) {
-                MessageBox.Show("Ошибка создания обьекта числа. " +
-                                "Структура принимает другое колличество входных значений.", "Ошибка",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                throw;
-            }
+            return data;
         }
         
-        public static List<Number> ReadData(string config, Configuration configuration, ref int examples) {
+        public static Tensor ReadImage(double[][] pixelsValue) {
+            var tensor = new Tensor(new List<Matrix>());
+            
+            for (var i = 0; i < pixelsValue.Length; i++) {
+                var matrix = new Vector(pixelsValue[i]).AsMatrix((int)Math.Sqrt(pixelsValue.Length),
+                    (int)Math.Sqrt(pixelsValue.Length));
+                tensor.Channels.Add(matrix);
+            }
+
+            return tensor;
+        }
+        
+        public static Tensor ReadImage(double[] pixelsValue) {
+            var tensor = new Tensor(new List<Matrix>());
+            
+            var matrix = new Vector(pixelsValue).AsMatrix((int)Math.Sqrt(pixelsValue.Length),
+                (int)Math.Sqrt(pixelsValue.Length));
+            tensor.Channels.Add(matrix);
+            
+            return tensor;
+        }
+        
+        public static List<Number> ReadNumber(string config, Configuration configuration, ref int examples) {
             try {
                 var numbers = new List<Number>();
 
