@@ -34,21 +34,24 @@ namespace NeuroWeb.EXMPL {
                     FilterRow = 3,
                     FilterCount = 2,
                     PoolSize = 2,
-                    Stride = 1
+                    Stride = 1,
+                    FilterDepth = 2
                 };
                 config.ConvolutionConfigurations[1] = new ConvolutionConfiguration {
                     FilterColumn = 3,
                     FilterRow = 3,
                     FilterCount = 2,
                     PoolSize = 2,
-                    Stride = 1
+                    Stride = 1,
+                    FilterDepth = 4
                 };
                 config.ConvolutionConfigurations[2] = new ConvolutionConfiguration {
                     FilterColumn = 3,
                     FilterRow = 3,
                     FilterCount = 2,
                     PoolSize = 2,
-                    Stride = 1
+                    Stride = 1,
+                    FilterDepth = 8
                 };
 
                 var matrix = new Matrix(64, 64);

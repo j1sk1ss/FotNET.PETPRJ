@@ -67,14 +67,14 @@ namespace NeuroWeb.EXMPL.OBJECTS {
     public class Filter : Tensor {
         public Filter(Matrix matrix) : base(matrix) {
             Channels = new List<Matrix> { matrix };
-            Bias     = new List<double>();
+            Bias     = 0;
         }
 
         public Filter(List<Matrix> matrix) : base(matrix) {
             Channels = matrix;
-            Bias     = new List<double>();
+            Bias     = 0;
         }
         
-        public List<double> Bias { get; set; }
+        public double Bias { get; set; }
     }
 }
