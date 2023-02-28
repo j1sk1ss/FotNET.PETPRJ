@@ -59,6 +59,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 }
                 
                 PerceptronLayers[^1].Neurons = perceptronInput;
+                MessageBox.Show(perceptronInput.Length + " Выведено нейронов");
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");
@@ -68,6 +69,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         
         public void BackPropagation(double expectedAnswer, double learningRange) {
             try {
+                MessageBox.Show("Start back propagation");
                 for (var i = 0; i < PerceptronLayers[^1].Neurons.Length - 1; i++) 
                     if (i != (int)expectedAnswer) 
                         PerceptronLayers[^1].NeuronsError[i] = -PerceptronLayers[^1].Neurons[i] * 
@@ -83,22 +85,31 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 
                 for (var i = 0; i < PerceptronLayers.Length - 1; ++i)
                     PerceptronLayers[i].SetWeights(learningRange);
-                
+
+                MessageBox.Show("Perceptron end back propagation");
+                MessageBox.Show(new Vector(PerceptronLayers[0].NeuronsError).Print() + " Нейроны ошибки в первом слое персептрона");
+
                 var inputTensor = ConvolutionLayers[^1].Output;
                 var errorTensor = new Tensor(new Vector(PerceptronLayers[0].NeuronsError)
                     .AsMatrix(inputTensor.Channels[0].Body.GetLength(0), inputTensor.Channels[0].Body.GetLength(1)));
 
+                MessageBox.Show(ConvolutionLayers[0].Filters[0].Channels[0].Print() + " Фильтр первого слоя развертки до обр. распр.");
+                MessageBox.Show(ConvolutionLayers[0].Filters[0].Bias + " Смешение");
+
                 for (var i = ConvolutionLayers.Length - 1; i >= 0; i--) {
-                    var prevErrorTensor      = Convolution.GetConvolution(errorTensor, ConvolutionLayers[i].Filters.GetFlipped(), 1);
-                    var filterGradientTensor = Convolution.GetConvolution(inputTensor, prevErrorTensor.GetFlipped(), 1);
-                    
-                    ConvolutionLayers[i].Filters      = new Filter((ConvolutionLayers[i].Filters - filterGradientTensor * learningRange).Channels);
-                    ConvolutionLayers[i].Filters.Bias = ((new Vector(ConvolutionLayers[i].Filters.Bias.ToArray()) - errorTensor.TensorSum()) * learningRange).Body.ToList();
-                    
+                    var prevErrorTensor      = Convolution.GetConvolution(errorTensor, new[] { ConvolutionLayers[i].Filters[0].GetFlipped() }, 1); // После получения Тензора ошибок, его глубина равна единице. Фильтр последнео свёрточного слоя имеет глубину 8
+                    var filterGradientTensor = Convolution.GetConvolution(new Tensor(inputTensor.Channels[0]), new[] { prevErrorTensor.GetFlipped() }, 1); // Разные глубина фильтра и глубина отданного персептрона
+
+                    for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
+                        ConvolutionLayers[i].Filters[f]      = (Filter)(ConvolutionLayers[i].Filters[f] - filterGradientTensor * learningRange); // Необходимо решить проблему с разной глубиной фильтров и тензоров
+                        ConvolutionLayers[i].Filters[f].Bias = ConvolutionLayers[i].Filters[f].Bias - errorTensor.TensorSum() * learningRange;
+                    }
+                   
                     errorTensor = prevErrorTensor;
                 }
 
-                MessageBox.Show(new Vector(ConvolutionLayers[0].Filters.Bias.ToArray()).Print());
+                MessageBox.Show(ConvolutionLayers[0].Filters[0].Channels[0].Print() + " Фильтр первого слоя развертки после обр. распр.");
+                MessageBox.Show(ConvolutionLayers[0].Filters[0].Bias + " Смешение");
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");
@@ -194,6 +205,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
     public struct ConvolutionConfiguration {
         public int FilterColumn;
         public int FilterRow;
+        public int FilterDepth;
 
         public int FilterCount;
         public int PoolSize;
