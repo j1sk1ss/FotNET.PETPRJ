@@ -8,9 +8,9 @@ TODO List:
    ~~1) BackPropagation for Convolution and Perceptorn~~
    
   2) Rebuild architecture 
-      1) Studying refactor
+      ~~1) Studying refactor~~
       2) Saving\Reading Weights
   3) Add padding method
-  4) Rebuild data working for new configurations
+  ~~4) Rebuild data working for new configurations~~
   5) Add options for loading IMAGES
       1) Add option for connecting to web camera
