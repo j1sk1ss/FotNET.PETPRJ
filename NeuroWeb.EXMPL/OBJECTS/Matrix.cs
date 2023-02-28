@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Windows;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Matrix {
@@ -97,6 +96,17 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return subMatrix;
         }
 
+        public Matrix Resize(int x, int y) {
+            var newMatrix = new Matrix(x, y);
+            
+            for (var i = 0; i < x; i++) 
+                if (i < Body.GetLength(0))
+                    for (var j = 0; j < y; j++) 
+                        if (j < Body.GetLength(1)) newMatrix.Body[i, j] = Body[i, j];
+            
+            return newMatrix;
+        }
+        
         public void FillRandom() {
             for (var i = 0; i < Row; i++)
                 for (var j = 0; j < Col; j++) 

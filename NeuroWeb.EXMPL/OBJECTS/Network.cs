@@ -46,12 +46,11 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             DataTensor = new Tensor(tensor.Channels);
         }
 
-        public void ForwardFeed() {
+        public int ForwardFeed() {
             try {
-                for (var i = 0; i < ConvolutionLayers.Length; i++) {
-                    DataTensor = ConvolutionLayers[i].GetNextLayer(DataTensor);
-                }
-
+                foreach (var t in ConvolutionLayers)
+                    DataTensor = t.GetNextLayer(DataTensor);
+                
                 var perceptronInput = DataTensor.GetValues().ToArray();
                 for (var i = 0; i < PerceptronLayers.Length - 1; i++) {
                     PerceptronLayers[i].Neurons = perceptronInput;
@@ -59,17 +58,29 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 }
                 
                 PerceptronLayers[^1].Neurons = perceptronInput;
-                MessageBox.Show(perceptronInput.Length + " Выведено нейронов");
+                return GetMaxIndex(perceptronInput);
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");
                 throw;
             }
         }
+
+        private static int GetMaxIndex(IReadOnlyList<double> values) {
+            var max = values[0];
+            var index = 0;
+            
+            for (var i = 0; i < values.Count; i++)
+                if (max < values[i]) {
+                    max   = values[i];
+                    index = i;
+                }
+
+            return index;
+        }
         
         public void BackPropagation(double expectedAnswer, double learningRange) {
             try {
-                MessageBox.Show("Start back propagation");
                 for (var i = 0; i < PerceptronLayers[^1].Neurons.Length - 1; i++) 
                     if (i != (int)expectedAnswer) 
                         PerceptronLayers[^1].NeuronsError[i] = -PerceptronLayers[^1].Neurons[i] * 
@@ -85,31 +96,29 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 
                 for (var i = 0; i < PerceptronLayers.Length - 1; ++i)
                     PerceptronLayers[i].SetWeights(learningRange);
-
-                MessageBox.Show("Perceptron end back propagation");
-                MessageBox.Show(new Vector(PerceptronLayers[0].NeuronsError).Print() + " Нейроны ошибки в первом слое персептрона");
-
-                var inputTensor = ConvolutionLayers[^1].Output;
+                
+                var outputTensor = ConvolutionLayers[^1].Output;
                 var errorTensor = new Tensor(new Vector(PerceptronLayers[0].NeuronsError)
-                    .AsMatrix(inputTensor.Channels[0].Body.GetLength(0), inputTensor.Channels[0].Body.GetLength(1)));
-
-                MessageBox.Show(ConvolutionLayers[0].Filters[0].Channels[0].Print() + " Фильтр первого слоя развертки до обр. распр.");
-                MessageBox.Show(ConvolutionLayers[0].Filters[0].Bias + " Смешение");
+                    .AsMatrix(outputTensor.Channels[0].Body.GetLength(0), outputTensor.Channels[0].Body.GetLength(1)));
 
                 for (var i = ConvolutionLayers.Length - 1; i >= 0; i--) {
-                    var prevErrorTensor      = Convolution.GetConvolution(errorTensor, new[] { ConvolutionLayers[i].Filters[0].GetFlipped() }, 1); // После получения Тензора ошибок, его глубина равна единице. Фильтр последнео свёрточного слоя имеет глубину 8
-                    var filterGradientTensor = Convolution.GetConvolution(new Tensor(inputTensor.Channels[0]), new[] { prevErrorTensor.GetFlipped() }, 1); // Разные глубина фильтра и глубина отданного персептрона
+                    var inputTensor = ConvolutionLayers[i].Output;
+                    var prevErrorTensor = errorTensor;
+                    if (prevErrorTensor.Channels.Count != ConvolutionLayers[i].Filters[0].Channels.Count) {
+                        prevErrorTensor = prevErrorTensor.Channels.Count < ConvolutionLayers[i].Filters[0].Channels.Count 
+                            ? prevErrorTensor.IncreaseChannels(ConvolutionLayers[i].Filters[0].Channels.Count - prevErrorTensor.Channels.Count) 
+                            : prevErrorTensor.CropChannels(ConvolutionLayers[i].Filters[0].Channels.Count);
+                    }
 
+                    var filterGradientTensor = Convolution.GetConvolution(inputTensor, new[] {prevErrorTensor.AsFilter()}, 1);
+                    
                     for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
-                        ConvolutionLayers[i].Filters[f]      = (Filter)(ConvolutionLayers[i].Filters[f] - filterGradientTensor * learningRange); // Необходимо решить проблему с разной глубиной фильтров и тензоров
-                        ConvolutionLayers[i].Filters[f].Bias = ConvolutionLayers[i].Filters[f].Bias - errorTensor.TensorSum() * learningRange;
+                        ConvolutionLayers[i].Filters[f]      -= filterGradientTensor * learningRange;
+                        ConvolutionLayers[i].Filters[f].Bias -= errorTensor.TensorSum() * learningRange;
                     }
                    
                     errorTensor = prevErrorTensor;
                 }
-
-                MessageBox.Show(ConvolutionLayers[0].Filters[0].Channels[0].Print() + " Фильтр первого слоя развертки после обр. распр.");
-                MessageBox.Show(ConvolutionLayers[0].Filters[0].Bias + " Смешение");
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");

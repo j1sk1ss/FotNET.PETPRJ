@@ -13,45 +13,85 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS;
+using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 using NeuroWeb.EXMPL.SCRIPTS;
+using Matrix = NeuroWeb.EXMPL.OBJECTS.Matrix;
 
 namespace NeuroWeb.EXMPL.WINDOWS {
     public partial class User {
         public User() {
-            var defaultConfig = Properties.Resources.defaultConfig;
+            try {
+                var defaultConfig = Properties.Resources.defaultConfig;
 
-            if (MessageBox.Show("Использовать стандартную конфигарацию вместо другой?", 
-                    "Укажите конфигурацию!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                Network = new Network(DataWorker.ReadNetworkConfig(defaultConfig));
-            else {
-                  var file = new OpenFileDialog {
-                      Filter = "TXT files | *.txt"
-                  };
-                  if (file.ShowDialog() == true)
-                      Network = new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(file.FileName)));
-                  else
-                      MessageBox.Show("Конфигурация не была загружена!", "Ошибка!", MessageBoxButton.OK,
-                          MessageBoxImage.Error);
+                var config = new Configuration {
+                    ConvolutionConfigurations = new ConvolutionConfiguration[3],
+                    ConvolutionLayouts = 3,
+                    ForwardLayout = 3,
+                    NeuronsLayer = new[]{288, 144, 10}
+                };
+                config.ConvolutionConfigurations[0] = new ConvolutionConfiguration {
+                    FilterColumn = 3,
+                    FilterRow = 3,
+                    FilterCount = 2,
+                    PoolSize = 2,
+                    Stride = 1,
+                    FilterDepth = 2
+                };
+                config.ConvolutionConfigurations[1] = new ConvolutionConfiguration {
+                    FilterColumn = 3,
+                    FilterRow = 3,
+                    FilterCount = 2,
+                    PoolSize = 2,
+                    Stride = 1,
+                    FilterDepth = 4
+                };
+                config.ConvolutionConfigurations[2] = new ConvolutionConfiguration {
+                    FilterColumn = 3,
+                    FilterRow = 3,
+                    FilterCount = 2,
+                    PoolSize = 2,
+                    Stride = 1,
+                    FilterDepth = 8
+                };
+                /*
+                if (MessageBox.Show("Использовать стандартную конфигарацию вместо другой?", 
+                        "Укажите конфигурацию!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    Network = new Network(DataWorker.ReadNetworkConfig(defaultConfig));
+                else {
+                      var file = new OpenFileDialog {
+                          Filter = "TXT files | *.txt"
+                      };
+                      if (file.ShowDialog() == true)
+                          Network = new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(file.FileName)));
+                      else
+                          MessageBox.Show("Конфигурация не была загружена!", "Ошибка!", MessageBoxButton.OK,
+                              MessageBoxImage.Error);
+                }
+                */
+                Network = new Network(config);
+                InitializeComponent();
+                
+                Answers = new List<Label> {
+                     Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
+                };  
+                
+                //Network.ReadForwardWeights();
+                
+                Update = new DispatcherTimer {
+                    Interval = new TimeSpan(0,0,0,1)
+                };
+                Update.Tick += AnalyzeUserInput;
+                Update.IsEnabled = true;
             }
-            
-            InitializeComponent();
-            
-            Answers = new List<Label> {
-                 Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
-            };  
-            
-            //Network.ReadForwardWeights();
-            
-            Update = new DispatcherTimer {
-                Interval = new TimeSpan(0,0,0,1)
-            };
-            Update.Tick += AnalyzeUserInput;
-            Update.IsEnabled = true;
+            catch (Exception e) {
+                MessageBox.Show($"{e}");
+                throw;
+            }
         }
         
         private Network Network { get; }
         private DispatcherTimer Update { get; }
-        private string Number { get; set; }
+        private double[,] Number { get; set; }
         private List<Label> Answers { get; }
 
         private readonly Brush _userBrush = Brushes.Black;
@@ -60,34 +100,41 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         
         [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         private void AnalyzeUserInput(object sender, EventArgs eventArgs) {
-            var renderTargetBitmap = new RenderTargetBitmap(28,28, 6.5d, 6.5d, 
-                PixelFormats.Pbgra32);
-            renderTargetBitmap.Render(UserCanvas);
+            try {
+                var renderTargetBitmap = new RenderTargetBitmap(64,64, 6.5d, 6.5d, 
+                    PixelFormats.Pbgra32);
+                renderTargetBitmap.Render(UserCanvas);
 
-            var writeableBitmap = new WriteableBitmap(renderTargetBitmap);
+                var writeableBitmap = new WriteableBitmap(renderTargetBitmap);
             
-            var matrix      = new double[28,28];
-            var temp        = "";
-            var numberValue = "";
+                var matrix      = new double[64,64];
+                var temp        = "";
+                var numberValue = "";
             
-            for (var i = 0; i < 28; i++) {
-                for (var j = 0; j < 28; j++) {
-                    matrix[i,j] = writeableBitmap.GetPixel(j, i).A / 255d;
-                    if (matrix[i, j] > 0) temp += _pred + "  ";
-                    else temp += "  " + "  ";
+                for (var i = 0; i < 64; i++) {
+                    for (var j = 0; j < 64; j++) {
+                        matrix[i,j] = writeableBitmap.GetPixel(j, i).A / 255d;
+                        if (matrix[i, j] > 0) temp += _pred + "  ";
+                        else temp += "  " + "  ";
                     
-                    numberValue += matrix[i, j]+ "  ";
-                }
+                        numberValue += matrix[i, j]+ "  ";
+                    }
                 
-                temp += "\n";
-            } 
+                    temp += "\n";
+                } 
+                
+                for (var i = 0; i < Answers.Count; i++) Answers[i].Content = 
+                    $"{Math.Abs(Math.Round(Network.PerceptronLayers[2].Neurons[i] * 100, 1))}%";            
             
-            for (var i = 0; i < Answers.Count; i++) Answers[i].Content = 
-                $"{Math.Abs(Math.Round(Network.PerceptronLayers[2].Neurons[i] * 100, 1))}%";            
-            
-            Matrix.Content = temp;
-            Number         = numberValue;
-            _pred          = Prediction.Predict(Network, numberValue);
+                Matrix.Content = temp;
+                Number         = matrix;
+                Network.InsertInformation(new Tensor(new Matrix(matrix)));
+                _pred = Network.ForwardFeed();
+            }
+            catch (Exception e) {
+                MessageBox.Show($"{e}");
+                throw;
+            }
         }
         
         private Point _currentPoint;

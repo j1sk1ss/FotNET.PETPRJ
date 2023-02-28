@@ -5,16 +5,17 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS;
+using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class Teaching {
-        public static void LightStudying(Network network, string number, int expected) {
+        public static void LightStudying(Network network, double[,] number, int expected) {
             try {
-                var dataInformation = DataWorker.ReadData(number, network.Configuration);
-                network.InsertInformation(dataInformation);
+                //var dataInformation = DataWorker.ReadData(number, network.Configuration);
+                network.InsertInformation(new Tensor(new Matrix(number)));
                 
-                //var prediction = network.ForwardFeed();
-                //if (expected.Equals((int)prediction)) return;
+                var prediction = network.ForwardFeed();
+                if (expected.Equals(prediction)) return;
                 
                 network.BackPropagation(expected, .08d);
             }

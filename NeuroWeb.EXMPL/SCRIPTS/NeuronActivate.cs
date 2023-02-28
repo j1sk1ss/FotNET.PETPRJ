@@ -1,4 +1,5 @@
 ﻿using NeuroWeb.EXMPL.OBJECTS;
+using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class NeuronActivate {

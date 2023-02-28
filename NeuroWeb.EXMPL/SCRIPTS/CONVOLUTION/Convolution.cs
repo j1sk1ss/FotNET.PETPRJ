@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using NeuroWeb.EXMPL.OBJECTS;
+using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 
 namespace NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION {
     public static class Convolution {
