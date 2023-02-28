@@ -6,7 +6,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             Body = array;
             Size = array.Length;
         }
-        private double[] Body { get; }
+        public double[] Body { get; }
         private int Size { get; }
         private double this[int key] {
             get => Body[key];
@@ -22,6 +22,20 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return vector1.Body;
         }
 
+        public static Vector operator -(Vector vector1, double value) {
+            for (var i = 0; i < vector1.Size; i++) {
+                vector1[i] -= value;
+            }
+            return vector1;
+        }
+        
+        public static Vector operator *(Vector vector1, double value) {
+            for (var i = 0; i < vector1.Size; i++) {
+                vector1[i] *= value;
+            }
+            return vector1;
+        }
+        
         public Matrix AsMatrix(int x, int y) {
             var matrix   = new Matrix(x, y);
             var position = 0;

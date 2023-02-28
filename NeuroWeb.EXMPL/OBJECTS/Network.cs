@@ -3,7 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Globalization;
 using System.Collections.Generic;
-
+using System.Linq;
 using Microsoft.Win32;
 using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 using NeuroWeb.EXMPL.OBJECTS.FORWARD;
@@ -57,6 +57,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     PerceptronLayers[i].Neurons = perceptronInput;
                     perceptronInput = PerceptronLayers[i].GetNextLayer();
                 }
+                
+                PerceptronLayers[^1].Neurons = perceptronInput;
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");
@@ -68,11 +70,11 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             try {
                 for (var i = 0; i < PerceptronLayers[^1].Neurons.Length - 1; i++) 
                     if (i != (int)expectedAnswer) 
-                        PerceptronLayers[^1].NeuronsError[i] = -PerceptronLayers[^1].NeuronsError[i] * 
-                                                                  NeuronActivate.GetDerivative(PerceptronLayers[^1].NeuronsError[i]);
-                    else PerceptronLayers[^1].NeuronsError[i] = (1.0 - PerceptronLayers[^1].NeuronsError[i]) * 
-                                                                NeuronActivate.GetDerivative(PerceptronLayers[^1].NeuronsError[i]);
-                
+                        PerceptronLayers[^1].NeuronsError[i] = -PerceptronLayers[^1].Neurons[i] * 
+                                                                  NeuronActivate.GetDerivative(PerceptronLayers[^1].Neurons[i]);
+                    else PerceptronLayers[^1].NeuronsError[i] = (1.0 - PerceptronLayers[^1].Neurons[i]) * 
+                                                                NeuronActivate.GetDerivative(PerceptronLayers[^1].Neurons[i]);
+
                 for (var i = PerceptronLayers.Length - 2; i >= 0; i--) {
                     PerceptronLayers[i].NeuronsError = PerceptronLayers[i].Weights.GetTranspose() * PerceptronLayers[i + 1].NeuronsError;
                     for (var j = 0; j < PerceptronLayers[i].Neurons.Length; j++)
@@ -87,15 +89,16 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     .AsMatrix(inputTensor.Channels[0].Body.GetLength(0), inputTensor.Channels[0].Body.GetLength(1)));
 
                 for (var i = ConvolutionLayers.Length - 1; i >= 0; i--) {
-                    ConvolutionLayers[i].Output = NeuronActivate.Activation(ConvolutionLayers[i].Output);
-                    var prevErrorTensor = Convolution.GetConvolution(errorTensor, ConvolutionLayers[i].Filters.GetFlipped(), 1);
+                    var prevErrorTensor      = Convolution.GetConvolution(errorTensor, ConvolutionLayers[i].Filters.GetFlipped(), 1);
                     var filterGradientTensor = Convolution.GetConvolution(inputTensor, prevErrorTensor.GetFlipped(), 1);
                     
                     ConvolutionLayers[i].Filters      = new Filter((ConvolutionLayers[i].Filters - filterGradientTensor * learningRange).Channels);
-                    ConvolutionLayers[i].Filters.Bias = new Bias((ConvolutionLayers[i].Filters.Bias - errorTensor.TensorSum() * learningRange).Channels);
+                    ConvolutionLayers[i].Filters.Bias = ((new Vector(ConvolutionLayers[i].Filters.Bias.ToArray()) - errorTensor.TensorSum()) * learningRange).Body.ToList();
                     
                     errorTensor = prevErrorTensor;
                 }
+
+                MessageBox.Show(new Vector(ConvolutionLayers[0].Filters.Bias.ToArray()).Print());
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");

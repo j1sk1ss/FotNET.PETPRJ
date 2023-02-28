@@ -13,6 +13,9 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
             for (var j = 0; j < convolutionConfiguration.FilterCount; j++)
                 Filters.Channels.Add(new Matrix(
                     new double[convolutionConfiguration.FilterColumn, convolutionConfiguration.FilterRow]));
+            for (var j = 0; j < convolutionConfiguration.FilterCount; j++)
+                Filters.Bias.Add(0);
+            
             
             FilterFillRandom();
         }
