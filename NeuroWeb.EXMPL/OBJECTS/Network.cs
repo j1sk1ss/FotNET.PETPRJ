@@ -57,8 +57,6 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     PerceptronLayers[i].Neurons = perceptronInput;
                     perceptronInput = PerceptronLayers[i].GetNextLayer();
                 }
-
-                MessageBox.Show(perceptronInput.Length + " Выведено ответов.");
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");
@@ -67,8 +65,6 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
         
         public void BackPropagation(double expectedAnswer, double learningRange) {
-            MessageBox.Show("НАЧИНАЕТСЯ ОБРАТНОЕ РАСПРОСТРАНЕНИЕ");
-            MessageBox.Show(PerceptronLayers[^1].NeuronsError.Length + "");
             try {
                 for (var i = 0; i < PerceptronLayers[^1].Neurons.Length - 1; i++) 
                     if (i != (int)expectedAnswer) 
@@ -82,16 +78,14 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     for (var j = 0; j < PerceptronLayers[i].Neurons.Length; j++)
                         PerceptronLayers[i].NeuronsError[j] *= NeuronActivate.GetDerivative(PerceptronLayers[i].NeuronsError[j]);
                 }
-
-                PerceptronLayers[0].NeuronsError[0] = 100;
-                MessageBox.Show(new Vector(PerceptronLayers[0].NeuronsError).Print() + "  ЭТО ОШИБКА ПЕРСЕПТРОНА");
+                
                 for (var i = 0; i < PerceptronLayers.Length - 1; ++i)
                     PerceptronLayers[i].SetWeights(learningRange);
                 
                 var inputTensor = ConvolutionLayers[^1].Output;
                 var errorTensor = new Tensor(new Vector(PerceptronLayers[0].NeuronsError)
                     .AsMatrix(inputTensor.Channels[0].Body.GetLength(0), inputTensor.Channels[0].Body.GetLength(1)));
-                MessageBox.Show(ConvolutionLayers[0].Filters.Channels[0].Print() + "  ЭТО СТАРЫЙ ФИЛЬТР СВЁРТКИ");
+
                 for (var i = ConvolutionLayers.Length - 1; i >= 0; i--) {
                     ConvolutionLayers[i].Output = NeuronActivate.Activation(ConvolutionLayers[i].Output);
                     var prevErrorTensor = Convolution.GetConvolution(errorTensor, ConvolutionLayers[i].Filters.GetFlipped(), 1);
@@ -102,7 +96,6 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     
                     errorTensor = prevErrorTensor;
                 }
-                MessageBox.Show(ConvolutionLayers[0].Filters.Channels[0].Print() + "  ЭТО НОВЫЙ ФИЛЬТР СВЁРТКИ");
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");

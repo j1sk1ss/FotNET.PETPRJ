@@ -11,12 +11,13 @@ namespace NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION {
             var matrixSize = matrix.Body.GetLength(0);
             var conMat = new Matrix(matrixSize - xFilterSize + 1, matrixSize - yFilterSize + 1);
             
-            for (var i = 0; i < conMat.Body.GetLength(0); i += stride) {
-                for (var j = 0; j < conMat.Body.GetLength(1); j += stride) {
-                    var subMatrix = matrix.GetSubMatrix(i, j, i + xFilterSize, j + yFilterSize);
-                    conMat.Body[i,j] = (filter * subMatrix).GetSum() + bias.TensorSum();
+            for (var f = 0; f < bias.Channels.Count; f++)
+                for (var i = 0; i < conMat.Body.GetLength(0); i += stride) {
+                    for (var j = 0; j < conMat.Body.GetLength(1); j += stride) {
+                        var subMatrix = matrix.GetSubMatrix(i, j, i + xFilterSize, j + yFilterSize);
+                        conMat.Body[i,j] += (filter * subMatrix).GetSum() + bias.Channels[f].Body[i, j];
+                    }
                 }
-            }
             
             return conMat;
         }
