@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
-using System.Globalization;
 using System.Collections.Generic;
-using System.Linq;
+
 using Microsoft.Win32;
+
 using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 using NeuroWeb.EXMPL.OBJECTS.FORWARD;
 using NeuroWeb.EXMPL.SCRIPTS;
@@ -14,44 +14,38 @@ namespace NeuroWeb.EXMPL.OBJECTS {
     public class Network {
         public Network(Configuration configuration) {
             Configuration = configuration;
-            CNNInitialization();
-            FNNInitialization();
-        }
 
-        private void CNNInitialization() {
             ConvolutionLayers = new ConvolutionLayer[Configuration.ConvolutionLayouts];
-            for (var i = 0; i < ConvolutionLayers.Length; i++) 
-                ConvolutionLayers[i] = 
+            for (var i = 0; i < ConvolutionLayers.Length; i++)
+                ConvolutionLayers[i] =
                     new ConvolutionLayer(Configuration.ConvolutionConfigurations[i]);
-        }
-        
-        private void FNNInitialization() {
+
             PerceptronLayers = new PerceptronLayer[Configuration.ForwardLayout];
-            for (var i = 0; i < Configuration.ForwardLayout - 1; i++) 
+            for (var i = 0; i < Configuration.ForwardLayout - 1; i++)
                 PerceptronLayers[i] =
                     new PerceptronLayer(Configuration.NeuronsLayer[i], Configuration.NeuronsLayer[i + 1]);
             PerceptronLayers[^1] = new PerceptronLayer(Configuration.NeuronsLayer[^1]);
         }
 
         public Configuration Configuration { get; }        
-        private Tensor DataTensor { get; set; }
+        private Tensor ImageTensor { get; set; }
         private ConvolutionLayer[] ConvolutionLayers { get; set; }
         public PerceptronLayer[] PerceptronLayers { get; private set; }        
         
         public void InsertInformation(Number number) {
-            DataTensor = new Tensor(number.GetAsMatrix());
+            ImageTensor = new Tensor(number.GetAsMatrix());
         }
         
         public void InsertInformation(Tensor tensor) {
-            DataTensor = new Tensor(tensor.Channels);
+            ImageTensor = new Tensor(tensor.Channels);
         }
 
         public int ForwardFeed() {
             try {
-                foreach (var t in ConvolutionLayers)
-                    DataTensor = t.GetNextLayer(DataTensor);
+                foreach (var layer in ConvolutionLayers)
+                    ImageTensor = layer.GetNextLayer(ImageTensor);
                 
-                var perceptronInput = DataTensor.GetValues().ToArray();
+                var perceptronInput = ImageTensor.GetValues().ToArray();
                 for (var i = 0; i < PerceptronLayers.Length - 1; i++) {
                     PerceptronLayers[i].Neurons = perceptronInput;
                     perceptronInput = PerceptronLayers[i].GetNextLayer();
@@ -67,7 +61,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
 
         private static int GetMaxIndex(IReadOnlyList<double> values) {
-            var max = values[0];
+            var max   = values[0];
             var index = 0;
             
             for (var i = 0; i < values.Count; i++)
@@ -102,8 +96,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     .AsMatrix(outputTensor.Channels[0].Body.GetLength(0), outputTensor.Channels[0].Body.GetLength(1)));
 
                 for (var i = ConvolutionLayers.Length - 1; i >= 0; i--) {
-                    var inputTensor = ConvolutionLayers[i].Output;
+                    var inputTensor     = ConvolutionLayers[i].Output;
                     var prevErrorTensor = errorTensor;
+
                     if (prevErrorTensor.Channels.Count != ConvolutionLayers[i].Filters[0].Channels.Count) {
                         prevErrorTensor = prevErrorTensor.Channels.Count < ConvolutionLayers[i].Filters[0].Channels.Count 
                             ? prevErrorTensor.IncreaseChannels(ConvolutionLayers[i].Filters[0].Channels.Count - prevErrorTensor.Channels.Count) 
