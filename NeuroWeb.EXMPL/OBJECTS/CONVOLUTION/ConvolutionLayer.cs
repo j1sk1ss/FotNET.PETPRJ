@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+
 using NeuroWeb.EXMPL.SCRIPTS;
 using NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION;
 
@@ -53,9 +52,10 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
             var nextLayer = new Tensor(new List<Matrix>());
 
             nextLayer.Channels.AddRange(Convolution.GetConvolution(layer, Filters, ConvolutionConfiguration.Stride).Channels);
+            nextLayer = NeuronActivate.Activation(nextLayer);
             
-            Output = nextLayer;
-            return GetMaxPooling(nextLayer);
+            Output = GetMaxPooling(nextLayer);
+            return Output;
         }
 
         private Tensor GetMaxPooling(Tensor layer) => Pooling.MaxPool(layer, ConvolutionConfiguration.PoolSize);

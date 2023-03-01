@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -37,7 +38,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                 Filter = "TXT files | *.txt"
             };
             if (file.ShowDialog() == true) 
-                Teaching.HardStudying(new Network(DataWorker.ReadNetworkConfig(file.FileName)), 20);
+                Teaching.HardStudying(new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(file.FileName))), 5);
         }
     }
 }

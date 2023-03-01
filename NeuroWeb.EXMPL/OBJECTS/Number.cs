@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Number {
@@ -35,11 +36,11 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
 
         public Matrix GetAsMatrix() {
-            var temp = new Matrix(new double[64, 64]);
+            var temp = new Matrix(new double[28, 28]);
             var position = 0;
 
-            for (var i = 0; i < 64; i++)
-                for (var j = 0; j < 64; j++)
+            for (var i = 0; i < 28; i++)
+                for (var j = 0; j < 28; j++)
                     temp.Body[i, j] = Pixels[position++];
             
             return temp;

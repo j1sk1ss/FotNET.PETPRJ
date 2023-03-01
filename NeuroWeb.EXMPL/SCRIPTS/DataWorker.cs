@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
@@ -23,8 +22,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 
                 switch (option) {
                     case "Нейронка":
-                        data.ForwardLayout      = int.Parse(lineSymbols[1]);
-                        data.ConvolutionLayouts = int.Parse(lineSymbols[2]);
+                        data.ConvolutionLayouts = int.Parse(lineSymbols[1]);
+                        data.ForwardLayout      = int.Parse(lineSymbols[2]);
                         break;
                     case "Фильтр:":
                         data.ConvolutionConfigurations[layer].FilterColumn = int.Parse(lineSymbols[1]);
@@ -76,25 +75,30 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             try {
                 var numbers = new List<Number>();
 
-                var tempValues = config.Split(new[] {' ', '\n'},
+                var lines = config.Split("\n",
                     StringSplitOptions.RemoveEmptyEntries);
+
                 
-                var position = 0;
-                if (tempValues[position++] != "Examples") return numbers;
-                
-                examples = int.Parse(tempValues[position++]);
-                for (var i = 0; i < examples; i++) 
-                    numbers.Add(new Number());
-                    
-                for (var i = 0; i < examples; i++) 
-                    for (var j = 0; j < configuration.NeuronsLayer[0]; j++) 
-                        numbers[i].Pixels.Add(0);
+                if (lines[0].Split(" ")[0] != "Examples") return numbers;
+                //examples = int.Parse(lines[0].Split(" ")[1]);
+                examples = 20000;
                 
                 for (var i = 0; i < examples; i++) {
-                    numbers[i].Digit = int.TryParse(tempValues[position++], out var it) ? it : 0;
-                    for (var j = 0; j < configuration.NeuronsLayer[0]; j++)
-                        if (double.TryParse(tempValues[position++], out var db)) numbers[i].Pixels[j] = db;
-                        else numbers[i].Pixels[j] = 0d;
+                    numbers.Add(new Number());
+                    for (var j = 0; j < 784; j++) 
+                        numbers[i].Pixels.Add(0);                    
+                }
+                
+                for (var i = 0; i < numbers.Count; i++) {
+                    for (var j = 0; j < 29; j++) {
+                        var symbols = lines[j + 29 * i + 1].Split(" ");
+                        if (symbols.Length <= 1) numbers[i].Digit = int.Parse(symbols[0]);
+                        else {
+                            for (var k = 0; k < 28; k++) {
+                                if (double.TryParse(symbols[k], out var value)) numbers[i].Pixels[k + 28 * (j - 1)] = value;
+                            }
+                        }
+                    }
                 }
 
                 return numbers;

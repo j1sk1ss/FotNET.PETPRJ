@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Collections.Generic;
-
+using System.Linq;
 using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
@@ -29,8 +29,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
 
         public Configuration Configuration { get; }        
         private Tensor ImageTensor { get; set; }
-        private ConvolutionLayer[] ConvolutionLayers { get; set; }
-        public PerceptronLayer[] PerceptronLayers { get; private set; }        
+        private ConvolutionLayer[] ConvolutionLayers { get; }
+        public PerceptronLayer[] PerceptronLayers { get; }        
         
         public void InsertInformation(Number number) {
             ImageTensor = new Tensor(number.GetAsMatrix());
@@ -91,20 +91,21 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 for (var i = 0; i < PerceptronLayers.Length - 1; ++i)
                     PerceptronLayers[i].SetWeights(learningRange);
                 
-                var outputTensor = ConvolutionLayers[^1].Output;
-                var errorTensor = new Tensor(new Vector(PerceptronLayers[0].NeuronsError)
-                    .AsMatrix(outputTensor.Channels[0].Body.GetLength(0), outputTensor.Channels[0].Body.GetLength(1)));
+                var outputTensor = ConvolutionLayers.Last().Output;
+                var errorTensor = new Vector(PerceptronLayers[0].NeuronsError).AsTensor(
+                    outputTensor.Channels[0].Body.GetLength(0),
+                    outputTensor.Channels[0].Body.GetLength(1), outputTensor.Channels.Count);
 
                 for (var i = ConvolutionLayers.Length - 1; i >= 0; i--) {
                     var inputTensor     = ConvolutionLayers[i].Output;
                     var prevErrorTensor = errorTensor;
 
-                    if (prevErrorTensor.Channels.Count != ConvolutionLayers[i].Filters[0].Channels.Count) {
-                        prevErrorTensor = prevErrorTensor.Channels.Count < ConvolutionLayers[i].Filters[0].Channels.Count 
-                            ? prevErrorTensor.IncreaseChannels(ConvolutionLayers[i].Filters[0].Channels.Count - prevErrorTensor.Channels.Count) 
-                            : prevErrorTensor.CropChannels(ConvolutionLayers[i].Filters[0].Channels.Count);
+                    if (prevErrorTensor.Channels.Count != inputTensor.Channels.Count) {
+                        prevErrorTensor = prevErrorTensor.Channels.Count < inputTensor.Channels.Count 
+                            ? prevErrorTensor.IncreaseChannels(inputTensor.Channels.Count - prevErrorTensor.Channels.Count) 
+                            : prevErrorTensor.CropChannels(inputTensor.Channels.Count);
                     }
-
+                    
                     var filterGradientTensor = Convolution.GetConvolution(inputTensor, new[] {prevErrorTensor.AsFilter()}, 1);
                     
                     for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
@@ -119,7 +120,6 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 MessageBox.Show($"{e}");
                 throw;
             }
-            
         }
 
         private static string _weights;
@@ -136,8 +136,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return file.ShowDialog() != true ? "" : File.ReadAllText(file.FileName);
         }
         
-        
-        public void SaveForwardWeights() {
+        public void SaveWeights() {
             try {
                 MessageBox.Show("Начата запись весов!");
                 var temp = "";
@@ -151,10 +150,10 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     for (var filter = 0; filter < ConvolutionLayers[layer].Filters.Length; filter++)
                         temp += ConvolutionLayers[layer].Filters[filter].Bias + " ";
 
-                for (var layer = 0; layer < PerceptronLayers.Length; layer++)
+                for (var layer = 0; layer < PerceptronLayers.Length - 1; layer++)
                     temp += PerceptronLayers[layer].Weights.GetValues();
 
-                for (var layer = 0; layer < PerceptronLayers.Length; layer++)
+                for (var layer = 0; layer < PerceptronLayers.Length - 1; layer++)
                     for (var bias = 0; bias < PerceptronLayers[layer].Bias.Length; bias++)
                         temp += PerceptronLayers[layer].Bias[bias] + " ";
 
@@ -177,12 +176,12 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             }
         }
 
-        public void ReadForwardWeights() {
+        public void ReadWeights() {
             try {
                 var data = GetWeights().Split(" ", 
                     StringSplitOptions.RemoveEmptyEntries);
                 
-                if (data.Length < 10) {
+                if (data.Length < 1) {
                     MessageBox.Show("Веса не загружены!", "Внимание!", MessageBoxButton.OK,
                         MessageBoxImage.Asterisk);
                     return;
@@ -195,20 +194,20 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                         for (var channel = 0; channel < ConvolutionLayers[layer].Filters[filter].Channels.Count; channel++)
                             for (var x = 0; x < ConvolutionLayers[layer].Filters[filter].Channels[channel].Body.GetLength(0); x++)
                                 for (var y = 0; y < ConvolutionLayers[layer].Filters[filter].Channels[channel].Body.GetLength(1); y++)
-                                    ConvolutionLayers[layer].Filters[filter].Channels[channel].Body[x, y] = int.Parse(data[position++]);
+                                    ConvolutionLayers[layer].Filters[filter].Channels[channel].Body[x, y] = double.Parse(data[position++]);
 
                 for (var layer = 0; layer < ConvolutionLayers.Length; layer++)
                     for (var filter = 0; filter < ConvolutionLayers[layer].Filters.Length; filter++)
-                        ConvolutionLayers[layer].Filters[filter].Bias = int.Parse(data[position++]);
+                        ConvolutionLayers[layer].Filters[filter].Bias = double.Parse(data[position++]);
 
-                for (var layer = 0; layer < PerceptronLayers.Length; layer++)
+                for (var layer = 0; layer < PerceptronLayers.Length - 1; layer++)
                     for (var x = 0; x < PerceptronLayers[layer].Weights.Body.GetLength(0); x++)
                         for (var y = 0; y < PerceptronLayers[layer].Weights.Body.GetLength(1); y++)
-                            PerceptronLayers[layer].Weights.Body[x, y] = int.Parse(data[position++]);
+                            PerceptronLayers[layer].Weights.Body[x, y] = double.Parse(data[position++]);
 
-                for (var layer = 0; layer < PerceptronLayers.Length; layer++)
-                    for (var bias = 0; bias < PerceptronLayers[layer].Weights.Body.GetLength(0); bias++)
-                        PerceptronLayers[layer].Bias[bias] = int.Parse(data[position++]);
+                for (var layer = 0; layer < PerceptronLayers.Length - 1; layer++)
+                    for (var bias = 0; bias < PerceptronLayers[layer].Bias.Length; bias++)
+                        PerceptronLayers[layer].Bias[bias] = double.Parse(data[position++]);
 
                 if (position < data.Length) MessageBox.Show("Веса считанны некорректно или не считанны",
                     "Предупреждение!");

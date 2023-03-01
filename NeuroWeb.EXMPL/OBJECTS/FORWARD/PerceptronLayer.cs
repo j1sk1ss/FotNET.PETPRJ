@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using NeuroWeb.EXMPL.SCRIPTS;
 
 namespace NeuroWeb.EXMPL.OBJECTS.FORWARD {

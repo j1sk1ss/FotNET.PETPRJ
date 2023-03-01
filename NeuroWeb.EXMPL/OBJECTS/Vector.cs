@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Vector {
@@ -50,6 +52,22 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return matrix;
         }
 
+        public Tensor AsTensor(int x, int y, int channels) {
+            var tensor = new Tensor(new List<Matrix>());
+            var position = 0;
+
+            for (var k = 0; k < channels; k++) {
+                tensor.Channels.Add(new Matrix(x,y));
+                for (var i = 0; i < x; i++) 
+                    for (var j = 0; j < y; j++) {
+                        if (Body.Length <= position) return null;
+                        tensor.Channels[^1].Body[i, j] = Body[position++];
+                    }                
+            }
+            
+            return tensor;
+        }
+        
         public string Print() =>
             Body.Aggregate("", (current, t) => current + (" " + t));
     }

@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Collections.Generic;
+
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 

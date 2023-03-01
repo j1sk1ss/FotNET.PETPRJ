@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Diagnostics.CodeAnalysis;
-
+using System.IO;
 using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS;
@@ -16,7 +16,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 var prediction = network.ForwardFeed();
                 if (expected.Equals(prediction)) return;
                 
-                network.BackPropagation(expected, .08d);
+                network.BackPropagation(expected, 1.08d);
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при обучении!", MessageBoxButton.OK, 
@@ -38,19 +38,19 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 var file = new OpenFileDialog();
                 if (file.ShowDialog() != true) return;
                 
-                var dataInformation = DataWorker.ReadNumber(file.FileName, network.Configuration, ref examples);
+                var dataInformation = DataWorker.ReadNumber(File.ReadAllText(file.FileName), network.Configuration, ref examples);
                 
                 MessageBox.Show($"Загруженно приверов: {examples}\n");
-                while (rightAnswersCount / examples * 100 < 100) {
+                while (rightAnswersCount / examples * 100 < 97) {
                     rightAnswersCount = 0;
                     for (var i = 0; i < examples; ++i) {
                         network.InsertInformation(dataInformation[i]);
-                        
+
                         var right = dataInformation[i].Digit;
                         var prediction = network.ForwardFeed();
-                        
+
                         if (prediction != right) 
-                            network.BackPropagation(right, .15d * Math.Exp(-era / 20d));
+                            network.BackPropagation(right, 0.15d * Math.Exp(-era / 20d));
                         else rightAnswersCount++;
                     }
                     if (rightAnswersCount > maxRightAnswers) maxRightAnswers = rightAnswersCount;
@@ -60,7 +60,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                     
                     if (++era == teachingCounts) break;
                 }
-                //network.SaveForwardWeights();
+                network.SaveWeights();
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при глубоком обучении!", MessageBoxButton.OK, 

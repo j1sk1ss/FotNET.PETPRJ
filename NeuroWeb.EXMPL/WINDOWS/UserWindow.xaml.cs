@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
-using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.Win32;
 
@@ -21,8 +20,8 @@ namespace NeuroWeb.EXMPL.WINDOWS {
     public partial class User {
         public User() {
             try {
-                //var defaultConfig = Properties.Resources.defaultConfig;
-                /*
+                var defaultConfig = Properties.Resources.defaultConfig;
+                
                 if (MessageBox.Show("Использовать стандартную конфигарацию вместо другой?", 
                         "Укажите конфигурацию!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                     Network = new Network(DataWorker.ReadNetworkConfig(defaultConfig));
@@ -36,15 +35,14 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                           MessageBox.Show("Конфигурация не была загружена!", "Ошибка!", MessageBoxButton.OK,
                               MessageBoxImage.Error);
                 }
-                */
-                Network = new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(@"C:\Users\j1sk1ss\RiderProjects\NeuroWeb.EXMPL\NeuroWeb.EXMPL\DATA\Config.txt")));
+                
                 InitializeComponent();
                 
                 Answers = new List<Label> {
                      Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
                 };  
                 
-                //Network.ReadForwardWeights();
+                Network.ReadWeights();
                 
                 Update = new DispatcherTimer {
                     Interval = new TimeSpan(0,0,0,1)
@@ -67,21 +65,20 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         
         private int _pred = 1;
         
-        [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         private void AnalyzeUserInput(object sender, EventArgs eventArgs) {
             try {
-                var renderTargetBitmap = new RenderTargetBitmap(64,64, 6.5d, 6.5d, 
+                var renderTargetBitmap = new RenderTargetBitmap(28,28, 6.5d, 6.5d, 
                     PixelFormats.Pbgra32);
                 renderTargetBitmap.Render(UserCanvas);
 
                 var writeableBitmap = new WriteableBitmap(renderTargetBitmap);
             
-                var matrix      = new double[64,64];
+                var matrix      = new double[28,28];
                 var temp        = "";
                 var numberValue = "";
             
-                for (var i = 0; i < 64; i++) {
-                    for (var j = 0; j < 64; j++) {
+                for (var i = 0; i < 28; i++) {
+                    for (var j = 0; j < 28; j++) {
                         matrix[i,j] = writeableBitmap.GetPixel(j, i).A / 255d;
                         if (matrix[i, j] > 0) temp += _pred + "  ";
                         else temp += "  " + "  ";
@@ -148,10 +145,10 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         
         private void SaveWeights(object sender, RoutedEventArgs e) {
             MessageBox.Show("Сохранение начато...");
-            //Network.SaveForwardWeights();
+            Network.SaveWeights();
         }
         
-        //private void LoadWeights(object sender, RoutedEventArgs e) => Network.ReadForwardWeights();
+        private void LoadWeights(object sender, RoutedEventArgs e) => Network.ReadWeights();
         
         private void DragWindow(object sender, MouseButtonEventArgs e) {
             base.OnMouseLeftButtonDown(e); 
