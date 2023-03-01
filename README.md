@@ -11,7 +11,7 @@ TODO List:
   
 ~~2.1) Studying refactor~~
       
-2.2) Saving\Reading Weights
+~~2.2) Saving\Reading Weights~~
 
 3.0) Add padding method
   
