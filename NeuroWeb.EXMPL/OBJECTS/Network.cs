@@ -92,7 +92,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     PerceptronLayers[i].SetWeights(learningRange, PerceptronLayers[i + 1]);
                 
                 var outputTensor = ConvolutionLayers.Last().Output;
-                var errorTensor = new Vector(PerceptronLayers[0].NeuronsError).AsTensor(
+                var errorTensor  = new Vector(PerceptronLayers[0].NeuronsError).AsTensor(
                     outputTensor.Channels[0].Body.GetLength(0),
                     outputTensor.Channels[0].Body.GetLength(1), outputTensor.Channels.Count);
 
@@ -111,7 +111,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
 
                     for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
                         ConvolutionLayers[i].Filters[f]      -= filterGradientTensor * learningRange;
-                        ConvolutionLayers[i].Filters[f].Bias -= errorTensor.TensorSum() * learningRange;
+                        ConvolutionLayers[i].Filters[f].Bias += errorTensor.TensorSum() * learningRange;
                     }
                    
                     errorTensor = prevErrorTensor;
