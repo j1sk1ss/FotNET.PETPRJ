@@ -1,5 +1,4 @@
-﻿using NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
@@ -7,6 +6,12 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
         public Tensor(Matrix matrix) => Channels = new List<Matrix> { matrix };
         
         public Tensor(List<Matrix> matrix) => Channels = matrix;
+
+        public Tensor(int x, int y, int z) {
+            Channels = new List<Matrix>();
+            for (var i = 0; i < z; i++)
+                Channels.Add(new Matrix(x,y));
+        }
         
         public List<Matrix> Channels { get; set; }
         
@@ -41,14 +46,36 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
         
         public double TensorSum() => Channels.Sum(matrix => matrix.GetSum());
         
-        public static Tensor operator -(Tensor tensor1, Tensor tensor2) {
+        public static Tensor operator +(Tensor tensor1, Tensor tensor2) {
             var endTensor = new Tensor(tensor1.Channels);
             
             for (var i = 0; i < endTensor.Channels.Count; i++) 
                  for (var j = 0; j < endTensor.Channels[i].Body.GetLength(0); j++)
                      for (var k = 0; k < endTensor.Channels[i].Body.GetLength(1); k++)
-                         endTensor.Channels[i].Body[j, k] -= tensor2.Channels[i].Body[j, k];
+                         endTensor.Channels[i].Body[j, k] += tensor2.Channels[i].Body[j, k];
             
+            return endTensor;
+        }
+        
+        public static Tensor operator -(Tensor tensor1, Tensor tensor2) {
+            var endTensor = new Tensor(tensor1.Channels);
+            
+            for (var i = 0; i < endTensor.Channels.Count; i++) 
+                for (var j = 0; j < endTensor.Channels[i].Body.GetLength(0); j++)
+                    for (var k = 0; k < endTensor.Channels[i].Body.GetLength(1); k++)
+                        endTensor.Channels[i].Body[j, k] -= tensor2.Channels[i].Body[j, k];
+            
+            return endTensor;
+        }
+        
+        public static Tensor operator *(Tensor tensor1, Tensor tensor2) {
+            var endTensor = new Tensor(tensor1.Channels);
+            
+            for (var i = 0; i < endTensor.Channels.Count; i++) 
+                for (var j = 0; j < tensor1.Channels[i].Body.GetLength(0); j++)
+                    for (var k = 0; k < tensor1.Channels[i].Body.GetLength(1); k++)
+                        endTensor.Channels[i].Body[j, k] *= tensor2.Channels[i].Body[j,k];
+
             return endTensor;
         }
         
@@ -113,6 +140,19 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
             for (var j = 0; j < endTensor.Channels[i].Body.GetLength(0); j++)
             for (var k = 0; k < endTensor.Channels[i].Body.GetLength(1); k++) {
                 endTensor.Channels[i].Body[j, k] -= tensor2.Channels[i].Body[j, k];
+            }
+
+            
+            return endTensor;
+        }
+        
+        public static Filter operator +(Filter tensor1, Filter tensor2) {
+            var endTensor    = new Filter(tensor1.Channels); 
+
+            for (var i = 0; i < endTensor.Channels.Count; i++) 
+            for (var j = 0; j < endTensor.Channels[i].Body.GetLength(0); j++)
+            for (var k = 0; k < endTensor.Channels[i].Body.GetLength(1); k++) {
+                endTensor.Channels[i].Body[j, k] += tensor2.Channels[i].Body[j, k];
             }
 
             

@@ -23,8 +23,12 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
         
         public Filter[] Filters { get; set; }
         
-        public Tensor Output { get; set; }
+        public Tensor Input { get; private set; }
         
+        public Tensor NotPooled { get; private set; }
+        
+        public Tensor Output { get; private set; }
+
         private ConvolutionConfiguration ConvolutionConfiguration { get; set; }
         
         public void FilterFillRandom() {
@@ -49,12 +53,15 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
             => Filters[filter].Channels[channel].Body[x, y] = value;
 
         public Tensor GetNextLayer(Tensor layer) {
+            Input = layer;
             var nextLayer = new Tensor(new List<Matrix>());
 
             nextLayer.Channels.AddRange(Convolution.GetConvolution(layer, Filters, ConvolutionConfiguration.Stride).Channels);
             nextLayer = NeuronActivate.Activation(nextLayer);
+
+            NotPooled = nextLayer;
+            Output    = GetMaxPooling(nextLayer);
             
-            Output = GetMaxPooling(nextLayer);
             return Output;
         }
 

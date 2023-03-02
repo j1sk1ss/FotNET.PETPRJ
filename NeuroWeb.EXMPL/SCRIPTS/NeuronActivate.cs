@@ -50,6 +50,6 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             return tensor;
         }
         
-        public static double GetDerivative(double value) => value is < 0 or > 1 ? 0.01d : value;
+        public static double GetDerivative(double value) => value is < 0 or > 1 ? 0.01d : 1;
     }
 }

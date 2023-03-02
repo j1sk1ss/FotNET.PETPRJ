@@ -5,6 +5,16 @@ using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class Pooling {
+        public static Tensor BackMaxPool(Tensor picture, Tensor previousTensor, int poolSize) {
+            var tensor = new Tensor(new List<Matrix>());
+            
+            for (var i = 0; i < picture.Channels.Count; i++) {
+                tensor.Channels.Add(MatrixBackMaxPool(picture.Channels[i], previousTensor.Channels[i], poolSize));
+            }
+            
+            return tensor;
+        }
+        
         public static Tensor MaxPool(Tensor picture, int poolSize) {
             var tensor = new Tensor(new List<Matrix>());
             
@@ -25,6 +35,38 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             return tensor;
         }
 
+        private static Matrix MatrixBackMaxPool(Matrix matrix, Matrix previousMatrix, int poolSize) {
+            var inputWidth  = previousMatrix.Body.GetLength(0);
+            var inputHeight = previousMatrix.Body.GetLength(1);
+            var newMatrix      = new Matrix(inputWidth, inputHeight);
+            
+            var position  = 0;
+
+            for (var x = 0; x < matrix.Body.GetLength(0); x++) {
+                for (var y = 0; y < matrix.Body.GetLength(1); y++) {
+                    var maxVal = double.MinValue;
+                    
+                    var maxX = 0;
+                    var maxY = 0;
+                    
+                    for (var i = 0; i < poolSize; i++) {
+                        for (var j = 0; j < poolSize; j++) {
+                            var inputVal = previousMatrix.Body[x * poolSize + i, y * poolSize + j];
+                            if (inputVal > maxVal) {
+                                maxVal = inputVal;
+                                maxX   = x * poolSize + i;
+                                maxY   = y * poolSize + j;
+                            }
+                        }
+                    }
+                    
+                    newMatrix.Body[maxX, maxY] += matrix.Body[x,y];
+                }
+            }
+
+            return newMatrix;
+        }
+        
         private static Matrix MatrixMaxPool(Matrix matrix, int poolSize) {
             var inputWidth = matrix.Body.GetLength(0);
             var inputHeight = matrix.Body.GetLength(1);
