@@ -106,8 +106,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                             : prevErrorTensor.CropChannels(inputTensor.Channels.Count);
                     }
                     
-                    var filterGradientTensor = Convolution.GetConvolution(inputTensor, new[] {prevErrorTensor.AsFilter()}, 1);
-                    
+                    var filterGradientTensor = Convolution.GetConvolution(Padding.GetPadding(inputTensor, 
+                        (ConvolutionLayers[i].Filters[0].Channels[0].Body.GetLength(0) - 1)/2), new[] {prevErrorTensor.AsFilter()}, 1);
+
                     for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
                         ConvolutionLayers[i].Filters[f]      -= filterGradientTensor * learningRange;
                         ConvolutionLayers[i].Filters[f].Bias -= errorTensor.TensorSum() * learningRange;
@@ -221,6 +222,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
     }
     
     public struct Configuration {
+        int Weight;
+        int Height;
+
         public int ConvolutionLayouts;
         public int ForwardLayout;
 

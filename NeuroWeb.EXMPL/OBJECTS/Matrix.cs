@@ -106,7 +106,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             
             return newMatrix;
         }
-        
+
         public void FillRandom() {
             for (var i = 0; i < Row; i++)
                 for (var j = 0; j < Col; j++) 

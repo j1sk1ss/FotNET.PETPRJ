@@ -16,7 +16,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 var prediction = network.ForwardFeed();
                 if (expected.Equals(prediction)) return;
                 
-                network.BackPropagation(expected, 1.08d);
+                network.BackPropagation(expected, .08d);
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при обучении!", MessageBoxButton.OK, 

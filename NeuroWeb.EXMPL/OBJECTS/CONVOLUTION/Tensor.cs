@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
@@ -106,14 +107,12 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
         public double Bias { get; set; }
         
         public static Filter operator -(Filter tensor1, Tensor tensor2) {
-            var endTensor    = new Filter(tensor1.Channels);
-            var secondTenser = new Tensor(tensor2.Channels)
-                .Resize(endTensor.Channels[0].Body.GetLength(0), endTensor.Channels[0].Body.GetLength(1));
+            var endTensor    = new Filter(tensor1.Channels); 
 
             for (var i = 0; i < endTensor.Channels.Count; i++) 
             for (var j = 0; j < endTensor.Channels[i].Body.GetLength(0); j++)
             for (var k = 0; k < endTensor.Channels[i].Body.GetLength(1); k++) {
-                endTensor.Channels[i].Body[j, k] -= secondTenser.Channels[i].Body[j, k];
+                endTensor.Channels[i].Body[j, k] -= tensor2.Channels[i].Body[j, k];
             }
 
             
