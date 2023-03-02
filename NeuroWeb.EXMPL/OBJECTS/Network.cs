@@ -89,7 +89,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 }
                 
                 for (var i = 0; i < PerceptronLayers.Length - 1; ++i)
-                    PerceptronLayers[i].SetWeights(learningRange);
+                    PerceptronLayers[i].SetWeights(learningRange, PerceptronLayers[i + 1]);
                 
                 var outputTensor = ConvolutionLayers.Last().Output;
                 var errorTensor = new Vector(PerceptronLayers[0].NeuronsError).AsTensor(

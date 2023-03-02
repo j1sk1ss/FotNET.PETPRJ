@@ -16,7 +16,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 var prediction = network.ForwardFeed();
                 if (expected.Equals(prediction)) return;
                 
-                network.BackPropagation(expected, .08d);
+                network.BackPropagation(expected, .008d);
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при обучении!", MessageBoxButton.OK, 
@@ -50,7 +50,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                         var prediction = network.ForwardFeed();
 
                         if (prediction != right) 
-                            network.BackPropagation(right, 0.15d * Math.Exp(-era / 20d));
+                            network.BackPropagation(right, 0.05d * Math.Exp(-era / 20d));
                         else rightAnswersCount++;
                     }
                     if (rightAnswersCount > maxRightAnswers) maxRightAnswers = rightAnswersCount;
