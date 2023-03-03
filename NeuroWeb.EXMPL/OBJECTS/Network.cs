@@ -223,8 +223,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
     }
     
     public struct Configuration {
-        int Weight;
-        int Height;
+        public int Weight;
+        public int Height;
 
         public int ConvolutionLayouts;
         public int ForwardLayout;

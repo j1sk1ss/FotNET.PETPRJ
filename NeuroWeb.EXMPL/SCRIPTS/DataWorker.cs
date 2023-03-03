@@ -24,6 +24,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                     case "Нейронка":
                         data.ConvolutionLayouts = int.Parse(lineSymbols[1]);
                         data.ForwardLayout      = int.Parse(lineSymbols[2]);
+                        data.Weight             = int.Parse(lineSymbols[3]);
+                        data.Height             = int.Parse(lineSymbols[4]);
                         break;
                     case "Фильтр:":
                         data.ConvolutionConfigurations[layer].FilterColumn = int.Parse(lineSymbols[1]);
@@ -83,18 +85,18 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 examples = int.Parse(lines[0].Split(" ")[1]);
 
                 for (var i = 0; i < examples; i++) {
-                    numbers.Add(new Number());
-                    for (var j = 0; j < 784; j++) 
+                    numbers.Add(new Number(configuration));
+                    for (var j = 0; j < configuration.Weight * configuration.Height; j++) 
                         numbers[i].Pixels.Add(0);                    
                 }
                 
                 for (var i = 0; i < numbers.Count; i++) {
-                    for (var j = 0; j < 29; j++) {
-                        var symbols = lines[j + 29 * i + 1].Split(" ");
+                    for (var j = 0; j < configuration.Weight + 1; j++) {
+                        var symbols = lines[j + (configuration.Height + 1) * i + 1].Split(" ");
                         if (symbols.Length <= 1) numbers[i].Digit = int.Parse(symbols[0]);
                         else {
-                            for (var k = 0; k < 28; k++) {
-                                if (double.TryParse(symbols[k], out var value)) numbers[i].Pixels[k + 28 * (j - 1)] = value;
+                            for (var k = 0; k < configuration.Weight; k++) {
+                                if (double.TryParse(symbols[k], out var value)) numbers[i].Pixels[k + configuration.Weight * (j - 1)] = value;
                             }
                         }
                     }

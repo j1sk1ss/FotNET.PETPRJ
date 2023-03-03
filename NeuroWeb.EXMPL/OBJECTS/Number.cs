@@ -3,18 +3,21 @@ using System.Windows;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Number {
-        public Number() {
-            Pixels = new List<double>();
+        public Number(Configuration configuration) {
+            Pixels        = new List<double>();
+            Configuration = configuration;
         }
         
+        private Configuration Configuration { get; set; }
+
         public List<double> Pixels { get; set; }
         public int Digit { get; set; }
 
         public string PrintNumber() {
             var temp = "";
             var position = 0;
-            for (var i = 0; i < 28; i++) {
-                for (var j = 0; j < 28; j++) {
+            for (var i = 0; i < Configuration.Weight; i++) {
+                for (var j = 0; j < Configuration.Height; j++) {
                     temp += Pixels[position++] + " ";
                 }
 
@@ -25,22 +28,22 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         }
 
         public double[,] GetValues() {
-            var temp = new double[28, 28];
+            var temp = new double[Configuration.Weight, Configuration.Height];
             var position = 0;
 
-            for (var i = 0; i < 28; i++)
-                for (var j = 0; j < 28; j++)
+            for (var i = 0; i < Configuration.Weight; i++)
+                for (var j = 0; j < Configuration.Height; j++)
                     temp[i, j] = Pixels[position++];
             
             return temp;
         }
 
         public Matrix GetAsMatrix() {
-            var temp = new Matrix(new double[28, 28]);
+            var temp = new Matrix(new double[Configuration.Weight, Configuration.Height]);
             var position = 0;
 
-            for (var i = 0; i < 28; i++)
-                for (var j = 0; j < 28; j++)
+            for (var i = 0; i < Configuration.Weight; i++)
+                for (var j = 0; j < Configuration.Height; j++)
                     temp.Body[i, j] = Pixels[position++];
             
             return temp;
