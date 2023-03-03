@@ -23,12 +23,19 @@ namespace NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION {
         }
         
         public static Tensor GetConvolution(Tensor tensor, Filter[] filters, int stride) {
-            var newTensor = new Tensor(new List<Matrix>());
+            var newTensor  = new Tensor(new List<Matrix>());
+            var tempMatrix = new Matrix(tensor.Channels[0].Body.GetLength(0) - filters[0].Channels[0].Body.GetLength(0) + 1,
+                tensor.Channels[0].Body.GetLength(0) - filters[0].Channels[0].Body.GetLength(0) + 1);
 
-            for (var i = 0; i < filters.Length; i++)
-                for (var j = 0; j < tensor.Channels.Count; j++) 
-                    newTensor.Channels.Add(GetConvolution(tensor.Channels[j], filters[i].Channels[j], stride, filters[i].Bias));
-              
+            for (var i = 0; i < filters.Length; i++) {
+                for (var j = 0; j < tensor.Channels.Count; j++) {
+                    tempMatrix += GetConvolution(tensor.Channels[j], filters[i].Channels[j], stride, filters[i].Bias); 
+                }
+                newTensor.Channels.Add(tempMatrix);
+                tempMatrix = new Matrix(tensor.Channels[0].Body.GetLength(0) - filters[0].Channels[0].Body.GetLength(0) + 1,
+                tensor.Channels[0].Body.GetLength(0) - filters[0].Channels[0].Body.GetLength(0) + 1);
+            }
+                                
             return newTensor;
         }
     }

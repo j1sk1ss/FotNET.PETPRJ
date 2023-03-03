@@ -15,7 +15,7 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
         
         public List<Matrix> Channels { get; set; }
         
-        public List<double> GetValues() {
+        public List<double> Flatten() {
             var a = new List<double>();
             foreach (var matrix in Channels) a.AddRange(matrix.GetAsList());
             return a;
@@ -134,7 +134,7 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
         public double Bias { get; set; }
         
         public static Filter operator -(Filter tensor1, Tensor tensor2) {
-            var endTensor    = new Filter(tensor1.Channels); 
+            var endTensor = new Filter(tensor1.Channels); 
 
             for (var i = 0; i < endTensor.Channels.Count; i++) 
             for (var j = 0; j < endTensor.Channels[i].Body.GetLength(0); j++)

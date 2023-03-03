@@ -39,8 +39,6 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             var inputWidth  = previousMatrix.Body.GetLength(0);
             var inputHeight = previousMatrix.Body.GetLength(1);
             var newMatrix      = new Matrix(inputWidth, inputHeight);
-            
-            var position  = 0;
 
             for (var x = 0; x < matrix.Body.GetLength(0); x++) {
                 for (var y = 0; y < matrix.Body.GetLength(1); y++) {

@@ -45,7 +45,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 foreach (var layer in ConvolutionLayers)
                     ImageTensor = layer.GetNextLayer(ImageTensor);
                 
-                var perceptronInput = ImageTensor.GetValues().ToArray();
+                var perceptronInput = ImageTensor.Flatten().ToArray();
+
                 for (var i = 0; i < PerceptronLayers.Length - 1; i++) {
                     PerceptronLayers[i].Neurons = perceptronInput;
                     perceptronInput = PerceptronLayers[i].GetNextLayer();
@@ -112,7 +113,13 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     
                     var filterGradient =
                         Convolution.GetConvolution(inputTensor, new[] { prevErrorTensor.AsFilter() }, 1).AsFilter();
-                    
+
+                    if (filterGradient.Channels.Count != ConvolutionLayers[i].Filters[0].Channels.Count) {
+                        filterGradient = filterGradient.Channels.Count < ConvolutionLayers[i].Filters[0].Channels.Count
+                            ? filterGradient.IncreaseChannels(ConvolutionLayers[i].Filters[0].Channels.Count - filterGradient.Channels.Count).AsFilter()
+                            : filterGradient.CropChannels(ConvolutionLayers[i].Filters[0].Channels.Count).AsFilter();
+                    }
+
                     for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
                         ConvolutionLayers[i].Filters[f]      -= filterGradient * learningRange;
                         ConvolutionLayers[i].Filters[f].Bias -= prevErrorTensor.TensorSum() * learningRange;
