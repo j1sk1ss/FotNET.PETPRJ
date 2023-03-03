@@ -99,26 +99,15 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 
                 for (var i = ConvolutionLayers.Length - 1; i >= 0; i--) {
                     var inputTensor     = ConvolutionLayers[i].Input;
-                    var prevErrorTensor = errorTensor;
-                    
-                    if (prevErrorTensor.Channels.Count != inputTensor.Channels.Count) {
-                        prevErrorTensor = prevErrorTensor.Channels.Count < inputTensor.Channels.Count 
-                            ? prevErrorTensor.IncreaseChannels(inputTensor.Channels.Count - prevErrorTensor.Channels.Count) 
-                            : prevErrorTensor.CropChannels(inputTensor.Channels.Count);
-                    }
+                    var prevErrorTensor = errorTensor.GetSameChannels(inputTensor);
 
                     prevErrorTensor = Pooling.BackMaxPool(prevErrorTensor,
                         ConvolutionLayers[i].NotPooled, Configuration.ConvolutionConfigurations[i].PoolSize);
                     prevErrorTensor = NeuronActivate.GetDerivative(prevErrorTensor);
-                    
-                    var filterGradient =
-                        Convolution.GetConvolution(inputTensor, new[] { prevErrorTensor.AsFilter() }, 1).AsFilter();
 
-                    if (filterGradient.Channels.Count != ConvolutionLayers[i].Filters[0].Channels.Count) {
-                        filterGradient = filterGradient.Channels.Count < ConvolutionLayers[i].Filters[0].Channels.Count
-                            ? filterGradient.IncreaseChannels(ConvolutionLayers[i].Filters[0].Channels.Count - filterGradient.Channels.Count).AsFilter()
-                            : filterGradient.CropChannels(ConvolutionLayers[i].Filters[0].Channels.Count).AsFilter();
-                    }
+                    var filterGradient =
+                        Convolution.GetConvolution(inputTensor, new[] { prevErrorTensor.AsFilter() }, 1)
+                        .GetSameChannels(ConvolutionLayers[i].Filters[0]).AsFilter();
 
                     for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
                         ConvolutionLayers[i].Filters[f]      -= filterGradient * learningRange;

@@ -30,13 +30,25 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
             return new Filter(tensor);
         }
 
-        public Tensor IncreaseChannels(int channels) {
+        public Tensor GetSameChannels(Tensor reference) {
+            var newTensor = this;
+
+            if (newTensor.Channels.Count != reference.Channels.Count) {
+                newTensor = newTensor.Channels.Count < reference.Channels.Count
+                    ? newTensor.IncreaseChannels(reference.Channels.Count - newTensor.Channels.Count)
+                    : newTensor.CropChannels(reference.Channels.Count);
+            }
+
+            return newTensor;
+        }
+
+        private Tensor IncreaseChannels(int channels) {
             var tensor = new Tensor(Channels);
             for (var i = 0; i < channels; i++) tensor.Channels.Add(Channels[^1]);
             return tensor;
         }
         
-        public Tensor CropChannels(int channels) {
+        private Tensor CropChannels(int channels) {
             var matrix = new List<Matrix>();
             for (var i = 0; i < channels; i++) {
                 matrix.Add(Channels[i]);
