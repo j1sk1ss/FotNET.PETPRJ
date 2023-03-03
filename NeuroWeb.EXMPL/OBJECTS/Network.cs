@@ -93,8 +93,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                 
                 var errorTensor  = new Vector(PerceptronLayers[0].NeuronsError).AsTensor(
                     ConvolutionLayers.Last().Output.Channels[0].Body.GetLength(0),
-                    ConvolutionLayers.Last().Output.Channels[0].Body.GetLength(1), ConvolutionLayers.Last().Output.Channels.Count);
-
+                    ConvolutionLayers.Last().Output.Channels[0].Body.GetLength(1), 
+                    ConvolutionLayers.Last().Output.Channels.Count);
+                
                 for (var i = ConvolutionLayers.Length - 1; i >= 0; i--) {
                     var inputTensor     = ConvolutionLayers[i].Input;
                     var prevErrorTensor = errorTensor;
@@ -105,15 +106,20 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                             : prevErrorTensor.CropChannels(inputTensor.Channels.Count);
                     }
 
-                    for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) { // Needs to find correct algorithm
-                        ConvolutionLayers[i].Filters[f] =
-                            Convolution.GetConvolution(inputTensor, new[] { Pooling.BackMaxPool(prevErrorTensor, 
-                                ConvolutionLayers[i].NotPooled, Configuration.ConvolutionConfigurations[i].PoolSize).AsFilter() * learningRange }, 1).AsFilter();
-                        ConvolutionLayers[i].Filters[f].Bias = prevErrorTensor.TensorSum() * learningRange;
+                    prevErrorTensor = Pooling.BackMaxPool(prevErrorTensor,
+                        ConvolutionLayers[i].NotPooled, Configuration.ConvolutionConfigurations[i].PoolSize);
+                    prevErrorTensor = NeuronActivate.GetDerivative(prevErrorTensor);
+                    
+                    var filterGradient =
+                        Convolution.GetConvolution(inputTensor, new[] { prevErrorTensor.AsFilter() }, 1).AsFilter();
+                    
+                    for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
+                        ConvolutionLayers[i].Filters[f]      -= filterGradient * learningRange;
+                        ConvolutionLayers[i].Filters[f].Bias -= prevErrorTensor.TensorSum() * learningRange;
                     }
                     
-                    errorTensor = Convolution.GetConvolution(Padding.GetPadding(inputTensor, 
-                        (ConvolutionLayers[i].Filters[0].Channels[0].Body.GetLength(0) - 1)/2), new[] {prevErrorTensor.AsFilter().GetFlipped()}, 1);;
+                    errorTensor = Convolution.GetConvolution(Padding.GetPadding(prevErrorTensor, 
+                        (ConvolutionLayers[i].Filters[0].Channels[0].Body.GetLength(0) - 1)/2), ConvolutionLayers[i].FlipFilters(), 1);;
                 }
             }
             catch (Exception e) {

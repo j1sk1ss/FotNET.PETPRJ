@@ -33,19 +33,12 @@ namespace NeuroWeb.EXMPL.OBJECTS.FORWARD {
         }
         
         public void SetWeights(double learningRange, PerceptronLayer nextLayer) {
-            for (var j = 0; j < Weights.Body.GetLength(0); ++j) {
-                for (var k = 0; k < Weights.Body.GetLength(1); ++k) {
-                    var gradient = 0.0d;
-                    for (var neuron = 0; neuron < nextLayer.NeuronsError.Length; neuron++) {
-                        gradient += nextLayer.NeuronsError[neuron] * NeuronActivate.GetDerivative(Neurons[j]);
-                    }
-                    Weights.Body[j, k] += learningRange * gradient;
-                }
-            }
+            for (var j = 0; j < Weights.Body.GetLength(0); ++j)
+                for (var k = 0; k < Weights.Body.GetLength(1); ++k)
+                    Weights.Body[j, k] -= Neurons[k] * NeuronsError[j] * learningRange;
 
-            for (var j = 0; j < Bias.Length; j++) {
-                Bias[j] += learningRange * NeuronsError[j];
-            }
+            for (var j = 0; j < Weights.Body.GetLength(1); j++)
+                Bias[j] -= NeuronsError[j] * learningRange;
         }
     }
 }

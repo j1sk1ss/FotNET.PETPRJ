@@ -50,6 +50,15 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             return tensor;
         }
         
-        public static double GetDerivative(double value) => value is < 0 or > 1 ? 0.01d : 1;
+        public static double GetDerivative(double value) => value is < 0 or > 1 ? 0.01d : value;
+
+        public static Tensor GetDerivative(Tensor tensor) {
+            for (var channels = 0; channels < tensor.Channels.Count; channels++) 
+                for (var x = 0; x < tensor.Channels[channels].Body.GetLength(0); x++)
+                    for (var y = 0; y < tensor.Channels[channels].Body.GetLength(1); y++)
+                        tensor.Channels[channels].Body[x, y] = GetDerivative(tensor.Channels[channels].Body[x, y]);
+
+            return tensor;
+        }
     }
 }
