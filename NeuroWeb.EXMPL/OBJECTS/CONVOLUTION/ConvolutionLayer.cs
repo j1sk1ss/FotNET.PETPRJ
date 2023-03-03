@@ -15,6 +15,7 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
                 for (var i = 0; i < convolutionConfiguration.FilterDepth; i++) {
                     Filters[j].Channels.Add(new Matrix(
                         new double[convolutionConfiguration.FilterColumn, convolutionConfiguration.FilterRow]));
+                    Filters[j].Bias.Add(0);
                 }
             }
 
@@ -30,8 +31,8 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
         public Tensor Output { get; private set; }
 
         private ConvolutionConfiguration ConvolutionConfiguration { get; set; }
-        
-        public void FilterFillRandom() {
+
+        private void FilterFillRandom() {
             foreach (var filter in Filters)
                 foreach (var matrix in filter.Channels)
                     matrix.FillRandom();

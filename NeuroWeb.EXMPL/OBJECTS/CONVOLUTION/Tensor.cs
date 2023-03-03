@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
@@ -133,17 +134,14 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
     }
     
     public class Filter : Tensor {
-        public Filter(Matrix matrix) : base(matrix) {
-            Channels = new List<Matrix> { matrix };
-            Bias     = 0;
-        }
-
         public Filter(List<Matrix> matrix) : base(matrix) {
+            Bias     = new List<double>();
+            for (var i = 0; i < matrix.Count; i++) Bias.Add(0);
+            
             Channels = matrix;
-            Bias     = 0;
         }
         
-        public double Bias { get; set; }
+        public List<double> Bias { get; set; }
         
         public static Filter operator -(Filter tensor1, Tensor tensor2) {
             var endTensor = new Filter(tensor1.Channels); 

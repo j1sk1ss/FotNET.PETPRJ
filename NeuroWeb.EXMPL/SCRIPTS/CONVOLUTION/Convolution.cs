@@ -29,7 +29,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION {
 
             for (var i = 0; i < filters.Length; i++) {
                 for (var j = 0; j < tensor.Channels.Count; j++) {
-                    tempMatrix += GetConvolution(tensor.Channels[j], filters[i].Channels[j], stride, filters[i].Bias); 
+                    tempMatrix += GetConvolution(tensor.Channels[j], filters[i].Channels[j], stride, filters[i].Bias[j]); 
                 }
                 newTensor.Channels.Add(tempMatrix);
                 tempMatrix = new Matrix(tensor.Channels[0].Body.GetLength(0) - filters[0].Channels[0].Body.GetLength(0) + 1,
