@@ -13,7 +13,7 @@ TODO List:
       
 ~~2.2) Saving\Reading Weights~~
 
-3.0) Add padding method
+~~3.0) Add padding method~~
   
 ~~4.0) Rebuild data working for new configurations~~
   
