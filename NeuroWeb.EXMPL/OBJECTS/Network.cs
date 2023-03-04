@@ -78,10 +78,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             try {
                 for (var i = 0; i < PerceptronLayers[^1].Neurons.Length - 1; i++) 
                     if (i != (int)expectedAnswer) 
-                        PerceptronLayers[^1].NeuronsError[i] = -PerceptronLayers[^1].Neurons[i] * 
-                                                                  NeuronActivate.GetDerivative(PerceptronLayers[^1].Neurons[i]);
-                    else PerceptronLayers[^1].NeuronsError[i] = (1.0 - PerceptronLayers[^1].Neurons[i]) * 
-                                                                NeuronActivate.GetDerivative(PerceptronLayers[^1].Neurons[i]);
+                        PerceptronLayers[^1].NeuronsError[i] = -PerceptronLayers[^1].Neurons[i];
+                    else PerceptronLayers[^1].NeuronsError[i] = (1.0 - PerceptronLayers[^1].Neurons[i]);
 
                 for (var i = PerceptronLayers.Length - 2; i >= 0; i--) {
                     PerceptronLayers[i].NeuronsError = PerceptronLayers[i].Weights.GetTranspose() * PerceptronLayers[i + 1].NeuronsError;
@@ -111,8 +109,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
 
                     for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
                             ConvolutionLayers[i].Filters[f] -= filterGradient * learningRange;
-                        for (var bias = 0; bias < ConvolutionLayers[i].Filters[f].Bias.Count; bias++) 
-                            ConvolutionLayers[i].Filters[f].Bias[bias] -= prevErrorTensor.Channels[bias].GetSum() * learningRange; 
+                        //for (var bias = 0; bias < ConvolutionLayers[i].Filters[f].Bias.Count; bias++) 
+                          //  ConvolutionLayers[i].Filters[f].Bias[bias] -= prevErrorTensor.Channels[bias].GetSum() * learningRange; 
                     }
                     
                     errorTensor = Convolution.GetConvolution(Padding.GetPadding(prevErrorTensor.GetSameChannels(ConvolutionLayers[i].Filters[0]), 
