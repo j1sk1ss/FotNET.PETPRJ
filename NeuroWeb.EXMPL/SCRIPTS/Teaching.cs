@@ -6,6 +6,7 @@ using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
+using Vector = NeuroWeb.EXMPL.OBJECTS.Vector;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class Teaching {
@@ -48,9 +49,11 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
 
                         var right = dataInformation[i].Digit;
                         var prediction = network.ForwardFeed();
-
+                        //MessageBox.Show(right + " pr: " + prediction);
+                        //MessageBox.Show(network.ConvolutionLayers[0].Filters[0].Channels[0].Print() + " ???  " + i);
+                        //MessageBox.Show(new Vector(network.ConvolutionLayers[0].Filters[0].Bias.ToArray()).Print());
                         if (prediction != right) 
-                            network.BackPropagation(right, 0.005d * Math.Exp(-era / 20d));
+                            network.BackPropagation(right, .005d * Math.Exp(-era / (double)teachingCounts));
                         else rightAnswersCount++;
                     }
                     if (rightAnswersCount > maxRightAnswers) maxRightAnswers = rightAnswersCount;

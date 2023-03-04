@@ -5,7 +5,7 @@ using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
 
 namespace NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION {
     public static class Convolution {
-        private static Matrix GetConvolution(Matrix matrix, Matrix filter, int stride, double bias) {
+        public static Matrix GetConvolution(Matrix matrix, Matrix filter, int stride, double bias) {
             var xFilterSize = filter.Body.GetLength(0);
             var yFilterSize = filter.Body.GetLength(1);
             
@@ -25,15 +25,15 @@ namespace NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION {
         public static Tensor GetConvolution(Tensor tensor, Filter[] filters, int stride) {
             var newTensor  = new Tensor(new List<Matrix>());
 
-            for (var i = 0; i < filters.Length; i++) {
+            foreach (var filter in filters) {
                 var tempMatrix = new Matrix(tensor.Channels[0].Body.GetLength(0) - filters[0].Channels[0].Body.GetLength(0) + 1,
-                tensor.Channels[0].Body.GetLength(0) - filters[0].Channels[0].Body.GetLength(0) + 1);
+                    tensor.Channels[0].Body.GetLength(0) - filters[0].Channels[0].Body.GetLength(0) + 1);
 
                 for (var j = 0; j < tensor.Channels.Count; j++) {
-                    tempMatrix += GetConvolution(tensor.Channels[j], filters[i].Channels[j], stride, filters[i].Bias[j]); 
+                    tempMatrix += GetConvolution(tensor.Channels[j], filter.Channels[j], stride, filter.Bias[j]); 
                 }
 
-                newTensor.Channels.Add(tempMatrix); 
+                newTensor.Channels.Add(tempMatrix);
             }
                                 
             return newTensor;

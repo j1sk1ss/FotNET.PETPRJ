@@ -22,7 +22,7 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
             FilterFillRandom();
         }
         
-        public Filter[] Filters { get; set; }
+        public Filter[] Filters { get; }
         
         public Tensor Input { get; private set; }
         
@@ -38,11 +38,10 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
                     matrix.FillRandom();
         }
 
-        public Filter[] FlipFilters() {
-            var newFilters = new Filter[Filters.Length];
-            for (var i = 0; i < Filters.Length; i++)
-            {
-                newFilters[i] = Filters[i].GetFlipped();
+        public static Filter[] FlipFilters(Filter[] filters) {
+            var newFilters = new Filter[filters.Length];
+            for (var i = 0; i < filters.Length; i++) {
+                newFilters[i] = filters[i].GetFlipped();
             }
             return newFilters;
         }
@@ -53,12 +52,6 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
             }
             return filters;
         }
-
-        public double GetFilterValue(int filter, int channel, int x, int y) 
-            => Filters[filter].Channels[channel].Body[x, y];
-
-        public void SetFilterValue(int filter, int channel, int x, int y, double value) 
-            => Filters[filter].Channels[channel].Body[x, y] = value;
 
         public Tensor GetNextLayer(Tensor layer) {
             Input = layer;

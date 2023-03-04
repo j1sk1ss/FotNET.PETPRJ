@@ -19,7 +19,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             for (var i = 0; i < ConvolutionLayers.Length; i++)
                 ConvolutionLayers[i] =
                     new ConvolutionLayer(Configuration.ConvolutionConfigurations[i]);
-
+            
             PerceptronLayers = new PerceptronLayer[Configuration.ForwardLayout];
             for (var i = 0; i < Configuration.ForwardLayout - 1; i++)
                 PerceptronLayers[i] =
@@ -29,7 +29,7 @@ namespace NeuroWeb.EXMPL.OBJECTS {
 
         public Configuration Configuration { get; }        
         private Tensor ImageTensor { get; set; }
-        private ConvolutionLayer[] ConvolutionLayers { get; }
+        public ConvolutionLayer[] ConvolutionLayers { get; }
         public PerceptronLayer[] PerceptronLayers { get; }        
         
         public void InsertInformation(Number number) {
@@ -52,7 +52,8 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     perceptronInput = PerceptronLayers[i].GetNextLayer();
                 }
 
-                PerceptronLayers[^1].Neurons = PerceptronLayer.Softmax(perceptronInput);
+                //PerceptronLayers[^1].Neurons = PerceptronLayer.Softmax(perceptronInput);
+                PerceptronLayers[^1].Neurons = perceptronInput;
                 return GetMaxIndex(perceptronInput);
             }
             catch (Exception e) {
@@ -74,47 +75,52 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return index;
         }
         
-        public void BackPropagation(double expectedAnswer, double learningRange) {
+        public void BackPropagation(double expectedAnswer, double learningRate) {
             try {
                 for (var i = 0; i < PerceptronLayers[^1].Neurons.Length - 1; i++) 
                     if (i != (int)expectedAnswer) 
-                        PerceptronLayers[^1].NeuronsError[i] = -PerceptronLayers[^1].Neurons[i];
-                    else PerceptronLayers[^1].NeuronsError[i] = (1.0 - PerceptronLayers[^1].Neurons[i]);
+                        PerceptronLayers[^1].NeuronsError[i] = -PerceptronLayers[^1].Neurons[i] 
+                                                               * NeuronActivate.GetDerivative(PerceptronLayers[^1].Neurons[i]);
+                    else PerceptronLayers[^1].NeuronsError[i] = (1.0 - PerceptronLayers[^1].Neurons[i])
+                                                                * NeuronActivate.GetDerivative(PerceptronLayers[^1].Neurons[i]);
 
                 for (var i = PerceptronLayers.Length - 2; i >= 0; i--) {
                     PerceptronLayers[i].NeuronsError = PerceptronLayers[i].Weights.GetTranspose() * PerceptronLayers[i + 1].NeuronsError;
                     for (var j = 0; j < PerceptronLayers[i].Neurons.Length; j++)
-                        PerceptronLayers[i].NeuronsError[j] = NeuronActivate.GetDerivative(PerceptronLayers[i].NeuronsError[j]);
+                        PerceptronLayers[i].NeuronsError[j] *= NeuronActivate.GetDerivative(PerceptronLayers[i].NeuronsError[j]);
                 }
-                
+
                 for (var i = 0; i < PerceptronLayers.Length - 1; ++i)
-                    PerceptronLayers[i].SetWeights(learningRange, PerceptronLayers[i + 1]);
+                    PerceptronLayers[i].SetWeights(learningRate, PerceptronLayers[i + 1]);
 
                 var errorTensor  = new Vector(PerceptronLayers[0].NeuronsError).AsTensor(
                     ConvolutionLayers.Last().Output.Channels[0].Body.GetLength(0),
                     ConvolutionLayers.Last().Output.Channels[0].Body.GetLength(1), 
                     ConvolutionLayers.Last().Output.Channels.Count);
-
+                
                 for (var i = ConvolutionLayers.Length - 1; i >= 0; i--) {
                     var inputTensor     = ConvolutionLayers[i].Input;
-                    var prevErrorTensor = errorTensor.GetSameChannels(inputTensor);
+                    var prevErrorTensor = errorTensor;
 
                     prevErrorTensor = Pooling.BackMaxPool(prevErrorTensor, ConvolutionLayers[i].NotPooled, 
-                        Configuration.ConvolutionConfigurations[i].PoolSize); 
-                    prevErrorTensor = NeuronActivate.GetDerivative(prevErrorTensor);
+                        Configuration.ConvolutionConfigurations[i].PoolSize);
+                    prevErrorTensor *= NeuronActivate.GetDerivative(prevErrorTensor);
 
-                    var filterGradient =
-                        Convolution.GetConvolution(inputTensor, 
-                                new[] { prevErrorTensor.AsFilter() }, 1).GetSameChannels(ConvolutionLayers[i].Filters[0]).AsFilter();
-
+                    var originalFilters = ConvolutionLayers[i].Filters;
+                    var extendedInput = inputTensor.GetSameChannels(prevErrorTensor);
                     for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
-                            ConvolutionLayers[i].Filters[f] -= filterGradient * learningRange;
-                        //for (var bias = 0; bias < ConvolutionLayers[i].Filters[f].Bias.Count; bias++) 
-                          //  ConvolutionLayers[i].Filters[f].Bias[bias] -= prevErrorTensor.Channels[bias].GetSum() * learningRange; 
+                        for (var channel = 0; channel < ConvolutionLayers[i].Filters[f].Channels.Count; channel++) {
+                            var filterGradient = Convolution.GetConvolution(extendedInput.Channels[f],
+                                prevErrorTensor.Channels[f], 1, ConvolutionLayers[i].Filters[f].Bias[channel]);
+                            ConvolutionLayers[i].Filters[f].Channels[channel] -= filterGradient.GetFlip() * learningRate;
+                        }
+                        
+                        for (var bias = 0; bias < ConvolutionLayers[i].Filters[f].Bias.Count; bias++) 
+                            ConvolutionLayers[i].Filters[f].Bias[bias] -= prevErrorTensor.Channels[bias].GetSum() * learningRate;
                     }
                     
                     errorTensor = Convolution.GetConvolution(Padding.GetPadding(prevErrorTensor.GetSameChannels(ConvolutionLayers[i].Filters[0]), 
-                        (ConvolutionLayers[i].Filters[0].Channels[0].Body.GetLength(0) - 1)/2),ConvolutionLayers[i].FlipFilters(), 1);      
+                        (ConvolutionLayers[i].Filters[0].Channels[0].Body.GetLength(0) - 1)/2), originalFilters, 1);      
                 }
             }
             catch (Exception e) {

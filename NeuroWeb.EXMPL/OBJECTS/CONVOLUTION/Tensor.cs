@@ -45,15 +45,24 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
 
         private Tensor IncreaseChannels(int channels) {
             var tensor = new Tensor(Channels);
-            for (var i = 0; i < channels; i++) tensor.Channels.Add(Channels[^1]);
+            
+            for (var i = 0; i < channels; i++) tensor.Channels.Add(tensor.Channels[^1]);
+            
             return tensor;
         }
         
         private Tensor CropChannels(int channels) {
             var matrix = new List<Matrix>();
-            for (var i = 0; i < channels; i++) {
+
+            for (var i = 0; i < channels * 2; i += 2) {
                 matrix.Add(Channels[i]);
+                for (var x = 0; x < Channels[i].Body.GetLength(0); x++) {
+                    for (var y = 0; y < Channels[i].Body.GetLength(1); y++) {
+                        matrix[^1].Body[x,y] = Math.Min(Channels[i].Body[x, y], Channels[i + 1].Body[x, y]);
+                    }
+                }
             }
+            
             return new Tensor(matrix);
         }
         

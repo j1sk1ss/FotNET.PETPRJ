@@ -89,6 +89,32 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             return endMatrix;
         }
 
+        public static Matrix operator -(Matrix matrix1, Matrix matrix2) {
+            var xSize = matrix1.Body.GetLength(0);
+            var ySize = matrix2.Body.GetLength(1);
+            
+            var endMatrix = new Matrix(new double[xSize, ySize]);
+
+            for (var i = 0; i < xSize; i++) 
+                for (var j = 0; j < ySize; j++) 
+                    endMatrix.Body[i, j] = matrix1.Body[i, j] - matrix2.Body[i, j];
+
+            return endMatrix;
+        }
+        
+        public static Matrix operator *(Matrix matrix1, double value) {
+            var xSize = matrix1.Body.GetLength(0);
+            var ySize = matrix1.Body.GetLength(1);
+            
+            var endMatrix = new Matrix(new double[xSize, ySize]);
+
+            for (var i = 0; i < xSize; i++) 
+                for (var j = 0; j < ySize; j++) 
+                    endMatrix.Body[i, j] = matrix1.Body[i, j] * value;
+
+            return endMatrix;
+        }
+        
         public double GetSum() {
             var sum = 0d;
             for (var i = 0; i < Body.GetLength(0); i++)

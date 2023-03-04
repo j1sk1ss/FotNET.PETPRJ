@@ -83,7 +83,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 
                 if (lines[0].Split(" ")[0] != "Examples") return numbers;
                 //examples = int.Parse(lines[0].Split(" ")[1]);
-                examples = 1000;
+                examples = 10000;
                 for (var i = 0; i < examples; i++) {
                     numbers.Add(new Number(configuration));
                     for (var j = 0; j < configuration.Weight * configuration.Height; j++) 
