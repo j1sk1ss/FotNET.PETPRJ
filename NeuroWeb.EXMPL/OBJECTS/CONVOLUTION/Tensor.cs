@@ -135,7 +135,7 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
     
     public class Filter : Tensor {
         public Filter(List<Matrix> matrix) : base(matrix) {
-            Bias     = new List<double>();
+            Bias = new List<double>();
             for (var i = 0; i < matrix.Count; i++) Bias.Add(0);
             
             Channels = matrix;

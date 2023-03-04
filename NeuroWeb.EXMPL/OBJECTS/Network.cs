@@ -112,11 +112,11 @@ namespace NeuroWeb.EXMPL.OBJECTS {
                     for (var f = 0; f < ConvolutionLayers[i].Filters.Length; f++) {
                             ConvolutionLayers[i].Filters[f] -= filterGradient * learningRange;
                         for (var bias = 0; bias < ConvolutionLayers[i].Filters[f].Bias.Count; bias++) 
-                            ConvolutionLayers[i].Filters[f].Bias[bias] -= prevErrorTensor.Channels[bias].GetSum() * learningRange;
+                            ConvolutionLayers[i].Filters[f].Bias[bias] -= prevErrorTensor.Channels[bias].GetSum() * learningRange; 
                     }
                     
                     errorTensor = Convolution.GetConvolution(Padding.GetPadding(prevErrorTensor.GetSameChannels(ConvolutionLayers[i].Filters[0]), 
-                        (ConvolutionLayers[i].Filters[0].Channels[0].Body.GetLength(0) - 1)/2), ConvolutionLayers[i].FlipFilters(), 1);      
+                        (ConvolutionLayers[i].Filters[0].Channels[0].Body.GetLength(0) - 1)/2),ConvolutionLayers[i].FlipFilters(), 1);      
                 }
             }
             catch (Exception e) {

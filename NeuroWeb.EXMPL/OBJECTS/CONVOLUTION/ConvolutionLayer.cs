@@ -47,6 +47,13 @@ namespace NeuroWeb.EXMPL.OBJECTS.CONVOLUTION {
             return newFilters;
         }
 
+        public static Filter[] GetFiltersWithoutBiases(Filter[] filters) { 
+            for (var i = 0; i < filters.Length; i++) {
+                filters[i] = new Filter(filters[i].Channels);
+            }
+            return filters;
+        }
+
         public double GetFilterValue(int filter, int channel, int x, int y) 
             => Filters[filter].Channels[channel].Body[x, y];
 

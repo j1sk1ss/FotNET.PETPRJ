@@ -7,7 +7,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             for (var i = 0; i < value.Length; i++) 
                 switch (value[i]) {
                     case < 0:
-                        value[i] *= 0.01d;
+                        value[i] *= 0.0001d;
                         break;
                     case > 1:
                         value[i] = 1d + .01d * (value[i] - 1d);
@@ -22,7 +22,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 for (var j = 0; j < matrix.Body.GetLength(1); j++) 
                     switch (matrix.Body[i,j]) {
                         case < 0:
-                            matrix.Body[i,j] *= 0.01d;
+                            matrix.Body[i,j] *= 0.0001d;
                             break;
                         case > 1:
                             matrix.Body[i,j] = 1d + .01d * (matrix.Body[i,j] - 1d);
@@ -33,19 +33,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
         }
         
         public static Tensor Activation(Tensor tensor) {
-            foreach (var matrix in tensor.Channels) {
-               for (var i = 0; i < matrix.Body.GetLength(0); i++) 
-                   for (var j = 0; j < matrix.Body.GetLength(1); j++) 
-                       switch (matrix.Body[i,j]) {
-                           case < 0:
-                               matrix.Body[i,j] *= 0.01d;
-                               break;
-                           case > 1:
-                               matrix.Body[i,j] = 1d + .01d * (matrix.Body[i,j] - 1d);
-                               break;
-                       } 
-            }
-            
+            for (var i = 0; i < tensor.Channels.Count; i++)
+                tensor.Channels[i] = Activation(tensor.Channels[i]);
             
             return tensor;
         }
