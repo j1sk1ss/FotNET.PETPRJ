@@ -5,7 +5,7 @@ using System.IO;
 using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS;
-using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
+using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using Vector = NeuroWeb.EXMPL.OBJECTS.Vector;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
@@ -17,7 +17,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 var prediction = network.ForwardFeed();
                 if (expected.Equals(prediction)) return;
                 
-                network.BackPropagation(expected, .008d);
+                network.BackPropagation(expected);
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при обучении!", MessageBoxButton.OK, 
@@ -53,7 +53,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                         //MessageBox.Show(network.ConvolutionLayers[0].Filters[0].Channels[0].Print() + " ???  " + i);
                         //MessageBox.Show(new Vector(network.ConvolutionLayers[0].Filters[0].Bias.ToArray()).Print());
                         if (prediction != right) 
-                            network.BackPropagation(right, .005d * Math.Exp(-era / (double)teachingCounts));
+                            network.BackPropagation(right);
                         else rightAnswersCount++;
                     }
                     if (rightAnswersCount > maxRightAnswers) maxRightAnswers = rightAnswersCount;
@@ -63,7 +63,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                     
                     if (++era == teachingCounts) break;
                 }
-                network.SaveWeights();
+                //network.SaveWeights();
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при глубоком обучении!", MessageBoxButton.OK, 

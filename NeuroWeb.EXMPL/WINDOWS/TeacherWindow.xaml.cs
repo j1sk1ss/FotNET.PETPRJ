@@ -7,6 +7,7 @@ using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.Gui;
 using NeuroWeb.EXMPL.OBJECTS;
+using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS;
 
 using Configuration = NeuroWeb.EXMPL.Gui.Configuration;

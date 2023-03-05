@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
+using NeuroWeb.EXMPL.OBJECTS.MATH;
+using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Vector {
@@ -27,6 +28,13 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         public static Vector operator -(Vector vector1, double value) {
             for (var i = 0; i < vector1.Size; i++) {
                 vector1[i] -= value;
+            }
+            return vector1;
+        }
+        
+        public static Vector operator *(Vector vector1, Vector vector2) {
+            for (var i = 0; i < vector1.Size; i++) {
+                vector1[i] *= vector2[i];
             }
             return vector1;
         }

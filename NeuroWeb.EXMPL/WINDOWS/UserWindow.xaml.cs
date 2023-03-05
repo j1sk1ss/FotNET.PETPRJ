@@ -12,10 +12,10 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS;
-using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
-using NeuroWeb.EXMPL.OBJECTS.FORWARD;
+using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS;
-using Matrix = NeuroWeb.EXMPL.OBJECTS.Matrix;
+using NeuroWeb.EXMPL.SCRIPTS.MATH;
+using Matrix = NeuroWeb.EXMPL.OBJECTS.MATH.Matrix;
 
 namespace NeuroWeb.EXMPL.WINDOWS {
     public partial class User {
@@ -43,7 +43,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                      Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
                 };  
                 
-                Network.ReadWeights();
+                //Network.ReadWeights();
                 
                 Update = new DispatcherTimer {
                     Interval = new TimeSpan(0,0,0,1)
@@ -91,7 +91,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                 } 
                 
                 for (var i = 0; i < Answers.Count; i++) Answers[i].Content = 
-                    $"{Math.Abs(Math.Round(PerceptronLayer.Softmax(Network.PerceptronLayers[2].Neurons)[i] * 100, 1))}%";            
+                    $"{Math.Abs(Math.Round(SoftMax.Softmax(Network.Layers[^1].GetValues().Flatten().ToArray())[i] * 100, 1))}%";            
             
                 Matrix.Content = temp;
                 Number         = matrix;
@@ -146,10 +146,11 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         
         private void SaveWeights(object sender, RoutedEventArgs e) {
             MessageBox.Show("Сохранение начато...");
-            Network.SaveWeights();
+            //Network.SaveWeights();
         }
-        
-        private void LoadWeights(object sender, RoutedEventArgs e) => Network.ReadWeights();
+
+        private void LoadWeights(object sender, RoutedEventArgs e) { }
+    //Network.ReadWeights(); 
         
         private void DragWindow(object sender, MouseButtonEventArgs e) {
             base.OnMouseLeftButtonDown(e); 

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using NeuroWeb.EXMPL.OBJECTS;
-using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
+using NeuroWeb.EXMPL.OBJECTS.MATH;
+using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 
-namespace NeuroWeb.EXMPL.SCRIPTS {
+namespace NeuroWeb.EXMPL.SCRIPTS.POOLING {
     public static class Pooling {
         public static Tensor BackMaxPool(Tensor picture, Tensor previousTensor, int poolSize) {
             var tensor = new Tensor(new List<Matrix>());

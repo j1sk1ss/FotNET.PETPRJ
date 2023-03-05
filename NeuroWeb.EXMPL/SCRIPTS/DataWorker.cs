@@ -3,7 +3,8 @@ using System.Windows;
 using System.Collections.Generic;
 
 using NeuroWeb.EXMPL.OBJECTS;
-using NeuroWeb.EXMPL.OBJECTS.CONVOLUTION;
+using NeuroWeb.EXMPL.OBJECTS.MATH;
+using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using Vector = NeuroWeb.EXMPL.OBJECTS.Vector;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
@@ -82,8 +83,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
 
                 
                 if (lines[0].Split(" ")[0] != "Examples") return numbers;
-                //examples = int.Parse(lines[0].Split(" ")[1]);
-                examples = 10000;
+                examples = int.Parse(lines[0].Split(" ")[1]);
+                //examples = 10000;
                 for (var i = 0; i < examples; i++) {
                     numbers.Add(new Number(configuration));
                     for (var j = 0; j < configuration.Weight * configuration.Height; j++) 

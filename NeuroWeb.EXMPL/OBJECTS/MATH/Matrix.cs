@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Windows;
 
-namespace NeuroWeb.EXMPL.OBJECTS {
+namespace NeuroWeb.EXMPL.OBJECTS.MATH {
     public class Matrix {
         public Matrix(double[,] body) {
             Row  = body.GetLength(0);
@@ -26,9 +27,9 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             var columns = Body.GetLength(1);
             var temp = new double[columns, rows];
 
-            for (var i = 0; i < temp.GetLength(0); i++) {
-                for (var j = 0; j < temp.GetLength(1); j++) {
-                    temp[i, j] = Body[j, i];
+            for (var i = 0; i < rows; i++) { 
+                for (var j = 0; j < columns; j++) { 
+                    temp[j, 1] = Body[1, j];
                 }
             }
 
@@ -50,17 +51,17 @@ namespace NeuroWeb.EXMPL.OBJECTS {
         public static double[] operator *(Matrix matrix, double[] neuron) {
             if (matrix.Col != neuron.Length) throw new Exception();
             
-            var c = new double[matrix.Row];
+            var vector = new double[matrix.Row];
             
             for (var x = 0; x < matrix.Row; ++x) {
                 double tmp = 0;
                 for (var y = 0; y < matrix.Col; ++y) 
                     tmp += matrix.Body[x, y] * neuron[y];
                 
-                c[x] = tmp;
+                vector[x] = tmp;
             }
             
-            return c;
+            return vector;
         }
 
         public static Matrix operator +(Matrix matrix1, Matrix matrix2) {
@@ -98,6 +99,19 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             for (var i = 0; i < xSize; i++) 
                 for (var j = 0; j < ySize; j++) 
                     endMatrix.Body[i, j] = matrix1.Body[i, j] - matrix2.Body[i, j];
+
+            return endMatrix;
+        }
+        
+        public static Matrix operator -(Matrix matrix1, double value) {
+            var xSize = matrix1.Body.GetLength(0);
+            var ySize = matrix1.Body.GetLength(1);
+            
+            var endMatrix = new Matrix(new double[xSize, ySize]);
+
+            for (var i = 0; i < xSize; i++) 
+            for (var j = 0; j < ySize; j++) 
+                endMatrix.Body[i, j] = matrix1.Body[i, j] - value;
 
             return endMatrix;
         }

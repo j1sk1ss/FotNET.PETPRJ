@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using NeuroWeb.EXMPL.OBJECTS.MATH;
+using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 
 namespace NeuroWeb.EXMPL.OBJECTS {
     public class Number {
