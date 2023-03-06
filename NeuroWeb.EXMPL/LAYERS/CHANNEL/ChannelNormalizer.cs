@@ -17,5 +17,8 @@ namespace NeuroWeb.EXMPL.LAYERS.CHANNEL {
         public Tensor GetValues() {
             throw new System.NotImplementedException();
         }
+
+        public string GetData() => "";
+        public string LoadData(string data) => data;
     }
 }

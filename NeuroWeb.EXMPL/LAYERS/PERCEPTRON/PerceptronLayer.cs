@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using NeuroWeb.EXMPL.INTERFACES;
 using NeuroWeb.EXMPL.OBJECTS;
@@ -77,6 +79,29 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
 
             for (var j = 0; j < Weights.Body.GetLength(1); j++)
                 Bias[j] += NeuronsError[j] * learningRate;
+        }
+
+        public string GetData() {
+            var temp = "";
+            temp += Weights.GetValues();
+            foreach (var bias in Bias) {
+                temp += bias + " "; 
+            }
+            return temp;
+        }
+
+        public string LoadData(string data) {
+            var position    = 0;
+            var dataNumbers = data.Split(" ");
+
+            for (var i = 0; i < Weights.Body.GetLength(0); i++)
+                for (var j = 0; j < Weights.Body.GetLength(1); j++)
+                    Weights.Body[i, j] = double.Parse(dataNumbers[position++]);
+
+            for (var j = 0; j < Bias.Length; j++)
+                Bias[j] = double.Parse(dataNumbers[position++]);
+
+            return String.Join(" ", dataNumbers.Skip(position).Select(p => p.ToString()).ToArray());
         }
     }
 }

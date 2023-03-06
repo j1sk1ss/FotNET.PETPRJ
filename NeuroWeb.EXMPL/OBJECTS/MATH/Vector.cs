@@ -75,7 +75,21 @@ namespace NeuroWeb.EXMPL.OBJECTS {
             
             return tensor;
         }
-        
+
+        public static int GetMaxIndex(IReadOnlyList<double> values) {
+            var max = values[0];
+            var index = 0;
+
+            for (var i = 0; i < values.Count; i++)
+                if (max < values[i])
+                {
+                    max = values[i];
+                    index = i;
+                }
+
+            return index;
+        }
+
         public string Print() =>
             Body.Aggregate("", (current, t) => current + (" " + t));
     }

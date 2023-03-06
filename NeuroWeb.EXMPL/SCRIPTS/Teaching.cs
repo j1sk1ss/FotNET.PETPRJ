@@ -26,8 +26,6 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
             }
         }
 
-
-        [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         public static void HardStudying(Network network, int teachingCounts) {
             try {
                 double rightAnswersCount = 0d, maxRightAnswers = 0d;

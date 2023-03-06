@@ -23,5 +23,8 @@ namespace NeuroWeb.EXMPL.LAYERS.POOLING {
         public Tensor BackPropagate(Tensor error) {
             return Pooling.BackMaxPool(error.GetSameChannels(_inputTensor), _inputTensor, _poolSize);
         }
+
+        public string GetData() => "";
+        public string LoadData(string data) => data;
     }
 }

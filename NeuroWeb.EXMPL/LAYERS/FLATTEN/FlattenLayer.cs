@@ -33,5 +33,8 @@ namespace NeuroWeb.EXMPL.LAYERS.FLATTEN {
             return new Vector(temp.ToArray()).AsTensor(_inputTensor.Channels[0].Body.GetLength(0),
                 _inputTensor.Channels[0].Body.GetLength(1), _inputTensor.Channels.Count);
         }
+
+        public string GetData() => "";
+        public string LoadData(string data) => data;
     }
 }

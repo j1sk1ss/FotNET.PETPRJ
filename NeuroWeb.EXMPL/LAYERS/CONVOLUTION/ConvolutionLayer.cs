@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using System.Linq;
 
 using NeuroWeb.EXMPL.INTERFACES;
-using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION;
@@ -10,7 +10,6 @@ using NeuroWeb.EXMPL.SCRIPTS.MATH;
 
 namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
     public class ConvolutionLayer : ILayer {
-
         public ConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth, int stride, double learningRate) {
             Filters = new Filter[filters];
             for (var j = 0; j < filters; j++) {
@@ -56,9 +55,7 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
             return filters;
         }
 
-        public Tensor GetValues() {
-            return Input;
-        }
+        public Tensor GetValues() => Input;
         
         public Tensor GetNextLayer(Tensor layer) {
             Input = layer;
@@ -91,8 +88,42 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
                 }
             }
  
-            return Convolution.GetConvolution(Padding.GetPadding(prevErrorTensor.GetSameChannels(Filters[0]), 
-                (Filters[0].Channels[0].Body.GetLength(0) - 1)), FlipFilters(GetFiltersWithoutBiases(originalFilters)), 1);  
+            return Convolution.GetFullConvolution(prevErrorTensor.GetSameChannels(Filters[0]),
+                FlipFilters(GetFiltersWithoutBiases(originalFilters)), 1);  
+        }
+
+        public string GetData() {
+            var temp = "";
+            foreach (var filter in Filters) {
+                foreach (var channel in filter.Channels) {
+                    temp += channel.GetValues();
+                }
+
+                foreach (var bias in filter.Bias) {
+                    temp += bias + " ";
+                }
+            }
+            return temp;
+        }
+
+        public string LoadData(string data) {
+            var position = 0;
+            var dataNumbers = data.Split(" ");
+
+            foreach (var filter in Filters) {
+                foreach (var channel in filter.Channels) {
+                    for (var x = 0; x < channel.Body.GetLength(0); x++) {
+                        for (var y = 0; y < channel.Body.GetLength(1); y++) {
+                            channel.Body[x, y] = double.Parse(dataNumbers[position++]);
+                        }
+                    }
+                }
+
+                for (var bias = 0; bias < filter.Bias.Count; bias++) 
+                    filter.Bias[bias] = double.Parse(dataNumbers[position++]);
+            }
+
+            return String.Join(" ", dataNumbers.Skip(position).Select(p => p.ToString()).ToArray());
         }
     }
 }
