@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 
-namespace NeuroWeb.EXMPL.OBJECTS {
+namespace NeuroWeb.EXMPL.OBJECTS.MATH {
     public class Vector {
         public Vector(double[] array) {
             Body = array;

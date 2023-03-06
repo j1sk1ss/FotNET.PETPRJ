@@ -59,49 +59,39 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
         
         public Tensor GetNextLayer(Tensor layer) {
             Input = layer;
-            var nextLayer = new Tensor(new List<Matrix>());
-
-            nextLayer.Channels.AddRange(Convolution.GetConvolution(layer, Filters, _stride).Channels);
-            nextLayer = NeuronActivate.LeakyReLu(nextLayer);
-
-            return NeuronActivate.LeakyReLu(nextLayer);
+            var nextLayer = NeuronActivate.LeakyReLu(Convolution.GetConvolution(layer, Filters, _stride));
+            return nextLayer;
         }
 
         public Tensor BackPropagate(Tensor error) {
-            var inputTensor     = Input;
-            var prevErrorTensor = error;
+            var inputTensor = Input;
             
-            prevErrorTensor = NeuronActivate.GetDerivative(prevErrorTensor);
-
             var originalFilters = Filters;
-            var extendedInput   = inputTensor.GetSameChannels(prevErrorTensor);
+            var extendedInput   = inputTensor.GetSameChannels(error);
                     
             for (var f = 0; f < Filters.Length; f++) {
                 for (var channel = 0; channel < Filters[f].Channels.Count; channel++) {
                     var channelGradient = Convolution.GetConvolution(extendedInput.Channels[f],
-                        prevErrorTensor.Channels[f], 1, Filters[f].Bias[channel]);
+                        error.Channels[f], 1, Filters[f].Bias[channel]);
                     Filters[f].Channels[channel] -= channelGradient * _learningRate;
                 }
                         
                 for (var bias = 0; bias < Filters[f].Bias.Count; bias++) {
-                    Filters[f].Bias[bias] -= prevErrorTensor.Channels[bias].GetSum() * _learningRate;
+                    Filters[f].Bias[bias] -= error.Channels[bias].GetSum() * _learningRate;
                 }
             }
- 
-            return Convolution.GetFullConvolution(prevErrorTensor.GetSameChannels(Filters[0]),
-                FlipFilters(GetFiltersWithoutBiases(originalFilters)), 1);  
+
+            var nextError = Convolution.GetExtendedConvolution(error.GetSameChannels(Filters[0]),
+                FlipFilters(GetFiltersWithoutBiases(originalFilters)), 1);
+            
+            return NeuronActivate.GetDerivative(nextError);  
         }
 
         public string GetData() {
             var temp = "";
             foreach (var filter in Filters) {
-                foreach (var channel in filter.Channels) {
-                    temp += channel.GetValues();
-                }
-
-                foreach (var bias in filter.Bias) {
-                    temp += bias + " ";
-                }
+                temp = filter.Channels.Aggregate(temp, (current, channel) => current + channel.GetValues());
+                temp = filter.Bias.Aggregate(temp, (current, bias) => current + (bias + " "));
             }
             return temp;
         }
@@ -123,7 +113,7 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
                     filter.Bias[bias] = double.Parse(dataNumbers[position++]);
             }
 
-            return String.Join(" ", dataNumbers.Skip(position).Select(p => p.ToString()).ToArray());
+            return string.Join(" ", dataNumbers.Skip(position).Select(p => p.ToString()).ToArray());
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
-using Vector = NeuroWeb.EXMPL.OBJECTS.Vector;
+using Vector = NeuroWeb.EXMPL.OBJECTS.MATH.Vector;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class DataWorker {
@@ -55,8 +55,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
         public static Tensor ReadImage(double[][] pixelsValue) {
             var tensor = new Tensor(new List<Matrix>());
             
-            for (var i = 0; i < pixelsValue.Length; i++) {
-                var matrix = new Vector(pixelsValue[i]).AsMatrix((int)Math.Sqrt(pixelsValue.Length),
+            foreach (var value in pixelsValue) {
+                var matrix = new Vector(value).AsMatrix((int)Math.Sqrt(pixelsValue.Length),
                     (int)Math.Sqrt(pixelsValue.Length));
                 tensor.Channels.Add(matrix);
             }
@@ -83,8 +83,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
 
                 
                 if (lines[0].Split(" ")[0] != "Examples") return numbers;
-                examples = int.Parse(lines[0].Split(" ")[1]);
-                //examples = 10000;
+                //examples = int.Parse(lines[0].Split(" ")[1]);
+                examples = 1000;
                 for (var i = 0; i < examples; i++) {
                     numbers.Add(new Number(configuration));
                     for (var j = 0; j < configuration.Weight * configuration.Height; j++) 

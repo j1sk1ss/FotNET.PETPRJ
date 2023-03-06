@@ -43,7 +43,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                      Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
                 };  
                 
-                //Network.ReadWeights();
+                Network.ReadWeights();
                 
                 Update = new DispatcherTimer {
                     Interval = new TimeSpan(0,0,0,1)

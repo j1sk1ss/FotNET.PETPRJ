@@ -8,7 +8,7 @@ using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS.MATH;
-using Vector = NeuroWeb.EXMPL.OBJECTS.Vector;
+using Vector = NeuroWeb.EXMPL.OBJECTS.MATH.Vector;
 
 namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
     public class PerceptronLayer : ILayer {
@@ -46,11 +46,6 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
         private double[] NeuronsError { get; set; }
         private Matrix Weights { get; }
 
-        public double[] GetNextLayer(double[] neurons) {
-            var nextLayer = new Vector(Weights * neurons) + new Vector(Bias);
-            return NeuronActivate.LeakyReLu(nextLayer);
-        }
-
         public Tensor GetValues() {
             return new Vector(Neurons).AsTensor(1, Neurons.Length, 1);
         }
@@ -59,8 +54,8 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
             var temp = tensor.Flatten();
             
             Neurons = temp.ToArray();
-            var nextLayer = new Vector(Weights * Neurons) + new Vector(Bias);
-            
+            var nextLayer = NeuronActivate.LeakyReLu(new Vector(Weights * Neurons) + new Vector(Bias));
+
             return new Vector(nextLayer).AsTensor(1, nextLayer.Length, 1);
         }
 
@@ -68,8 +63,7 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
             var temp = error.Flatten();
             NeuronsError       = Weights.GetTranspose() * temp.ToArray();
             SetWeights(_learningRate, temp.ToArray());
-            return new Vector((new Vector(NeuronsError) * new Vector(NeuronActivate.GetDerivative(NeuronsError))).Body)
-                .AsTensor(1, NeuronsError.Length, 1);
+            return new Vector(NeuronActivate.GetDerivative(NeuronsError)).AsTensor(1, NeuronsError.Length, 1);
         }
 
         private void SetWeights(double learningRate, IReadOnlyList<double> previousErrors) {
@@ -84,10 +78,7 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
         public string GetData() {
             var temp = "";
             temp += Weights.GetValues();
-            foreach (var bias in Bias) {
-                temp += bias + " "; 
-            }
-            return temp;
+            return Bias.Aggregate(temp, (current, bias) => current + (bias + " "));
         }
 
         public string LoadData(string data) {
@@ -101,7 +92,7 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
             for (var j = 0; j < Bias.Length; j++)
                 Bias[j] = double.Parse(dataNumbers[position++]);
 
-            return String.Join(" ", dataNumbers.Skip(position).Select(p => p.ToString()).ToArray());
+            return string.Join(" ", dataNumbers.Skip(position).Select(p => p.ToString()).ToArray());
         }
     }
 }

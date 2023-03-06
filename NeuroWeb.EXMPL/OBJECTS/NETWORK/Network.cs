@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 
 using Microsoft.Win32;
@@ -11,20 +12,21 @@ using NeuroWeb.EXMPL.LAYERS.FLATTEN;
 using NeuroWeb.EXMPL.LAYERS.PERCEPTRON;
 using NeuroWeb.EXMPL.LAYERS.POOLING;
 using NeuroWeb.EXMPL.SCRIPTS.MATH;
+using Vector = NeuroWeb.EXMPL.OBJECTS.MATH.Vector;
 
 namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
     public class Network {
         public Network(Configuration configuration) {
             Configuration = configuration;
             Layers = new List<ILayer> {
-                new ConvolutionLayer(6, 5, 5, 1, 1, .005),
+                new ConvolutionLayer(6, 5, 5, 1, 1, .002),
                 new PoolingLayer(2),
-                new ConvolutionLayer(16, 5, 5, 6, 1, .005),
+                new ConvolutionLayer(16, 5, 5, 6, 1, .002),
                 new PoolingLayer(2),
                 new FlattenLayer(),
-                new PerceptronLayer(256, 128, .005),
-                new PerceptronLayer(128, 10, .005),
-                new PerceptronLayer(10, .005)
+                new PerceptronLayer(256, 128, .002),
+                new PerceptronLayer(128, 10, .002),
+                new PerceptronLayer(10, .002)
             };
         }
         public Configuration Configuration { get; }
@@ -81,11 +83,8 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
         public void SaveWeights() {
             try {
                 MessageBox.Show("Начата запись весов!");
-                var temp = "";
-
-                foreach (var layer in Layers) {
-                    temp += layer.GetData();
-                }
+                
+                var temp = Layers.Aggregate("", (current, layer) => current + layer.GetData());
 
                 if (File.Exists(_weights)) File.WriteAllText(_weights, temp);
                 else {

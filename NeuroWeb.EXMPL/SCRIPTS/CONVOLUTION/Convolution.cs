@@ -40,7 +40,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION {
             return newTensor;
         }
 
-        public static Tensor GetFullConvolution(Tensor tensor, Filter[] filters, int stride) {
+        public static Tensor GetExtendedConvolution(Tensor tensor, Filter[] filters, int stride) {
             tensor        = Padding.GetPadding(tensor, filters[0].Channels[0].Body.GetLength(0) - 1);
             return GetConvolution(tensor, filters, stride);
         }

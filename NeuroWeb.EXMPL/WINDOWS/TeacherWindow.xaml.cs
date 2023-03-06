@@ -39,7 +39,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                 Filter = "TXT files | *.txt"
             };
             if (file.ShowDialog() == true) 
-                Teaching.HardStudying(new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(file.FileName))), 10);
+                Teaching.HardStudying(new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(file.FileName))), 15);
         }
     }
 }

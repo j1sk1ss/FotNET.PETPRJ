@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Windows;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
-using Vector = NeuroWeb.EXMPL.OBJECTS.Vector;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class Teaching {
@@ -61,7 +59,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                     
                     if (++era == teachingCounts) break;
                 }
-                //network.SaveWeights();
+                network.SaveWeights();
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}", "Ошибка при глубоком обучении!", MessageBoxButton.OK, 

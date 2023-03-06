@@ -5,7 +5,8 @@ namespace NeuroWeb.EXMPL.SCRIPTS.MATH {
     public static class NeuronActivate {
         private static double LeakyReLu(double value) => value switch {
             <= 0 => value * .01d,
-            _    => 1d + .01d * (value - 1d)
+            > 1  => 1d + .01d * (value - 1d),
+            _    => value
         };
         
         public static double[] LeakyReLu(double[] value) {
@@ -29,7 +30,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS.MATH {
             return tensor;
         }
         
-        public static double GetDerivative(double value) => value is < 0 or > 1 ? .01d : value;
+        public static double GetDerivative(double value) => value * value is < 0 or > 1 ? .01d : value;
 
         public static double[] GetDerivative(double[] values) {
             for (var i = 0; i < values.Length; i++) 
@@ -38,10 +39,11 @@ namespace NeuroWeb.EXMPL.SCRIPTS.MATH {
         }
         
         public static Tensor GetDerivative(Tensor tensor) {
-            for (var channels = 0; channels < tensor.Channels.Count; channels++)
-                for (var x = 0; x < tensor.Channels[channels].Body.GetLength(0); x++)
-                    for (var y = 0; y < tensor.Channels[channels].Body.GetLength(1); y++)  
-                        tensor.Channels[channels].Body[x, y] = GetDerivative(tensor.Channels[channels].Body[x, y]); 
+            foreach (var channel in tensor.Channels)
+                for (var x = 0; x < channel.Body.GetLength(0); x++)
+                    for (var y = 0; y < channel.Body.GetLength(1); y++)  
+                        channel.Body[x, y] = GetDerivative(channel.Body[x, y]);
+
             return tensor;
         }
     }
