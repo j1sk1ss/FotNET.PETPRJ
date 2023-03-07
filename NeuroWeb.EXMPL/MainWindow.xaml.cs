@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using NeuroWeb.EXMPL.OBJECTS;
+using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.SCRIPTS;
+using NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION;
 using NeuroWeb.EXMPL.WINDOWS;
+using Matrix = NeuroWeb.EXMPL.OBJECTS.MATH.Matrix;
 
 
 namespace NeuroWeb.EXMPL {

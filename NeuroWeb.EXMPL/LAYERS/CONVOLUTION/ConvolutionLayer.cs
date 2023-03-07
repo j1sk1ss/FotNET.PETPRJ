@@ -21,7 +21,9 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
                 }
             }
 
-            FilterFillRandom();
+            foreach (var filter in Filters)
+                foreach (var matrix in filter.Channels)
+                    matrix.FillRandom();
             
             _learningRate = learningRate;
             _stride       = stride;
@@ -31,15 +33,8 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
         private readonly int _stride;
 
         private Filter[] Filters { get; }
-
         private Tensor Input { get; set; }
-
-        private void FilterFillRandom() {
-            foreach (var filter in Filters)
-                foreach (var matrix in filter.Channels)
-                    matrix.FillRandom();
-        }
-
+        
         private static Filter[] FlipFilters(IReadOnlyList<Filter> filters) {
             var newFilters = new Filter[filters.Count];
             for (var i = 0; i < filters.Count; i++) {
@@ -72,12 +67,12 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
             for (var f = 0; f < Filters.Length; f++) {
                 for (var channel = 0; channel < Filters[f].Channels.Count; channel++) {
                     var channelGradient = Convolution.GetConvolution(extendedInput.Channels[f],
-                        error.Channels[f], 1, Filters[f].Bias[channel]);
+                        error.Channels[f], _stride, Filters[f].Bias[channel]);
                     Filters[f].Channels[channel] -= channelGradient * _learningRate;
                 }
                         
                 for (var bias = 0; bias < Filters[f].Bias.Count; bias++) {
-                    Filters[f].Bias[bias] -= error.Channels[bias].GetSum() * _learningRate;
+                    Filters[f].Bias[bias] -= error.Channels[f].GetSum() * _learningRate;
                 }
             }
 
