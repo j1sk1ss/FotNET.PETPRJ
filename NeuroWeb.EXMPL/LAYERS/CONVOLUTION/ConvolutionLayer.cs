@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using NeuroWeb.EXMPL.INTERFACES;
@@ -10,11 +9,13 @@ using NeuroWeb.EXMPL.SCRIPTS.MATH;
 
 namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
     public class ConvolutionLayer : ILayer {
-        public ConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth, int stride, double learningRate) {
+        public ConvolutionLayer(int filters, 
+            int filterWeight, int filterHeight, int filterDepth, int stride, double learningRate) {
             Filters = new Filter[filters];
             for (var j = 0; j < filters; j++) {
-                Filters[j] = new Filter(new List<Matrix>());
-                Filters[j].Bias = new Random().Next() % 50 * .06 / (j * 10 + 15);
+                Filters[j] = new Filter(new List<Matrix>()) {
+                    Bias = .001d
+                };
 
                 for (var i = 0; i < filterDepth; i++) 
                     Filters[j].Channels.Add(new Matrix(
@@ -23,7 +24,7 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
 
             foreach (var filter in Filters)
                 foreach (var matrix in filter.Channels)
-                    matrix.FillRandom();
+                    matrix.XavierInitialization();
             
             _learningRate = learningRate;
             _stride       = stride;
@@ -35,18 +36,17 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
         private Filter[] Filters { get; }
         private Tensor Input { get; set; }
         
-        private static Filter[] FlipFilters(IReadOnlyList<Filter> filters) {
-            var newFilters = new Filter[filters.Count];
-            for (var i = 0; i < filters.Count; i++) {
-                newFilters[i] = filters[i].GetFlip();
-            }
-            return newFilters;
+        private static Filter[] FlipFilters(Filter[] filters) {
+            for (var i = 0; i < filters.Length; i++) 
+                filters[i] = filters[i].GetFlip();
+            
+            return filters;
         }
 
         private static Filter[] GetFiltersWithoutBiases(Filter[] filters) { 
-            for (var i = 0; i < filters.Length; i++) {
+            for (var i = 0; i < filters.Length; i++) 
                 filters[i] = new Filter(filters[i].Channels);
-            }
+            
             return filters;
         }
 
@@ -54,8 +54,7 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
         
         public Tensor GetNextLayer(Tensor layer) {
             Input = layer;
-            var nextLayer = NeuronActivate.LeakyReLu(Convolution.GetConvolution(layer, Filters, _stride));
-            return nextLayer;
+            return NeuronActivate.LeakyReLu(Convolution.GetConvolution(layer, Filters, _stride));;
         }
 
         public Tensor BackPropagate(Tensor error) {

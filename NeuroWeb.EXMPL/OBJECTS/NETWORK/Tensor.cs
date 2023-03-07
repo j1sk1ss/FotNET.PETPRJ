@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+
 using NeuroWeb.EXMPL.OBJECTS.MATH;
 
 namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
@@ -10,7 +9,7 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
         
         public Tensor(List<Matrix> matrix) => Channels = matrix;
 
-        public List<Matrix> Channels { get; protected set; }
+        public List<Matrix> Channels { get; protected init; }
         
         public List<double> Flatten() {
             var flatten = new List<double>();
@@ -19,12 +18,10 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
         }
         
         public Filter GetFlip() {
-            var tensor = Channels;
-            
-            foreach (var matrix in tensor)
+            foreach (var matrix in Channels)
                 matrix.GetFlip();
             
-            return new Filter(tensor);
+            return new Filter(Channels);
         }
 
         public Tensor GetSameChannels(Tensor reference) {
@@ -60,8 +57,6 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
 
             return new Tensor(matrix);
         }
-        
-        public double TensorSum() => Channels.Sum(matrix => matrix.GetSum());
         
         public static Tensor operator +(Tensor tensor1, Tensor tensor2) {
             var endTensor = new Tensor(tensor1.Channels);

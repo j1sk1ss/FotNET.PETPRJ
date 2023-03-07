@@ -1,12 +1,10 @@
-﻿using System.IO;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 using Microsoft.Win32;
 
 using NeuroWeb.EXMPL.Gui;
-using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS;
 
@@ -39,7 +37,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                 Filter = "TXT files | *.txt"
             };
             if (file.ShowDialog() == true) 
-                Teaching.HardStudying(new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(file.FileName))), 15);
+                Teaching.HardStudying(new Network(), 2);
         }
     }
 }

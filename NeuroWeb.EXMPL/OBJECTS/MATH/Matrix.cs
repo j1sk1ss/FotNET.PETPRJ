@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Windows;
 
 namespace NeuroWeb.EXMPL.OBJECTS.MATH {
     public class Matrix {
@@ -160,12 +158,19 @@ namespace NeuroWeb.EXMPL.OBJECTS.MATH {
             return newMatrix;
         }
 
-        public void FillRandom() {
+        public void DefaultInitialization() {
             for (var i = 0; i < Row; i++)
                 for (var j = 0; j < Col; j++) 
                     Body[i, j] = new Random().Next() % 100 * 0.03 / (Row + 35);
         }
 
+        public void XavierInitialization() {
+            var scale = Math.Sqrt(1.0 / Col);
+            for (var i = 0; i < Row; i++) 
+                for (var j = 0; j < Col; j++) 
+                    Body[i, j] = new Random().NextDouble() * scale * 2 - scale;
+        }
+        
         [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         public string GetValues() {
             var tempValues = "";
@@ -199,10 +204,6 @@ namespace NeuroWeb.EXMPL.OBJECTS.MATH {
                     tempValues.Add(Body[i,j]);
             
             return tempValues;
-        }
-        
-        public void SetValues(string value, int x, int y) {
-            Body[x, y] = double.Parse(value, CultureInfo.InvariantCulture);
         }
     }
 }

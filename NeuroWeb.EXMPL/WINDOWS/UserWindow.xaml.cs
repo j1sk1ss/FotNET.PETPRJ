@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -9,9 +8,6 @@ using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 
-using Microsoft.Win32;
-
-using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS;
 using NeuroWeb.EXMPL.SCRIPTS.MATH;
@@ -21,22 +17,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
     public partial class User {
         public User() {
             try {
-                var defaultConfig = Properties.Resources.defaultConfig;
-                
-                if (MessageBox.Show("Использовать стандартную конфигарацию вместо другой?", 
-                        "Укажите конфигурацию!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                    Network = new Network(DataWorker.ReadNetworkConfig(defaultConfig));
-                else {
-                      var file = new OpenFileDialog {
-                          Filter = "TXT files | *.txt"
-                      };
-                      if (file.ShowDialog() == true)
-                          Network = new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(file.FileName)));
-                      else
-                          MessageBox.Show("Конфигурация не была загружена!", "Ошибка!", MessageBoxButton.OK,
-                              MessageBoxImage.Error);
-                }
-                
+                Network = new Network();
                 InitializeComponent();
                 
                 Answers = new List<Label> {
@@ -95,8 +76,8 @@ namespace NeuroWeb.EXMPL.WINDOWS {
             
                 Matrix.Content = temp;
                 Number         = matrix;
-                Network.InsertInformation(new Tensor(new Matrix(matrix)));
-                _pred = Network.ForwardFeed();
+                
+                _pred = Network.ForwardFeed(new Tensor(new Matrix(matrix)));
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");

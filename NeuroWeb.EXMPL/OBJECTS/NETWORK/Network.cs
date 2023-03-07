@@ -16,8 +16,7 @@ using Vector = NeuroWeb.EXMPL.OBJECTS.MATH.Vector;
 
 namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
     public class Network {
-        public Network(Configuration configuration) {
-            Configuration = configuration;
+        public Network() {
             Layers = new List<ILayer> {
                 new ConvolutionLayer(6, 5, 5, 1, 1, .0002),
                 new PoolingLayer(2),
@@ -29,24 +28,12 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
                 new PerceptronLayer(10, .0002)
             };
         }
-        public Configuration Configuration { get; }
-        private Tensor ImageTensor { get; set; }
         public List<ILayer> Layers { get; }
-
-        public void InsertInformation(Number number) {
-            ImageTensor = new Tensor(number.GetAsMatrix());
-        }
         
-        public void InsertInformation(Tensor tensor) {
-            ImageTensor = new Tensor(tensor.Channels);
-        }
-
-        public int ForwardFeed() {
+        public int ForwardFeed(Tensor data) {
             try {
-                foreach (var layer in Layers) {
-                    ImageTensor = layer.GetNextLayer(ImageTensor);
-                }
-                return Vector.GetMaxIndex(ImageTensor.Flatten());
+                data = Layers.Aggregate(data, (current, layer) => layer.GetNextLayer(current));
+                return Vector.GetMaxIndex(data.Flatten());
             }
             catch (Exception e) {
                 MessageBox.Show($"{e}");
@@ -107,8 +94,8 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
 
         public void ReadWeights() {
             try {
-                var data   = GetWeights();
-                var lenght = data.Length;
+                var data = GetWeights();
+                var length = data.Length;
 
                 if (data.Length < 1) {
                     MessageBox.Show("Веса не загружены!", "Внимание!", MessageBoxButton.OK,
@@ -119,7 +106,7 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
                 foreach (var layer in Layers)
                     layer.LoadData(data);
 
-                if (lenght > data.Length) MessageBox.Show("Веса считанны некорректно или не считанны",
+                if (length > data.Length) MessageBox.Show("Веса считанны некорректно или не считанны",
                     "Предупреждение!");
             }
             catch (Exception e) {
@@ -129,27 +116,4 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
             }
         }
     }
-    
-    public struct Configuration {
-        public int Weight;
-        public int Height;
-
-        public int ConvolutionLayouts;
-        public int ForwardLayout;
-
-        public ConvolutionConfiguration[] ConvolutionConfigurations;
-
-        public int[] NeuronsLayer;
-    }
-
-    public struct ConvolutionConfiguration {
-        public int FilterColumn;
-        public int FilterRow;
-        public int FilterDepth;
-
-        public int FilterCount;
-        public int PoolSize;
-        public int Stride;
-    }
-    
 }

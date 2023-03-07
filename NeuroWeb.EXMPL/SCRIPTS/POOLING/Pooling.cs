@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using NeuroWeb.EXMPL.OBJECTS;
+
 using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 
@@ -51,11 +51,10 @@ namespace NeuroWeb.EXMPL.SCRIPTS.POOLING {
                     for (var i = 0; i < poolSize; i++) {
                         for (var j = 0; j < poolSize; j++) {
                             var inputVal = previousMatrix.Body[x * poolSize + i, y * poolSize + j];
-                            if (inputVal > maxVal) {
-                                maxVal = inputVal;
-                                maxX   = x * poolSize + i;
-                                maxY   = y * poolSize + j;
-                            }
+                            if (!(inputVal > maxVal)) continue;
+                            maxVal = inputVal;
+                            maxX   = x * poolSize + i;
+                            maxY   = y * poolSize + j;
                         }
                     }
                     

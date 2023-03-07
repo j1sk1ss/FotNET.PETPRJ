@@ -3,18 +3,14 @@ using System.Windows;
 using System.IO;
 using Microsoft.Win32;
 
-using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class Teaching {
         public static void LightStudying(Network network, Tensor data, int expected) {
             try {
-                network.InsertInformation(data);
-                
-                var prediction = network.ForwardFeed();
+                var prediction = network.ForwardFeed(data);
                 if (expected.Equals(prediction)) return;
-                
                 network.BackPropagation(expected);
             }
             catch (Exception e) {
@@ -35,19 +31,15 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 var file = new OpenFileDialog();
                 if (file.ShowDialog() != true) return;
                 
-                var dataInformation = DataWorker.ReadNumber(File.ReadAllText(file.FileName), network.Configuration, ref examples);
+                var dataInformation = DataWorker.ReadNumber(File.ReadAllText(file.FileName), ref examples);
                 
                 MessageBox.Show($"Загруженно приверов: {examples}\n");
                 while (rightAnswersCount / examples * 100 < 97) {
                     rightAnswersCount = 0;
                     for (var i = 0; i < examples; ++i) {
-                        network.InsertInformation(dataInformation[i]);
-
                         var right = dataInformation[i].Digit;
-                        var prediction = network.ForwardFeed();
-                        MessageBox.Show(right + " pr: " + prediction);
-                        //MessageBox.Show(network.ConvolutionLayers[0].Filters[0].Channels[0].Print() + " ???  " + i);
-                        //MessageBox.Show(new Vector(network.ConvolutionLayers[0].Filters[0].Bias.ToArray()).Print());
+                        var prediction = network.ForwardFeed(new Tensor(dataInformation[i].GetAsMatrix()));
+                        //MessageBox.Show(right + " pr: " + prediction);
                         if (prediction != right) 
                             network.BackPropagation(right);
                         else rightAnswersCount++;

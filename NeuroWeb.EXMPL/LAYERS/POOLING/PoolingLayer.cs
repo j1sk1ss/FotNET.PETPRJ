@@ -13,7 +13,6 @@ namespace NeuroWeb.EXMPL.LAYERS.POOLING {
         
         public Tensor GetValues() => _inputTensor;
         
-        
         public Tensor GetNextLayer(Tensor tensor) {
             _inputTensor = tensor;
             return Pooling.MaxPool(tensor, _poolSize);

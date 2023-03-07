@@ -19,10 +19,10 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
             Bias         = new double[size];
 
             Weights = new Matrix(nextSize, size);
-            Weights.FillRandom();
+            Weights.XavierInitialization();
             
             for (var i = 0; i < size; i++)
-                Bias[i] = new Random().Next() % 50 * .06 / (Neurons[i] + 15);
+                Bias[i] = .001d;
         }
         
         public PerceptronLayer(int size, double learningRate) {
@@ -62,10 +62,10 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
         private void SetWeights(double learningRate, IReadOnlyList<double> previousErrors) {
             for (var j = 0; j < Weights.Body.GetLength(0); ++j)
                 for (var k = 0; k < Weights.Body.GetLength(1); ++k)
-                    Weights.Body[j, k] += Neurons[k] * previousErrors[j] * learningRate;
+                    Weights.Body[j, k] -= Neurons[k] * previousErrors[j] * learningRate;
 
             for (var j = 0; j < Weights.Body.GetLength(1); j++)
-                Bias[j] += NeuronsError[j] * learningRate;
+                Bias[j] -= NeuronsError[j] * learningRate;
         }
 
         public string GetData() {
