@@ -45,7 +45,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
 
                         var right = dataInformation[i].Digit;
                         var prediction = network.ForwardFeed();
-                        //MessageBox.Show(right + " pr: " + prediction);
+                        MessageBox.Show(right + " pr: " + prediction);
                         //MessageBox.Show(network.ConvolutionLayers[0].Filters[0].Channels[0].Print() + " ???  " + i);
                         //MessageBox.Show(new Vector(network.ConvolutionLayers[0].Filters[0].Bias.ToArray()).Print());
                         if (prediction != right) 

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.MATH;
+using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS;
 using NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION;
 using NeuroWeb.EXMPL.WINDOWS;
