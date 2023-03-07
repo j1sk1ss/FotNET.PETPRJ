@@ -7,7 +7,12 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
-
+using NeuroWeb.EXMPL.LAYERS.CONVOLUTION;
+using NeuroWeb.EXMPL.LAYERS.FLATTEN;
+using NeuroWeb.EXMPL.LAYERS.INTERFACES;
+using NeuroWeb.EXMPL.LAYERS.PERCEPTRON;
+using NeuroWeb.EXMPL.LAYERS.POOLING;
+using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS;
 using NeuroWeb.EXMPL.SCRIPTS.MATH;
@@ -17,7 +22,18 @@ namespace NeuroWeb.EXMPL.WINDOWS {
     public partial class User {
         public User() {
             try {
-                Network = new Network();
+                var layers = new List<ILayer> {
+                    new ConvolutionLayer(6, 5, 5, 1, 1, .0002),
+                    new PoolingLayer(2),
+                    new ConvolutionLayer(16, 5, 5, 6, 1, .0002),
+                    new PoolingLayer(2),
+                    new FlattenLayer(),
+                    new PerceptronLayer(256, 128, .0002),
+                    new PerceptronLayer(128, 10, .0002),
+                    new PerceptronLayer(10, .0002)
+                };
+                
+                Network = new Network(layers);
                 InitializeComponent();
                 
                 Answers = new List<Label> {
@@ -55,17 +71,14 @@ namespace NeuroWeb.EXMPL.WINDOWS {
 
                 var writeableBitmap = new WriteableBitmap(renderTargetBitmap);
             
-                var matrix      = new double[28,28];
-                var temp        = "";
-                var numberValue = "";
-            
+                var matrix = new double[28,28];
+                var temp   = "";
+
                 for (var i = 0; i < 28; i++) {
                     for (var j = 0; j < 28; j++) {
                         matrix[i,j] = writeableBitmap.GetPixel(j, i).A / 255d;
                         if (matrix[i, j] > 0) temp += _pred + "  ";
                         else temp += "  " + "  ";
-                    
-                        numberValue += matrix[i, j]+ "  ";
                     }
                 
                     temp += "\n";
@@ -127,11 +140,12 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         
         private void SaveWeights(object sender, RoutedEventArgs e) {
             MessageBox.Show("Сохранение начато...");
-            //Network.SaveWeights();
+            Network.SaveWeights();
         }
 
-        private void LoadWeights(object sender, RoutedEventArgs e) { }
-    //Network.ReadWeights(); 
+        private void LoadWeights(object sender, RoutedEventArgs e) {
+            Network.ReadWeights();
+        }
         
         private void DragWindow(object sender, MouseButtonEventArgs e) {
             base.OnMouseLeftButtonDown(e); 

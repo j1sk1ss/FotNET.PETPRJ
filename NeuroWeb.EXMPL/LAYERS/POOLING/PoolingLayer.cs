@@ -1,6 +1,7 @@
-﻿using NeuroWeb.EXMPL.INTERFACES;
+﻿using NeuroWeb.EXMPL.LAYERS.INTERFACES;
+using NeuroWeb.EXMPL.LAYERS.POOLING.SCRIPTS;
+using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
-using NeuroWeb.EXMPL.SCRIPTS.POOLING;
 
 namespace NeuroWeb.EXMPL.LAYERS.POOLING {
     public class PoolingLayer : ILayer {

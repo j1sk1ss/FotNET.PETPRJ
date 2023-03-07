@@ -164,8 +164,8 @@ namespace NeuroWeb.EXMPL.OBJECTS.MATH {
                     Body[i, j] = new Random().Next() % 100 * 0.03 / (Row + 35);
         }
 
-        public void XavierInitialization() {
-            var scale = Math.Sqrt(1.0 / Col);
+        public void HeInitialization() {
+            var scale = Math.Sqrt(2.0 / Col);
             for (var i = 0; i < Row; i++) 
                 for (var j = 0; j < Col; j++) 
                     Body[i, j] = new Random().NextDouble() * scale * 2 - scale;

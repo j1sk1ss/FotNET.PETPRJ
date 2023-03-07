@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using NeuroWeb.EXMPL.INTERFACES;
+using NeuroWeb.EXMPL.LAYERS.INTERFACES;
+using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS.MATH;
@@ -19,7 +19,7 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
             Bias         = new double[size];
 
             Weights = new Matrix(nextSize, size);
-            Weights.XavierInitialization();
+            Weights.HeInitialization();
             
             for (var i = 0; i < size; i++)
                 Bias[i] = .001d;

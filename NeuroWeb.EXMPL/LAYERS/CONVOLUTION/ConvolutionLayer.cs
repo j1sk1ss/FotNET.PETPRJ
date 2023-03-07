@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
-using NeuroWeb.EXMPL.INTERFACES;
+using NeuroWeb.EXMPL.LAYERS.CONVOLUTION.SCRIPTS;
+using NeuroWeb.EXMPL.LAYERS.INTERFACES;
+using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
-using NeuroWeb.EXMPL.SCRIPTS.CONVOLUTION;
 using NeuroWeb.EXMPL.SCRIPTS.MATH; 
 
 namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
@@ -24,7 +24,7 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
 
             foreach (var filter in Filters)
                 foreach (var matrix in filter.Channels)
-                    matrix.XavierInitialization();
+                    matrix.HeInitialization();
             
             _learningRate = learningRate;
             _stride       = stride;

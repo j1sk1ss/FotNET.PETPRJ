@@ -1,4 +1,5 @@
-﻿using NeuroWeb.EXMPL.INTERFACES;
+﻿using NeuroWeb.EXMPL.LAYERS.INTERFACES;
+using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 

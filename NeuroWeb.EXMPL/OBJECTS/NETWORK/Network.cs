@@ -5,28 +5,14 @@ using System.Linq;
 using System.Windows;
 
 using Microsoft.Win32;
-
-using NeuroWeb.EXMPL.INTERFACES;
-using NeuroWeb.EXMPL.LAYERS.CONVOLUTION;
-using NeuroWeb.EXMPL.LAYERS.FLATTEN;
-using NeuroWeb.EXMPL.LAYERS.PERCEPTRON;
-using NeuroWeb.EXMPL.LAYERS.POOLING;
+using NeuroWeb.EXMPL.LAYERS.INTERFACES;
 using NeuroWeb.EXMPL.SCRIPTS.MATH;
 using Vector = NeuroWeb.EXMPL.OBJECTS.MATH.Vector;
 
 namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
     public class Network {
-        public Network() {
-            Layers = new List<ILayer> {
-                new ConvolutionLayer(6, 5, 5, 1, 1, .0002),
-                new PoolingLayer(2),
-                new ConvolutionLayer(16, 5, 5, 6, 1, .0002),
-                new PoolingLayer(2),
-                new FlattenLayer(),
-                new PerceptronLayer(256, 128, .0002),
-                new PerceptronLayer(128, 10, .0002),
-                new PerceptronLayer(10, .0002)
-            };
+        public Network(List<ILayer> layers) {
+            Layers = layers;
         }
         public List<ILayer> Layers { get; }
         
@@ -56,14 +42,12 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
         
         private static string _weights;
         private static string GetWeights() {
-            var defaultWeights = Properties.Resources.defaultWeights;
 
             var file = new OpenFileDialog {
                 Filter = "TXT files | *.txt"
             };
             var message = MessageBox.Show("Использовать стандартные веса вместо " +
                                           "других", "Укажите файл весов!", MessageBoxButton.YesNo);
-            if (message == MessageBoxResult.Yes) return defaultWeights;
             _weights = file.FileName;
             return file.ShowDialog() != true ? "" : File.ReadAllText(file.FileName);
         }

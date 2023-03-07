@@ -1,12 +1,13 @@
-﻿using NeuroWeb.EXMPL.OBJECTS.MATH;
+﻿using NeuroWeb.EXMPL.OBJECTS;
+using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 
 namespace NeuroWeb.EXMPL.SCRIPTS.MATH {
     public static class NeuronActivate {
         private static double LeakyReLu(double value) => value switch {
-            <= 0 => value * .01d,
-            > 1  => 1d + .01d * (value - 1d),
-            _    => value
+            < 0 => value * .01d,
+            > 1 => 1d + .01d * (value - 1d),
+            _   => value
         };
         
         public static double[] LeakyReLu(double[] value) {
@@ -30,7 +31,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS.MATH {
             return tensor;
         }
         
-        public static double GetDerivative(double value) => value * value is < 0 or > 1 ? .01d : 1;
+        public static double GetDerivative(double value) => value * value is < 0 or > 1 ? .01d : value;
 
         public static double[] GetDerivative(double[] values) {
             for (var i = 0; i < values.Length; i++) 

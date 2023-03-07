@@ -1,10 +1,13 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-using Microsoft.Win32;
-
 using NeuroWeb.EXMPL.Gui;
+using NeuroWeb.EXMPL.LAYERS.CONVOLUTION;
+using NeuroWeb.EXMPL.LAYERS.FLATTEN;
+using NeuroWeb.EXMPL.LAYERS.INTERFACES;
+using NeuroWeb.EXMPL.LAYERS.PERCEPTRON;
+using NeuroWeb.EXMPL.LAYERS.POOLING;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS;
 
@@ -32,12 +35,18 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         }
         
         private void HardTeaching(object sender, MouseButtonEventArgs e) {
-            MessageBox.Show("Укажите файл конфигурации сети!");
-            var file = new OpenFileDialog {
-                Filter = "TXT files | *.txt"
+            var layers = new List<ILayer> {
+                new ConvolutionLayer(6, 5, 5, 1, 1, .0001),
+                new PoolingLayer(2),
+                new ConvolutionLayer(16, 5, 5, 6, 1, .0001),
+                new PoolingLayer(2),
+                new FlattenLayer(),
+                new PerceptronLayer(256, 128, .0001),
+                new PerceptronLayer(128, 10, .0001),
+                new PerceptronLayer(10, .0001)
             };
-            if (file.ShowDialog() == true) 
-                Teaching.HardStudying(new Network(), 2);
+            
+            Teaching.HardStudying(new Network(layers), 2);
         }
     }
 }

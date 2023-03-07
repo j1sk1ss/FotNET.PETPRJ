@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Collections.Generic;
 
-using NeuroWeb.EXMPL.OBJECTS.NETWORK;
+using NeuroWeb.EXMPL.OBJECTS;
 
 namespace NeuroWeb.EXMPL.SCRIPTS {
     public static class DataWorker {
@@ -16,7 +16,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS {
                 
                 if (lines[0].Split(" ")[0] != "Examples") return numbers;
                 examples = int.Parse(lines[0].Split(" ")[1]);
-                //examples = 1000;
+                examples = 1000;
                 for (var i = 0; i < examples; i++) {
                     numbers.Add(new Number());
                     for (var j = 0; j < 784; j++) 
