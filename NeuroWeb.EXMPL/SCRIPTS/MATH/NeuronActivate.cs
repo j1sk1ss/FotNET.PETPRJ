@@ -30,7 +30,7 @@ namespace NeuroWeb.EXMPL.SCRIPTS.MATH {
             return tensor;
         }
         
-        public static double GetDerivative(double value) => value * value is < 0 or > 1 ? .01d : value;
+        public static double GetDerivative(double value) => value * value is < 0 or > 1 ? .01d : 1;
 
         public static double[] GetDerivative(double[] values) {
             for (var i = 0; i < values.Length; i++) 

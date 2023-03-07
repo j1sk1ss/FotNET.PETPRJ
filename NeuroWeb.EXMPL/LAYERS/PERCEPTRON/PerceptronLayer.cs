@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows;
+
 using NeuroWeb.EXMPL.INTERFACES;
-using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS.MATH;
@@ -46,22 +44,17 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
         private double[] NeuronsError { get; set; }
         private Matrix Weights { get; }
 
-        public Tensor GetValues() {
-            return new Vector(Neurons).AsTensor(1, Neurons.Length, 1);
-        }
-        
+        public Tensor GetValues() => new Vector(Neurons).AsTensor(1, Neurons.Length, 1);
+                
         public Tensor GetNextLayer(Tensor tensor) {
-            var temp = tensor.Flatten();
-            
-            Neurons = temp.ToArray();
+            Neurons = tensor.Flatten().ToArray();
             var nextLayer = NeuronActivate.LeakyReLu(new Vector(Weights * Neurons) + new Vector(Bias));
-
             return new Vector(nextLayer).AsTensor(1, nextLayer.Length, 1);
         }
 
         public Tensor BackPropagate(Tensor error) {
             var temp = error.Flatten();
-            NeuronsError       = Weights.GetTranspose() * temp.ToArray();
+            NeuronsError = Weights.GetTranspose() * temp.ToArray();
             SetWeights(_learningRate, temp.ToArray());
             return new Vector(NeuronActivate.GetDerivative(NeuronsError)).AsTensor(1, NeuronsError.Length, 1);
         }

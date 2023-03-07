@@ -40,7 +40,8 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
         private Tensor IncreaseChannels(int channels) {
             var tensor = new Tensor(Channels);
             
-            for (var i = 0; i < channels; i++) tensor.Channels.Add(tensor.Channels[^1]);
+            for (var i = 0; i < channels; i++) tensor.Channels.Add(
+                new Matrix(tensor.Channels[0].Body.GetLength(0), tensor.Channels[0].Body.GetLength(0)));
             
             return tensor;
         }
@@ -118,13 +119,11 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
     
     public class Filter : Tensor {
         public Filter(List<Matrix> matrix) : base(matrix) {
-            Bias = new List<double>();
-            for (var i = 0; i < matrix.Count; i++) Bias.Add(0);
-            
+            Bias     = 0;
             Channels = matrix;
         }
         
-        public List<double> Bias { get; }
+        public double Bias { get; set; }
 
         public Tensor AsTensor() => new Tensor(Channels);
     }

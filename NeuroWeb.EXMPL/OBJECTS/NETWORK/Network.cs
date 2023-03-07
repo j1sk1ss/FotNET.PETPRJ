@@ -19,14 +19,14 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
         public Network(Configuration configuration) {
             Configuration = configuration;
             Layers = new List<ILayer> {
-                new ConvolutionLayer(6, 5, 5, 1, 1, .002),
+                new ConvolutionLayer(6, 5, 5, 1, 1, .0002),
                 new PoolingLayer(2),
-                new ConvolutionLayer(16, 5, 5, 6, 1, .002),
+                new ConvolutionLayer(16, 5, 5, 6, 1, .0002),
                 new PoolingLayer(2),
                 new FlattenLayer(),
-                new PerceptronLayer(256, 128, .002),
-                new PerceptronLayer(128, 10, .002),
-                new PerceptronLayer(10, .002)
+                new PerceptronLayer(256, 128, .0002),
+                new PerceptronLayer(128, 10, .0002),
+                new PerceptronLayer(10, .0002)
             };
         }
         public Configuration Configuration { get; }
@@ -43,8 +43,9 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
 
         public int ForwardFeed() {
             try {
-                foreach (var layer in Layers) 
+                foreach (var layer in Layers) {
                     ImageTensor = layer.GetNextLayer(ImageTensor);
+                }
                 return Vector.GetMaxIndex(ImageTensor.Flatten());
             }
             catch (Exception e) {

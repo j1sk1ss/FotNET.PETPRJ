@@ -91,7 +91,7 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                 } 
                 
                 for (var i = 0; i < Answers.Count; i++) Answers[i].Content = 
-                    $"{Math.Abs(Math.Round(SoftMax.Softmax(Network.Layers[^1].GetValues().Flatten().ToArray())[i] * 100, 1))}%";            
+                    $"{Math.Abs(Math.Round(SoftMax.Softmax(Network.Layers[^1].GetValues().Flatten().ToArray())[i] * 100, 1))}%";   // add softmax as layer         
             
                 Matrix.Content = temp;
                 Number         = matrix;

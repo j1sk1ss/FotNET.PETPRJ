@@ -11,19 +11,17 @@ namespace NeuroWeb.EXMPL.LAYERS.POOLING {
         private readonly int _poolSize;
         private Tensor _inputTensor;
         
-        public Tensor GetValues() {
-            return _inputTensor;
-        }
+        public Tensor GetValues() => _inputTensor;
+        
         
         public Tensor GetNextLayer(Tensor tensor) {
             _inputTensor = tensor;
             return Pooling.MaxPool(tensor, _poolSize);
         }
 
-        public Tensor BackPropagate(Tensor error) {
-            return Pooling.BackMaxPool(error.GetSameChannels(_inputTensor), _inputTensor, _poolSize);
-        }
-
+        public Tensor BackPropagate(Tensor error) =>
+            Pooling.BackMaxPool(error.GetSameChannels(_inputTensor), _inputTensor, _poolSize);
+        
         public string GetData() => "";
         public string LoadData(string data) => data;
     }
