@@ -1,11 +1,8 @@
 ﻿using FotNET.NETWORK.OBJECTS;
 
-namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS
-{
-    internal static class Padding
-    {
-        private static Matrix GetPadding(Matrix matrix, int paddingSize)
-        {
+namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
+    internal static class Padding {
+        private static Matrix GetPadding(Matrix matrix, int paddingSize) {
             var newMatrix = new Matrix(matrix.Body.GetLength(0) + paddingSize * 2, matrix.Body.GetLength(0) + paddingSize * 2);
 
             for (var i = Math.Abs(paddingSize); i < newMatrix.Body.GetLength(0) - Math.Abs(paddingSize); i++)
@@ -15,13 +12,12 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS
             return newMatrix;
         }
 
-        public static Tensor GetPadding(Tensor tensor, int paddingSize)
-        {
+        public static Tensor GetPadding(Tensor tensor, int paddingSize) {
             var newTensor = new Tensor(new List<Matrix>());
-            for (var i = 0; i < tensor.Channels.Count; i++)
-            {
+            
+            for (var i = 0; i < tensor.Channels.Count; i++) 
                 newTensor.Channels.Add(GetPadding(tensor.Channels[i], paddingSize));
-            }
+            
             return newTensor;
         }
 

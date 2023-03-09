@@ -2,13 +2,10 @@
 using FotNET.NETWORK.OBJECTS;
 using Vector = FotNET.NETWORK.OBJECTS.Vector;
 
-namespace FotNET.NETWORK.LAYERS.PERCEPTRON
-{
-    public class PerceptronLayer : ILayer
-    {
+namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
+    public class PerceptronLayer : ILayer {
 
-        public PerceptronLayer(int size, int nextSize, double learningRate)
-        {
+        public PerceptronLayer(int size, int nextSize, double learningRate) {
             _learningRate = learningRate;
 
             Neurons = new double[size];
@@ -22,8 +19,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON
                 Bias[i] = .001d;
         }
 
-        public PerceptronLayer(int size, double learningRate)
-        {
+        public PerceptronLayer(int size, double learningRate) {
             _learningRate = learningRate;
 
             Neurons = new double[size];
@@ -44,23 +40,20 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON
 
         public Tensor GetValues() => new Vector(Neurons).AsTensor(1, Neurons.Length, 1);
 
-        public Tensor GetNextLayer(Tensor tensor)
-        {
+        public Tensor GetNextLayer(Tensor tensor) {
             Neurons = tensor.Flatten().ToArray();
             var nextLayer = new Vector(Weights * Neurons) + new Vector(Bias);
             return new Vector(nextLayer).AsTensor(1, nextLayer.Length, 1);
         }
 
-        public Tensor BackPropagate(Tensor error)
-        {
+        public Tensor BackPropagate(Tensor error) {
             var temp = error.Flatten();
             NeuronsError = Weights.GetTranspose() * temp.ToArray();
             SetWeights(_learningRate, temp.ToArray());
             return new Vector(NeuronsError).AsTensor(1, NeuronsError.Length, 1);
         }
 
-        private void SetWeights(double learningRate, IReadOnlyList<double> previousErrors)
-        {
+        private void SetWeights(double learningRate, IReadOnlyList<double> previousErrors) {
             for (var j = 0; j < Weights.Body.GetLength(0); ++j)
                 for (var k = 0; k < Weights.Body.GetLength(1); ++k)
                     Weights.Body[j, k] -= Neurons[k] * previousErrors[j] * learningRate;
@@ -69,15 +62,13 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON
                 Bias[j] -= NeuronsError[j] * learningRate;
         }
 
-        public string GetData()
-        {
+        public string GetData() {
             var temp = "";
             temp += Weights.GetValues();
             return Bias.Aggregate(temp, (current, bias) => current + bias + " ");
         }
 
-        public string LoadData(string data)
-        {
+        public string LoadData(string data) {
             var position = 0;
             var dataNumbers = data.Split(" ");
 

@@ -1,12 +1,9 @@
 ﻿using FotNET.NETWORK.ACTIVATION.INTERFACES;
 using FotNET.NETWORK.OBJECTS;
 
-namespace FotNET.NETWORK.MATH
-{
-    public static class LossFunction
-    {
-        public static Tensor GetLoss(Tensor tensor, int expectedClass, IFunction function)
-        {
+namespace FotNET.NETWORK.MATH {
+    public static class LossFunction {
+        public static Tensor GetLoss(Tensor tensor, int expectedClass, IFunction function) {
             var prediction = tensor.Channels[0].GetAsList().ToArray();
             var error = new List<double>();
 

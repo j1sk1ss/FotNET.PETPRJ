@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
-namespace FotNET.NETWORK.OBJECTS
-{
-    public class Matrix
-    {
-        public Matrix(double[,] body)
-        {
+namespace FotNET.NETWORK.OBJECTS {
+    public class Matrix {
+        public Matrix(double[,] body) {
             Row = body.GetLength(0);
             Col = body.GetLength(1);
             Body = body;
         }
 
-        public Matrix(int row, int col)
-        {
+        public Matrix(int row, int col) {
             Row = row;
             Col = col;
             Body = new double[row, col];
@@ -24,46 +18,34 @@ namespace FotNET.NETWORK.OBJECTS
         private int Col { get; }
         public double[,] Body { get; }
 
-        public Matrix GetTranspose()
-        {
+        public Matrix GetTranspose() {
             var rows = Body.GetLength(0);
             var columns = Body.GetLength(1);
             var temp = new double[columns, rows];
 
-            for (var i = 0; i < rows; i++)
-            {
-                for (var j = 0; j < columns; j++)
-                {
+            for (var i = 0; i < rows; i++) 
+                for (var j = 0; j < columns; j++) 
                     temp[j, 1] = Body[1, j];
-                }
-            }
-
+            
             return new Matrix(temp);
         }
 
-        public Matrix GetFlip()
-        {
+        public Matrix GetFlip() {
             var rotatedMatrix = new Matrix(new double[Row, Col]);
 
-            for (var i = 0; i < rotatedMatrix.Row; i++)
-            {
-                for (var j = 0; j < rotatedMatrix.Col; j++)
-                {
+            for (var i = 0; i < rotatedMatrix.Row; i++) 
+                for (var j = 0; j < rotatedMatrix.Col; j++) 
                     rotatedMatrix.Body[j, i] = Body[Row - j - 1, Col - i - 1];
-                }
-            }
-
+            
             return rotatedMatrix;
         }
 
-        public static double[] operator *(Matrix matrix, double[] neuron)
-        {
+        public static double[] operator *(Matrix matrix, double[] neuron) {
             if (matrix.Col != neuron.Length) throw new Exception();
 
             var vector = new double[matrix.Row];
 
-            for (var x = 0; x < matrix.Row; ++x)
-            {
+            for (var x = 0; x < matrix.Row; ++x) {
                 double tmp = 0;
                 for (var y = 0; y < matrix.Col; ++y)
                     tmp += matrix.Body[x, y] * neuron[y];
@@ -74,8 +56,7 @@ namespace FotNET.NETWORK.OBJECTS
             return vector;
         }
 
-        public static Matrix operator +(Matrix matrix1, Matrix matrix2)
-        {
+        public static Matrix operator +(Matrix matrix1, Matrix matrix2) {
             var xSize = matrix1.Body.GetLength(0);
             var ySize = matrix2.Body.GetLength(1);
 
@@ -88,8 +69,7 @@ namespace FotNET.NETWORK.OBJECTS
             return endMatrix;
         }
 
-        public static Matrix operator *(Matrix matrix1, Matrix matrix2)
-        {
+        public static Matrix operator *(Matrix matrix1, Matrix matrix2) {
             var xSize = matrix1.Body.GetLength(0);
             var ySize = matrix2.Body.GetLength(1);
 
@@ -102,8 +82,7 @@ namespace FotNET.NETWORK.OBJECTS
             return endMatrix;
         }
 
-        public static Matrix operator -(Matrix matrix1, Matrix matrix2)
-        {
+        public static Matrix operator -(Matrix matrix1, Matrix matrix2) {
             var xSize = matrix1.Body.GetLength(0);
             var ySize = matrix2.Body.GetLength(1);
 
@@ -116,8 +95,7 @@ namespace FotNET.NETWORK.OBJECTS
             return endMatrix;
         }
 
-        public static Matrix operator -(Matrix matrix1, double value)
-        {
+        public static Matrix operator -(Matrix matrix1, double value) {
             var xSize = matrix1.Body.GetLength(0);
             var ySize = matrix1.Body.GetLength(1);
 
@@ -130,8 +108,7 @@ namespace FotNET.NETWORK.OBJECTS
             return endMatrix;
         }
 
-        public static Matrix operator *(Matrix matrix1, double value)
-        {
+        public static Matrix operator *(Matrix matrix1, double value) {
             var xSize = matrix1.Body.GetLength(0);
             var ySize = matrix1.Body.GetLength(1);
 
@@ -144,8 +121,7 @@ namespace FotNET.NETWORK.OBJECTS
             return endMatrix;
         }
 
-        public double GetSum()
-        {
+        public double GetSum() {
             var sum = 0d;
             for (var i = 0; i < Body.GetLength(0); i++)
                 for (var j = 0; j < Body.GetLength(1); j++)
@@ -153,23 +129,17 @@ namespace FotNET.NETWORK.OBJECTS
             return sum;
         }
 
-        public Matrix GetSubMatrix(int x1, int y1, int x2, int y2)
-        {
+        public Matrix GetSubMatrix(int x1, int y1, int x2, int y2) {
             var subMatrix = new Matrix(x2 - x1, y2 - y1);
 
-            for (var i = x1; i < x2; i++)
-            {
-                for (var j = y1; j < y2; j++)
-                {
+            for (var i = x1; i < x2; i++) 
+                for (var j = y1; j < y2; j++) 
                     subMatrix.Body[i - x1, j - y1] = Body[i, j];
-                }
-            }
-
+            
             return subMatrix;
         }
 
-        public Matrix Resize(int x, int y)
-        {
+        public Matrix Resize(int x, int y) {
             var newMatrix = new Matrix(x, y);
 
             for (var i = 0; i < x; i++)
@@ -180,15 +150,13 @@ namespace FotNET.NETWORK.OBJECTS
             return newMatrix;
         }
 
-        public void DefaultInitialization()
-        {
+        public void DefaultInitialization() {
             for (var i = 0; i < Row; i++)
                 for (var j = 0; j < Col; j++)
                     Body[i, j] = new Random().Next() % 100 * 0.03 / (Row + 35);
         }
 
-        public void HeInitialization()
-        {
+        public void HeInitialization() {
             var scale = Math.Sqrt(2.0 / Col);
             for (var i = 0; i < Row; i++)
                 for (var j = 0; j < Col; j++)
@@ -196,8 +164,7 @@ namespace FotNET.NETWORK.OBJECTS
         }
 
         [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
-        public string GetValues()
-        {
+        public string GetValues() {
             var tempValues = "";
 
             for (var i = 0; i < Row; i++)
@@ -207,25 +174,20 @@ namespace FotNET.NETWORK.OBJECTS
             return tempValues;
         }
 
-        public string Print()
-        {
+        public string Print() {
             var tempValues = "";
 
-            for (var i = 0; i < Row; i++)
-            {
-                for (var j = 0; j < Col; j++)
-                {
+            for (var i = 0; i < Row; i++) {
+                for (var j = 0; j < Col; j++) 
                     tempValues += Body[i, j] + " ";
-                }
-
+                
                 tempValues += "\n";
             }
 
             return tempValues;
         }
 
-        public List<double> GetAsList()
-        {
+        public List<double> GetAsList() {
             var tempValues = new List<double>();
 
             for (var i = 0; i < Row; i++)

@@ -1,36 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using FotNET.NETWORK.MATH;
-
-namespace FotNET.NETWORK.OBJECTS
-{
-    public class Tensor
-    {
+﻿namespace FotNET.NETWORK.OBJECTS {
+    public class Tensor {
         public Tensor(Matrix matrix) => Channels = new List<Matrix> { matrix };
 
         public Tensor(List<Matrix> matrix) => Channels = matrix;
 
         public List<Matrix> Channels { get; protected init; }
 
-        public List<double> Flatten()
-        {
+        public List<double> Flatten() {
             var flatten = new List<double>();
             foreach (var matrix in Channels) flatten.AddRange(matrix.GetAsList());
             return flatten;
         }
 
-        public Filter GetFlip()
-        {
+        public Filter GetFlip() {
             foreach (var matrix in Channels)
                 matrix.GetFlip();
 
             return new Filter(Channels);
         }
 
-        public Tensor GetSameChannels(Tensor reference)
-        {
-            if (Channels.Count != reference.Channels.Count)
-            {
+        public Tensor GetSameChannels(Tensor reference) {
+            if (Channels.Count != reference.Channels.Count) {
                 return Channels.Count < reference.Channels.Count
                     ? IncreaseChannels(reference.Channels.Count - Channels.Count)
                     : CropChannels(reference.Channels.Count);
@@ -39,8 +29,7 @@ namespace FotNET.NETWORK.OBJECTS
             return this;
         }
 
-        private Tensor IncreaseChannels(int channels)
-        {
+        private Tensor IncreaseChannels(int channels) {
             var tensor = new Tensor(Channels);
 
             for (var i = 0; i < channels; i++) tensor.Channels.Add(
@@ -49,27 +38,21 @@ namespace FotNET.NETWORK.OBJECTS
             return tensor;
         }
 
-        private Tensor CropChannels(int channels)
-        {
+        private Tensor CropChannels(int channels) {
             var matrix = new List<Matrix>();
 
-            for (var i = 0; i < channels * 2; i += 2)
-            {
+            for (var i = 0; i < channels * 2; i += 2) {
                 matrix.Add(Channels[i]);
-                for (var x = 0; x < Channels[i].Body.GetLength(0); x++)
-                {
-                    for (var y = 0; y < Channels[i].Body.GetLength(1); y++)
-                    {
+                
+                for (var x = 0; x < Channels[i].Body.GetLength(0); x++) 
+                    for (var y = 0; y < Channels[i].Body.GetLength(1); y++) 
                         matrix[^1].Body[x, y] = Math.Max(Channels[i].Body[x, y], Channels[i + 1].Body[x, y]);
-                    }
-                }
             }
 
             return new Tensor(matrix);
         }
 
-        public static Tensor operator +(Tensor tensor1, Tensor tensor2)
-        {
+        public static Tensor operator +(Tensor tensor1, Tensor tensor2) {
             var endTensor = new Tensor(tensor1.Channels);
 
             for (var i = 0; i < endTensor.Channels.Count; i++)
@@ -78,8 +61,7 @@ namespace FotNET.NETWORK.OBJECTS
             return endTensor;
         }
 
-        public static Tensor operator -(Tensor tensor1, Tensor tensor2)
-        {
+        public static Tensor operator -(Tensor tensor1, Tensor tensor2) {
             var endTensor = new Tensor(tensor1.Channels);
 
             for (var i = 0; i < endTensor.Channels.Count; i++)
@@ -88,8 +70,7 @@ namespace FotNET.NETWORK.OBJECTS
             return endTensor;
         }
 
-        public static Tensor operator *(Tensor tensor1, Tensor tensor2)
-        {
+        public static Tensor operator *(Tensor tensor1, Tensor tensor2) {
             var endTensor = new Tensor(tensor1.Channels);
 
             for (var i = 0; i < endTensor.Channels.Count; i++)
@@ -98,8 +79,7 @@ namespace FotNET.NETWORK.OBJECTS
             return endTensor;
         }
 
-        public static Tensor operator -(Tensor tensor1, double value)
-        {
+        public static Tensor operator -(Tensor tensor1, double value) {
             var endTensor = new Tensor(tensor1.Channels);
 
             for (var i = 0; i < tensor1.Channels.Count; i++)
@@ -108,8 +88,7 @@ namespace FotNET.NETWORK.OBJECTS
             return endTensor;
         }
 
-        public static Tensor operator *(Tensor tensor1, double value)
-        {
+        public static Tensor operator *(Tensor tensor1, double value) {
             var endTensor = new Tensor(tensor1.Channels);
 
             for (var i = 0; i < tensor1.Channels.Count; i++)
@@ -118,20 +97,15 @@ namespace FotNET.NETWORK.OBJECTS
             return endTensor;
         }
 
-        public string GetInfo()
-        {
-            return $"x: {Channels[0].Body.GetLength(0)}\n" +
-                   $"y: {Channels[0].Body.GetLength(1)}\n" +
-                   $"depth: {Channels.Count}";
-        }
-
+        public string GetInfo() => $"x: {Channels[0].Body.GetLength(0)}\n" +
+                                   $"y: {Channels[0].Body.GetLength(1)}\n" +
+                                   $"depth: {Channels.Count}";
+        
         public Filter AsFilter() => new Filter(Channels);
     }
 
-    public class Filter : Tensor
-    {
-        public Filter(List<Matrix> matrix) : base(matrix)
-        {
+    public class Filter : Tensor {
+        public Filter(List<Matrix> matrix) : base(matrix) {
             Bias = 0;
             Channels = matrix;
         }

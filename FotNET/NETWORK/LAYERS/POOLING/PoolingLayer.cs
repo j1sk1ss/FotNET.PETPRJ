@@ -2,13 +2,11 @@
 using FotNET.NETWORK.LAYERS.POOLING.SCRIPTS;
 using FotNET.NETWORK.OBJECTS;
 
-namespace NeuroWeb.EXMPL.NETWORK.LAYERS.POOLING
-{
-    public class PoolingLayer : ILayer
-    {
-        public PoolingLayer(int poolSize)
-        {
-            _poolSize = poolSize;
+namespace FotNET.NETWORK.LAYERS.POOLING {
+    public class PoolingLayer : ILayer {
+        public PoolingLayer(int poolSize) {
+            _poolSize    = poolSize;
+            _inputTensor = new Tensor(new Matrix(0, 0));
         }
 
         private readonly int _poolSize;
@@ -16,8 +14,7 @@ namespace NeuroWeb.EXMPL.NETWORK.LAYERS.POOLING
 
         public Tensor GetValues() => _inputTensor;
 
-        public Tensor GetNextLayer(Tensor tensor)
-        {
+        public Tensor GetNextLayer(Tensor tensor) {
             _inputTensor = tensor;
             return Pooling.MaxPool(tensor, _poolSize);
         }
