@@ -5,6 +5,7 @@ using NeuroWeb.EXMPL.LAYERS.INTERFACES;
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.MATH;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
+using NeuroWeb.EXMPL.SCRIPTS.ACTIVATION.ReLU;
 using NeuroWeb.EXMPL.SCRIPTS.MATH;
 using Vector = NeuroWeb.EXMPL.OBJECTS.MATH.Vector;
 
@@ -48,7 +49,7 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
                 
         public Tensor GetNextLayer(Tensor tensor) {
             Neurons = tensor.Flatten().ToArray();
-            var nextLayer = NeuronActivate.LeakyReLu(new Vector(Weights * Neurons) + new Vector(Bias));
+            var nextLayer = new Vector(Weights * Neurons) + new Vector(Bias);
             return new Vector(nextLayer).AsTensor(1, nextLayer.Length, 1);
         }
 
@@ -56,7 +57,7 @@ namespace NeuroWeb.EXMPL.LAYERS.PERCEPTRON {
             var temp = error.Flatten();
             NeuronsError = Weights.GetTranspose() * temp.ToArray();
             SetWeights(_learningRate, temp.ToArray());
-            return new Vector(NeuronActivate.GetDerivative(NeuronsError)).AsTensor(1, NeuronsError.Length, 1);
+            return new Vector(NeuronsError).AsTensor(1, NeuronsError.Length, 1);
         }
 
         private void SetWeights(double learningRate, IReadOnlyList<double> previousErrors) {

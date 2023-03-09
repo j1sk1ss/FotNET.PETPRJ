@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using NeuroWeb.EXMPL.LAYERS.CONVOLUTION.SCRIPTS;
 using NeuroWeb.EXMPL.LAYERS.INTERFACES;
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.MATH;
-using NeuroWeb.EXMPL.OBJECTS.NETWORK;
+using NeuroWeb.EXMPL.SCRIPTS.ACTIVATION.ReLU;
 using NeuroWeb.EXMPL.SCRIPTS.MATH; 
 
 namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
@@ -54,7 +55,7 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
         
         public Tensor GetNextLayer(Tensor layer) {
             Input = layer;
-            return NeuronActivate.LeakyReLu(Convolution.GetConvolution(layer, Filters, _stride));;
+            return Convolution.GetConvolution(layer, Filters, _stride);
         }
 
         public Tensor BackPropagate(Tensor error) {
@@ -78,7 +79,7 @@ namespace NeuroWeb.EXMPL.LAYERS.CONVOLUTION {
             var nextError = Convolution.GetExtendedConvolution(error,
                 FlipFilters(GetFiltersWithoutBiases(originalFilters)), 1);
             
-            return NeuronActivate.GetDerivative(nextError);  
+            return nextError;
         }
 
         public string GetData() {

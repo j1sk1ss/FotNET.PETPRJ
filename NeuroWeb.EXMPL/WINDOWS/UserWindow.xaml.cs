@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+
+using NeuroWeb.EXMPL.LAYERS.ACTIVATION;
 using NeuroWeb.EXMPL.LAYERS.CONVOLUTION;
 using NeuroWeb.EXMPL.LAYERS.FLATTEN;
 using NeuroWeb.EXMPL.LAYERS.INTERFACES;
@@ -15,6 +17,7 @@ using NeuroWeb.EXMPL.LAYERS.POOLING;
 using NeuroWeb.EXMPL.OBJECTS;
 using NeuroWeb.EXMPL.OBJECTS.NETWORK;
 using NeuroWeb.EXMPL.SCRIPTS;
+using NeuroWeb.EXMPL.SCRIPTS.ACTIVATION.ReLU;
 using NeuroWeb.EXMPL.SCRIPTS.MATH;
 using Matrix = NeuroWeb.EXMPL.OBJECTS.MATH.Matrix;
 
@@ -24,12 +27,16 @@ namespace NeuroWeb.EXMPL.WINDOWS {
             try {
                 var layers = new List<ILayer> {
                     new ConvolutionLayer(6, 5, 5, 1, 1, .0002),
+                    new ActivationLayer(new LeakyReLu()),
                     new PoolingLayer(2),
                     new ConvolutionLayer(16, 5, 5, 6, 1, .0002),
+                    new ActivationLayer(new LeakyReLu()),
                     new PoolingLayer(2),
                     new FlattenLayer(),
                     new PerceptronLayer(256, 128, .0002),
+                    new ActivationLayer(new LeakyReLu()),
                     new PerceptronLayer(128, 10, .0002),
+                    new ActivationLayer(new LeakyReLu()),
                     new PerceptronLayer(10, .0002)
                 };
                 

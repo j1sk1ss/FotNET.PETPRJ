@@ -5,7 +5,9 @@ using System.Linq;
 using System.Windows;
 
 using Microsoft.Win32;
+
 using NeuroWeb.EXMPL.LAYERS.INTERFACES;
+using NeuroWeb.EXMPL.SCRIPTS.ACTIVATION.ReLU;
 using NeuroWeb.EXMPL.SCRIPTS.MATH;
 using Vector = NeuroWeb.EXMPL.OBJECTS.MATH.Vector;
 
@@ -14,6 +16,7 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
         public Network(List<ILayer> layers) {
             Layers = layers;
         }
+        
         public List<ILayer> Layers { get; }
         
         public int ForwardFeed(Tensor data) {
@@ -29,7 +32,7 @@ namespace NeuroWeb.EXMPL.OBJECTS.NETWORK {
         
         public void BackPropagation(double expectedAnswer) {
             try {
-                var errorTensor = LossFunction.GetLoss(Layers[^1].GetValues(), (int)expectedAnswer);
+                var errorTensor = LossFunction.GetLoss(Layers[^1].GetValues(), (int)expectedAnswer, new LeakyReLu());
                 for (var i = Layers.Count - 2; i >= 0; i--) {
                     errorTensor = Layers[i].BackPropagate(errorTensor);
                 }
