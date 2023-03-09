@@ -1,7 +1,22 @@
-# NeuronWeb.CRCEW
-~~A simple neuronal network that guesses numbers drawn by users. This program is my coursework.~~
+FotNET neuron network library.
 
-CNN with FNN that analyze real-time video sighnal and says what she sees.
+This library allows u to create ur own neuron networks (CNN and Classic NN) without writing all code.
+
+USING:
+
+Network - main object, that should be constructed with List of Layers and main Activation Function that will be take part during calculationg of loss.
+
+LAYERS:
+
+-Convolution Layer
+
+-Perceptron Layer
+
+-Flatten Layer 
+
+-Activation Layer
+
+-Pooling Layer
 
 TODO List:
 
