@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using NeuroWeb.EXMPL.OBJECTS.MATH;
+using NeuroWeb.EXMPL.NETWORK.OBJECTS;
 
-namespace NeuroWeb.EXMPL.OBJECTS {
+namespace NeuroWeb.EXMPL.OBJECTS
+{
     public class Number {
         public Number() {
             Pixels = new List<double>();

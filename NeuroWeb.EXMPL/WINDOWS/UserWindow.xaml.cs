@@ -8,20 +8,22 @@ using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 
-using NeuroWeb.EXMPL.LAYERS.ACTIVATION;
-using NeuroWeb.EXMPL.LAYERS.CONVOLUTION;
-using NeuroWeb.EXMPL.LAYERS.FLATTEN;
-using NeuroWeb.EXMPL.LAYERS.INTERFACES;
-using NeuroWeb.EXMPL.LAYERS.PERCEPTRON;
-using NeuroWeb.EXMPL.LAYERS.POOLING;
-using NeuroWeb.EXMPL.OBJECTS;
-using NeuroWeb.EXMPL.OBJECTS.NETWORK;
-using NeuroWeb.EXMPL.SCRIPTS;
-using NeuroWeb.EXMPL.SCRIPTS.ACTIVATION.ReLU;
-using NeuroWeb.EXMPL.SCRIPTS.MATH;
-using Matrix = NeuroWeb.EXMPL.OBJECTS.MATH.Matrix;
+using Matrix = NeuroWeb.EXMPL.NETWORK.OBJECTS.Matrix;
+using NeuroWeb.EXMPL.SCRIPTS.MNIST;
+using NeuroWeb.EXMPL.SCRIPTS.DATA;
+using NeuroWeb.EXMPL.NETWORK.LAYERS.INTERFACES;
+using NeuroWeb.EXMPL.NETWORK;
+using NeuroWeb.EXMPL.NETWORK.OBJECTS;
+using NeuroWeb.EXMPL.NETWORK.MATH;
+using NeuroWeb.EXMPL.NETWORK.LAYERS.CONVOLUTION;
+using NeuroWeb.EXMPL.NETWORK.LAYERS.ACTIVATION;
+using NeuroWeb.EXMPL.NETWORK.LAYERS.POOLING;
+using NeuroWeb.EXMPL.NETWORK.ACTIVATION.LEAKY_RELU;
+using NeuroWeb.EXMPL.NETWORK.LAYERS.FLATTEN;
+using NeuroWeb.EXMPL.NETWORK.LAYERS.PERCEPTRON;
 
-namespace NeuroWeb.EXMPL.WINDOWS {
+namespace NeuroWeb.EXMPL.WINDOWS
+{
     public partial class User {
         public User() {
             try {
@@ -40,14 +42,14 @@ namespace NeuroWeb.EXMPL.WINDOWS {
                     new PerceptronLayer(10, .0002)
                 };
                 
-                Network = new Network(layers);
+                Network = new Network(layers, new LeakyReLu());
                 InitializeComponent();
                 
                 Answers = new List<Label> {
                      Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
-                };  
-                
-                Network.ReadWeights();
+                };
+
+                WeightsWorker.LoadData(Network);
                 
                 Update = new DispatcherTimer {
                     Interval = new TimeSpan(0,0,0,1)
@@ -147,11 +149,11 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         
         private void SaveWeights(object sender, RoutedEventArgs e) {
             MessageBox.Show("Сохранение начато...");
-            Network.SaveWeights();
+            WeightsWorker.ExportData(Network); 
         }
 
         private void LoadWeights(object sender, RoutedEventArgs e) {
-            Network.ReadWeights();
+            WeightsWorker.LoadData(Network); 
         }
         
         private void DragWindow(object sender, MouseButtonEventArgs e) {

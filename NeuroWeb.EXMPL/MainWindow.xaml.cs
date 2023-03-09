@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Windows.Input;
 using System.Windows.Threading;
-
 using NeuroWeb.EXMPL.WINDOWS;
 
 
-namespace NeuroWeb.EXMPL {
+namespace NeuroWeb.EXMPL
+{
     public partial class MainWindow
     {
         public MainWindow() {

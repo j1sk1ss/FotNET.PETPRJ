@@ -122,4 +122,9 @@
       </EmbeddedResource>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="OBJECTS\NETWORK\" />
+      <Folder Include="SCRIPTS\MATH\" />
+    </ItemGroup>
+
 </Project>

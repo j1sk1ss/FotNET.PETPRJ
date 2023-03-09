@@ -1,19 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-using NeuroWeb.EXMPL.Gui;
-using NeuroWeb.EXMPL.LAYERS.CONVOLUTION;
-using NeuroWeb.EXMPL.LAYERS.FLATTEN;
-using NeuroWeb.EXMPL.LAYERS.INTERFACES;
-using NeuroWeb.EXMPL.LAYERS.PERCEPTRON;
-using NeuroWeb.EXMPL.LAYERS.POOLING;
-using NeuroWeb.EXMPL.OBJECTS.NETWORK;
-using NeuroWeb.EXMPL.SCRIPTS;
+using Microsoft.Win32;
 
+using NeuroWeb.EXMPL.Gui;
+using NeuroWeb.EXMPL.NETWORK;
+using NeuroWeb.EXMPL.NETWORK.ACTIVATION.RELU;
+using NeuroWeb.EXMPL.SCRIPTS.MNIST;
 using Configuration = NeuroWeb.EXMPL.Gui.Configuration;
 
-namespace NeuroWeb.EXMPL.WINDOWS {
+namespace NeuroWeb.EXMPL.WINDOWS
+{
     public partial class Teacher {
         public Teacher() => InitializeComponent();
         
@@ -35,18 +34,12 @@ namespace NeuroWeb.EXMPL.WINDOWS {
         }
         
         private void HardTeaching(object sender, MouseButtonEventArgs e) {
-            var layers = new List<ILayer> {
-                new ConvolutionLayer(6, 5, 5, 1, 1, .0001),
-                new PoolingLayer(2),
-                new ConvolutionLayer(16, 5, 5, 6, 1, .0001),
-                new PoolingLayer(2),
-                new FlattenLayer(),
-                new PerceptronLayer(256, 128, .0001),
-                new PerceptronLayer(128, 10, .0001),
-                new PerceptronLayer(10, .0001)
+            MessageBox.Show("Укажите файл конфигурации сети!");
+            var file = new OpenFileDialog {
+                Filter = "TXT files | *.txt"
             };
-            
-            Teaching.HardStudying(new Network(layers), 2);
+            if (file.ShowDialog() == true) 
+                Teaching.HardStudying(new Network(DataWorker.ReadNetworkConfig(File.ReadAllText(file.FileName)), new ReLu()), 15);
         }
     }
 }
