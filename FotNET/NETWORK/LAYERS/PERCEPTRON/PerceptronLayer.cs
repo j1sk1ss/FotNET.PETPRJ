@@ -49,7 +49,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
         public Tensor BackPropagate(Tensor error) {
             var previousError = error.Flatten().ToArray();
             
-            NeuronsError = Weights.GetTranspose() * previousError;
+            NeuronsError = Weights.Transpose() * previousError;
             
             for (var j = 0; j < Weights.Body.GetLength(0); ++j)
                 for (var k = 0; k < Weights.Body.GetLength(1); ++k)

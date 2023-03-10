@@ -17,12 +17,12 @@ namespace FotNET.NETWORK {
         
         public int ForwardFeed(Tensor data) {
             data = Layers.Aggregate(data, (current, layer) => layer.GetNextLayer(current));
-            return Vector.GetMaxIndex(data.Flatten());
+            return data.GetMaxIndex();
         }
 
         public void BackPropagation(double expectedAnswer) {
-            var errorTensor = LossFunction.GetLoss(Layers[^1].GetValues(), (int)expectedAnswer, MainFunction);
-            for (var i = Layers.Count - 2; i >= 0; i--)
+            var errorTensor = LossFunction.GetErrorTensor(Layers[^1].GetValues(), (int)expectedAnswer, MainFunction);
+            for (var i = Layers.Count - 1; i >= 0; i--)
                 errorTensor = Layers[i].BackPropagate(errorTensor);
         }
     }

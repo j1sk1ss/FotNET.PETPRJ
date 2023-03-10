@@ -24,13 +24,7 @@ namespace FotNET.NETWORK.ACTIVATION.LEAKY_RELU {
         }
 
         public double Derivation(double value) => value * value is < 0 or > 1 ? .01d : value;
-
-        public double[] Derivation(double[] values) {
-            for (var i = 0; i < values.Length; i++)
-                values[i] = Derivation(values[i]);
-            return values;
-        }
-
+        
         public Tensor Derivation(Tensor tensor) {
             foreach (var channel in tensor.Channels)
                 for (var x = 0; x < channel.Body.GetLength(0); x++)

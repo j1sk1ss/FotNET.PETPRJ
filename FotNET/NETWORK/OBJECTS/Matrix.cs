@@ -1,16 +1,14 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace FotNET.NETWORK.OBJECTS {
+﻿namespace FotNET.NETWORK.OBJECTS {
     public class Matrix {
         public Matrix(double[,] body) {
-            Row = body.GetLength(0);
-            Col = body.GetLength(1);
+            Row  = body.GetLength(0);
+            Col  = body.GetLength(1);
             Body = body;
         }
 
         public Matrix(int row, int col) {
-            Row = row;
-            Col = col;
+            Row  = row;
+            Col  = col;
             Body = new double[row, col];
         }
 
@@ -18,19 +16,19 @@ namespace FotNET.NETWORK.OBJECTS {
         private int Col { get; }
         public double[,] Body { get; }
 
-        public Matrix GetTranspose() {
+        public Matrix Transpose() {
             var rows = Body.GetLength(0);
             var columns = Body.GetLength(1);
+            
             var temp = new double[columns, rows];
-
             for (var i = 0; i < rows; i++) 
                 for (var j = 0; j < columns; j++) 
-                    temp[j, 1] = Body[1, j];
+                    temp[j, i] = Body[i, j];
             
             return new Matrix(temp);
         }
 
-        public Matrix GetFlip() {
+        public Matrix Flip() {
             var rotatedMatrix = new Matrix(new double[Row, Col]);
 
             for (var i = 0; i < rotatedMatrix.Row; i++) 
@@ -40,20 +38,20 @@ namespace FotNET.NETWORK.OBJECTS {
             return rotatedMatrix;
         }
 
-        public static double[] operator *(Matrix matrix, double[] neuron) {
-            if (matrix.Col != neuron.Length) throw new Exception();
+        public static double[] operator *(Matrix matrix, double[] vector) {
+            if (matrix.Col != vector.Length) throw new Exception();
 
-            var vector = new double[matrix.Row];
+            var endVector = new double[matrix.Row];
 
             for (var x = 0; x < matrix.Row; ++x) {
                 double tmp = 0;
                 for (var y = 0; y < matrix.Col; ++y)
-                    tmp += matrix.Body[x, y] * neuron[y];
+                    tmp += matrix.Body[x, y] * vector[y];
 
-                vector[x] = tmp;
+                endVector[x] = tmp;
             }
 
-            return vector;
+            return endVector;
         }
 
         public static Matrix operator +(Matrix matrix1, Matrix matrix2) {

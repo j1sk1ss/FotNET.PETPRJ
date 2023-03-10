@@ -3,30 +3,24 @@
 namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS {
     public static class Pooling {
         public static Tensor BackMaxPool(Tensor picture, Tensor previousTensor, int poolSize) {
-            var tensor = new Tensor(new List<Matrix>());
-
             for (var i = 0; i < picture.Channels.Count; i++) 
-                tensor.Channels.Add(MatrixBackMaxPool(picture.Channels[i], previousTensor.Channels[i], poolSize));
+                picture.Channels[i] = MatrixBackMaxPool(picture.Channels[i], previousTensor.Channels[i], poolSize);
             
-            return tensor;
+            return picture;
         }
 
         public static Tensor MaxPool(Tensor picture, int poolSize) {
-            var tensor = new Tensor(new List<Matrix>());
-
-            foreach (var matrix in picture.Channels) 
-                tensor.Channels.Add(MatrixMaxPool(matrix, poolSize));
+            for (var i = 0; i < picture.Channels.Count; i++) 
+                picture.Channels[i] = MatrixMaxPool(picture.Channels[i], poolSize);
             
-            return tensor;
+            return picture;
         }
 
-        public static Tensor AveragePool(Tensor picture) {
-            var tensor = new Tensor(new List<Matrix>());
-
-            foreach (var matrix in picture.Channels) 
-                tensor.Channels.Add(MatrixAveragePool(matrix, 3, 1));
+        public static Tensor AveragePool(Tensor picture, int poolSize) {
+            for (var i = 0; i < picture.Channels.Count; i++) 
+                picture.Channels[i] = MatrixAveragePool(picture.Channels[i], poolSize, 1);
             
-            return tensor;
+            return picture;
         }
 
         private static Matrix MatrixBackMaxPool(Matrix matrix, Matrix previousMatrix, int poolSize) {

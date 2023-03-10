@@ -45,33 +45,23 @@
             return vector1;
         }
 
-        public Tensor AsTensor(int x, int y, int channels) {
+        public Tensor AsTensor(int x, int y, int channels)
+        {
             var tensor = new Tensor(new List<Matrix>());
             var position = 0;
 
-            for (var k = 0; k < channels; k++) {
+            for (var k = 0; k < channels; k++)
+            {
                 tensor.Channels.Add(new Matrix(x, y));
                 for (var i = 0; i < x; i++)
-                    for (var j = 0; j < y; j++) {
-                        if (Body.Length <= position) return null!;
-                        tensor.Channels[^1].Body[i, j] = Body[position++];
-                    }
+                for (var j = 0; j < y; j++)
+                {
+                    if (Body.Length <= position) return null!;
+                    tensor.Channels[^1].Body[i, j] = Body[position++];
+                }
             }
 
             return tensor;
-        }
-
-        public static int GetMaxIndex(IReadOnlyList<double> values) {
-            var max = values[0];
-            var index = 0;
-
-            for (var i = 0; i < values.Count; i++)
-                if (max < values[i]) {
-                    max = values[i];
-                    index = i;
-                }
-
-            return index;
         }
 
         public string Print() =>

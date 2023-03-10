@@ -5,7 +5,7 @@ namespace FotNET.NETWORK.ACTIVATION.RELU {
     public class ReLu : IFunction {
         private static double Activate(double value) => value switch {
             < 0 => value * .01d,
-            _ => value
+            _   => value
         };
 
         private static Matrix Activate(Matrix matrix) {
@@ -23,12 +23,6 @@ namespace FotNET.NETWORK.ACTIVATION.RELU {
         }
 
         public double Derivation(double value) => value * value < 0 ? .01d : 1;
-
-        public double[] Derivation(double[] values) {
-            for (var i = 0; i < values.Length; i++)
-                values[i] = Derivation(values[i]);
-            return values;
-        }
 
         public Tensor Derivation(Tensor tensor) {
             foreach (var channel in tensor.Channels)

@@ -14,7 +14,7 @@
 
         public Filter GetFlip() {
             foreach (var matrix in Channels)
-                matrix.GetFlip();
+                matrix.Flip();
 
             return new Filter(Channels);
         }
@@ -52,6 +52,20 @@
             return new Tensor(matrix);
         }
 
+        public int GetMaxIndex() {
+            var values = Flatten();
+            var max = values[0];
+            var index = 0;
+
+            for (var i = 0; i < values.Count; i++)
+                if (max < values[i]) {
+                    max = values[i];
+                    index = i;
+                }
+
+            return index;
+        }
+        
         public static Tensor operator +(Tensor tensor1, Tensor tensor2) {
             var endTensor = new Tensor(tensor1.Channels);
 

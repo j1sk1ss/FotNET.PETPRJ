@@ -62,12 +62,9 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                 originalFilters[i] = originalFilters[i].GetSameChannels(error).AsFilter();
 
             for (var f = 0; f < Filters.Length; f++) {
-                for (var channel = 0; channel < Filters[f].Channels.Count; channel++) {
-                    var channelGradient = Convolution.GetConvolution(extendedInput.Channels[f],
-                        error.Channels[f], _stride, Filters[f].Bias);
-
-                    Filters[f].Channels[channel] -= channelGradient * _learningRate;
-                }
+                for (var channel = 0; channel < Filters[f].Channels.Count; channel++) 
+                    Filters[f].Channels[channel] -= Convolution.GetConvolution(extendedInput.Channels[f],
+                        error.Channels[f], _stride, Filters[f].Bias) * _learningRate;
                 
                 Filters[f].Bias -= error.Channels[f].GetSum() * _learningRate;
             }
