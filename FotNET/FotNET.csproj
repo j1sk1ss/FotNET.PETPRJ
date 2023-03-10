@@ -4,6 +4,15 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>FotNET</Title>
+    <Authors>$(AssemblyName)</Authors>
+    <Description>Library for working with CNN and classic NN</Description>
+    <PackageProjectUrl>https://github.com/j1sk1ss/FotNET.MPRJ</PackageProjectUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="https:\raw.githubusercontent.com\j1sk1ss\FotNET.MPRJ\master\README.md" />
+  </ItemGroup>
 
 </Project>

@@ -55,9 +55,9 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
         public Tensor BackPropagate(Tensor error) {
             var inputTensor = Input;
-
             var extendedInput = inputTensor.GetSameChannels(error);
             var originalFilters = Filters;
+            
             for (var i = 0; i < originalFilters.Length; i++)
                 originalFilters[i] = originalFilters[i].GetSameChannels(error).AsFilter();
 
@@ -67,14 +67,13 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                         error.Channels[f], _stride, Filters[f].Bias);
 
                     Filters[f].Channels[channel] -= channelGradient * _learningRate;
-                    Filters[f].Bias -= error.Channels[f].GetSum() * _learningRate;
                 }
+                
+                Filters[f].Bias -= error.Channels[f].GetSum() * _learningRate;
             }
 
-            var nextError = Convolution.GetExtendedConvolution(error,
-                FlipFilters(GetFiltersWithoutBiases(originalFilters)), 1);
-
-            return nextError;
+            return Convolution.GetExtendedConvolution(error, 
+                FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
         }
 
         public string GetData() {

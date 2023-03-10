@@ -139,23 +139,6 @@ namespace FotNET.NETWORK.OBJECTS {
             return subMatrix;
         }
 
-        public Matrix Resize(int x, int y) {
-            var newMatrix = new Matrix(x, y);
-
-            for (var i = 0; i < x; i++)
-                if (i < Body.GetLength(0))
-                    for (var j = 0; j < y; j++)
-                        if (j < Body.GetLength(1)) newMatrix.Body[i, j] = Body[i, j];
-
-            return newMatrix;
-        }
-
-        public void DefaultInitialization() {
-            for (var i = 0; i < Row; i++)
-                for (var j = 0; j < Col; j++)
-                    Body[i, j] = new Random().Next() % 100 * 0.03 / (Row + 35);
-        }
-
         public void HeInitialization() {
             var scale = Math.Sqrt(2.0 / Col);
             for (var i = 0; i < Row; i++)
@@ -163,7 +146,6 @@ namespace FotNET.NETWORK.OBJECTS {
                     Body[i, j] = new Random().NextDouble() * scale * 2 - scale;
         }
 
-        [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
         public string GetValues() {
             var tempValues = "";
 
