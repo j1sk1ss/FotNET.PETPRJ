@@ -91,7 +91,7 @@ All weights can be saved by getting them from every layer.
 
 For loading weights u should use same alghoritm.
 
-**EXAMPLE**
+**EXAMPLE:**
 
 		data = globalData; // weights that converted into string
 		foreach (var layer in layers) {
