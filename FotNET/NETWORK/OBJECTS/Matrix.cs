@@ -17,80 +17,114 @@
         public double[,] Body { get; }
 
         public Matrix Transpose() {
-            var rows = Body.GetLength(0);
-            var columns = Body.GetLength(1);
+            try {
+                var rows = Body.GetLength(0);
+                var columns = Body.GetLength(1);
             
-            var temp = new double[columns, rows];
-            for (var i = 0; i < rows; i++) 
+                var temp = new double[columns, rows];
+                for (var i = 0; i < rows; i++) 
                 for (var j = 0; j < columns; j++) 
                     temp[j, i] = Body[i, j];
             
-            return new Matrix(temp);
+                return new Matrix(temp);
+            }
+            catch (Exception) {
+                Console.WriteLine("Код ошибки: 1m");
+                return null!;
+            }
         }
 
         public Matrix Flip() {
-            var rotatedMatrix = new Matrix(new double[Row, Col]);
+            try {
+                var rotatedMatrix = new Matrix(new double[Row, Col]);
 
-            for (var i = 0; i < rotatedMatrix.Row; i++) 
+                for (var i = 0; i < rotatedMatrix.Row; i++) 
                 for (var j = 0; j < rotatedMatrix.Col; j++) 
                     rotatedMatrix.Body[j, i] = Body[Row - j - 1, Col - i - 1];
             
-            return rotatedMatrix;
+                return rotatedMatrix;
+            }
+            catch (Exception) {
+                Console.WriteLine("Код ошибки: 2m");
+                return null!;
+            }
         }
 
         public static double[] operator *(Matrix matrix, double[] vector) {
-            if (matrix.Col != vector.Length) throw new Exception();
+            try {
+                var endVector = new double[matrix.Row];
 
-            var endVector = new double[matrix.Row];
+                for (var x = 0; x < matrix.Row; ++x) {
+                    double tmp = 0;
+                    for (var y = 0; y < matrix.Col; ++y)
+                        tmp += matrix.Body[x, y] * vector[y];
 
-            for (var x = 0; x < matrix.Row; ++x) {
-                double tmp = 0;
-                for (var y = 0; y < matrix.Col; ++y)
-                    tmp += matrix.Body[x, y] * vector[y];
+                    endVector[x] = tmp;
+                }
 
-                endVector[x] = tmp;
+                return endVector;
             }
-
-            return endVector;
+            catch (Exception) {
+                Console.WriteLine("Код ошибки: 3m");
+                return null!;
+            }
         }
 
         public static Matrix operator +(Matrix matrix1, Matrix matrix2) {
-            var xSize = matrix1.Body.GetLength(0);
-            var ySize = matrix2.Body.GetLength(1);
+            try {
+                var xSize = matrix1.Body.GetLength(0);
+                var ySize = matrix2.Body.GetLength(1);
 
-            var endMatrix = new Matrix(new double[xSize, ySize]);
+                var endMatrix = new Matrix(new double[xSize, ySize]);
 
-            for (var i = 0; i < xSize; i++)
+                for (var i = 0; i < xSize; i++)
                 for (var j = 0; j < ySize; j++)
                     endMatrix.Body[i, j] = matrix1.Body[i, j] + matrix2.Body[i, j];
 
-            return endMatrix;
+                return endMatrix;
+            }
+            catch (Exception) {
+                Console.WriteLine("Код ошибки: 4m");
+                return null!;
+            }
         }
 
         public static Matrix operator *(Matrix matrix1, Matrix matrix2) {
-            var xSize = matrix1.Body.GetLength(0);
-            var ySize = matrix2.Body.GetLength(1);
+            try {
+                var xSize = matrix1.Body.GetLength(0);
+                var ySize = matrix2.Body.GetLength(1);
 
-            var endMatrix = new Matrix(new double[xSize, ySize]);
+                var endMatrix = new Matrix(new double[xSize, ySize]);
 
-            for (var i = 0; i < xSize; i++)
+                for (var i = 0; i < xSize; i++)
                 for (var j = 0; j < ySize; j++)
                     endMatrix.Body[i, j] = matrix1.Body[i, j] * matrix2.Body[i, j];
 
-            return endMatrix;
+                return endMatrix;
+            }
+            catch (Exception) {
+                Console.WriteLine("Код ошибки: 5m");
+                return null!;
+            }
         }
 
         public static Matrix operator -(Matrix matrix1, Matrix matrix2) {
-            var xSize = matrix1.Body.GetLength(0);
-            var ySize = matrix2.Body.GetLength(1);
+            try {
+                var xSize = matrix1.Body.GetLength(0);
+                var ySize = matrix2.Body.GetLength(1);
 
-            var endMatrix = new Matrix(new double[xSize, ySize]);
+                var endMatrix = new Matrix(new double[xSize, ySize]);
 
-            for (var i = 0; i < xSize; i++)
+                for (var i = 0; i < xSize; i++)
                 for (var j = 0; j < ySize; j++)
                     endMatrix.Body[i, j] = matrix1.Body[i, j] - matrix2.Body[i, j];
 
-            return endMatrix;
+                return endMatrix;
+            }
+            catch (Exception) {
+                Console.WriteLine("Код ошибки: 6m");
+                return null!;
+            }
         }
 
         public static Matrix operator -(Matrix matrix1, double value) {
@@ -128,13 +162,19 @@
         }
 
         public Matrix GetSubMatrix(int x1, int y1, int x2, int y2) {
-            var subMatrix = new Matrix(x2 - x1, y2 - y1);
+            try {
+                var subMatrix = new Matrix(x2 - x1, y2 - y1);
 
-            for (var i = x1; i < x2; i++) 
+                for (var i = x1; i < x2; i++) 
                 for (var j = y1; j < y2; j++) 
                     subMatrix.Body[i - x1, j - y1] = Body[i, j];
             
-            return subMatrix;
+                return subMatrix;
+            }
+            catch (Exception) {
+                Console.WriteLine("Код ошибки: 7m");
+                return null!;
+            }
         }
 
         public void HeInitialization() {
