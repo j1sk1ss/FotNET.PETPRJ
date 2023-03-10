@@ -79,6 +79,7 @@ If expected class is different that was predicted, we should use **BACKPROPAGATI
 #### Save:
 
 All weights can be saved by getting them from every layer. 
+
 **EXAMPLE:**
 
 		data = "";
@@ -89,6 +90,7 @@ All weights can be saved by getting them from every layer.
 #### Load:
 
 For loading weights u should use same alghoritm.
+
 **EXAMPLE**
 
 		data = globalData; // weights that converted into string
