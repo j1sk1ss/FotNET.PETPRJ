@@ -1,17 +1,17 @@
-﻿using FotNET.NETWORK.ACTIVATION.INTERFACES;
+﻿using FotNET.NETWORK.ACTIVATION;
 using FotNET.NETWORK.LAYERS.INTERFACES;
 using FotNET.NETWORK.MATH;
 using FotNET.NETWORK.OBJECTS;
 
 namespace FotNET.NETWORK {
     public class Network {
-        public Network(List<ILayer> layers, IFunction lossFunction) {
+        public Network(List<ILayer> layers, Function lossFunction) {
             Layers       = layers;
             MainFunction = lossFunction;
         }
 
         private List<ILayer> Layers { get; }
-        private IFunction MainFunction { get; }
+        private Function MainFunction { get; }
 
         public Tensor GetLayerData(int layer) => Layers[layer].GetValues();
         
