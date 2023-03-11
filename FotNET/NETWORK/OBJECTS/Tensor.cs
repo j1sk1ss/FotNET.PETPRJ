@@ -156,7 +156,7 @@
 
     public class Filter : Tensor {
         public Filter(List<Matrix> matrix) : base(matrix) {
-            Bias = 0;
+            Bias     = 0;
             Channels = matrix;
         }
 
