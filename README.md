@@ -26,18 +26,18 @@ For creating neuron network class u need do **SIMPLE** steps:
 1.1. Also, before we start, u need to choose a model of neuron network. U can do this by creating a List of Layers:
 
 		List<ILayer> layers = new List<ILayer> {
+			new ConvolutionLayer(); // Input tensor get convolved by filters
+			new ActivationLayer(); // Input tensor get activated
+			new PoolingLayer(); // Input tensor get pooled
 			new ConvolutionLayer();
 			new ActivationLayer();
 			new PoolingLayer();
-			new ConvolutionLayer();
-			new ActivationLayer();
-			new PoolingLayer();
-			new FlattenLayer();
-			new PerceptronLayer();
+			new FlattenLayer(); // Input tensor get converted to 1d tensor
+			new PerceptronLayer(); // Input 1d tensor multiply with weights 
 			new ActivationLayer();
 			new PerceptronLayer();
 			new ActivationLayer();
-			new SoftMaxLayer();
+			new SoftMaxLayer(); 
 		}
 
 1.1.1. Every layer needs a parametrs, that u should choose by ur self:
@@ -48,7 +48,7 @@ For creating neuron network class u need do **SIMPLE** steps:
 		new PerceptronLayer(size, sizeOfNextLayer, learningRate);
 		new PerceptronLayer(size, learningRate)
 
-1.2. After it u should choose one of **ACTIVATION FUNCTIONS**:
+1.2. After it u should choose one of **ACTIVATION FUNCTIONS** or create ur own, but dont forget add IFunction interface:
 
 		new ReLU();
 		new LeakyReLU();
@@ -68,7 +68,7 @@ If predicted class is wrong, we going to Back Propagation.
 
 #### BackPropagation:
 
-		network.BackPropagation(expectedClass) // Index of expected class
+		network.BackPropagation(expectedClass); // Index of expected class
 
 If expected class is different that was predicted, we should use **BACKPROPAGATION** method.
 
