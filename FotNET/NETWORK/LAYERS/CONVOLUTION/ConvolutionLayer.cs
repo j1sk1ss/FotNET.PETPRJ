@@ -34,7 +34,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
         private static Filter[] FlipFilters(Filter[] filters) {
             for (var i = 0; i < filters.Length; i++)
-                filters[i] = filters[i].GetFlip();
+                filters[i] = filters[i].Flip();
 
             return filters;
         }
@@ -66,7 +66,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                     Filters[f].Channels[channel] -= Convolution.GetConvolution(extendedInput.Channels[f],
                         error.Channels[f], _stride, Filters[f].Bias) * _learningRate;
                 
-                Filters[f].Bias -= error.Channels[f].GetSum() * _learningRate;
+                Filters[f].Bias -= error.Channels[f].Sum() * _learningRate;
             }
 
             return Convolution.GetExtendedConvolution(error, 

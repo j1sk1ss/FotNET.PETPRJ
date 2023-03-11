@@ -23,12 +23,11 @@ namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS {
             return picture;
         }
 
-        private static Matrix MatrixBackMaxPool(Matrix matrix, Matrix previousMatrix, int poolSize) {
-            var inputWidth  = previousMatrix.Body.GetLength(0);
-            var inputHeight = previousMatrix.Body.GetLength(1);
-            var newMatrix      = new Matrix(inputWidth, inputHeight);
+        private static Matrix MatrixBackMaxPool(Matrix matrix, Matrix referenceMatrix, int poolSize) {
+            var backPooledMatrix      = new Matrix(referenceMatrix.Body.GetLength(0),
+                referenceMatrix.Body.GetLength(1));
 
-            for (var x = 0; x < matrix.Body.GetLength(0); x++) {
+            for (var x = 0; x < matrix.Body.GetLength(0); x++) 
                 for (var y = 0; y < matrix.Body.GetLength(1); y++) {
                     var maxVal = double.MinValue;
 
@@ -37,30 +36,26 @@ namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS {
 
                     for (var i = 0; i < poolSize; i++) 
                         for (var j = 0; j < poolSize; j++) {
-                            var inputVal = previousMatrix.Body[x * poolSize + i, y * poolSize + j];
+                            var inputVal = referenceMatrix.Body[x * poolSize + i, y * poolSize + j];
                             if (!(inputVal > maxVal)) continue;
                             maxVal = inputVal;
                             maxX = x * poolSize + i;
                             maxY = y * poolSize + j;
                         }
                     
-                    newMatrix.Body[maxX, maxY] += matrix.Body[x, y];
+                    backPooledMatrix.Body[maxX, maxY] += matrix.Body[x, y];
                 }
-            }
-
-            return newMatrix;
+            
+            return backPooledMatrix;
         }
 
         private static Matrix MatrixMaxPool(Matrix matrix, int poolSize) {
-            var inputWidth  = matrix.Body.GetLength(0);
-            var inputHeight = matrix.Body.GetLength(1);
+            var outputWidth  = matrix.Body.GetLength(0) / poolSize;
+            var outputHeight = matrix.Body.GetLength(1) / poolSize;
 
-            var outputWidth  = inputWidth / poolSize;
-            var outputHeight = inputHeight / poolSize;
+            var pooledMatrix = new Matrix(new double[outputWidth, outputHeight]);
 
-            var output = new double[outputWidth, outputHeight];
-
-            for (var x = 0; x < outputWidth; x++) {
+            for (var x = 0; x < outputWidth; x++) 
                 for (var y = 0; y < outputHeight; y++) {
                     var maxVal = double.MinValue;
 
@@ -70,11 +65,10 @@ namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS {
                             maxVal = Math.Max(maxVal, inputVal);
                         }
                     
-                    output[x, y] = maxVal;
+                    pooledMatrix.Body[x, y] = maxVal;
                 }
-            }
-
-            return new Matrix(output);
+            
+            return pooledMatrix;
         }
 
         private static Matrix MatrixAveragePool(Matrix matrix, int poolSize, int stride) {
@@ -86,7 +80,7 @@ namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS {
 
             var output = new double[outputHeight, outputWidth];
 
-            for (var i = 0; i < outputHeight; i++) {
+            for (var i = 0; i < outputHeight; i++) 
                 for (var j = 0; j < outputWidth; j++) {
                     var sum = 0.0;
                     for (var k = i * stride; k < i * stride + poolSize; k++)
@@ -95,8 +89,7 @@ namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS {
 
                     output[i, j] = sum / (poolSize * poolSize);
                 }
-            }
-
+            
             return new Matrix(output);
         }
     }

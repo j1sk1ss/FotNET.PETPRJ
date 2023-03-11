@@ -18,7 +18,7 @@
             }
         }
 
-        public Filter GetFlip() {
+        public Filter Flip() {
             try {
                 foreach (var matrix in Channels)
                     matrix.Flip();

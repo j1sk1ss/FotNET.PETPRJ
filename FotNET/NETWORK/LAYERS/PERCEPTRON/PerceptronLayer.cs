@@ -8,9 +8,9 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
         public PerceptronLayer(int size, int nextSize, double learningRate) {
             _learningRate = learningRate;
 
-            Neurons = new double[size];
+            Neurons      = new double[size];
             NeuronsError = new double[size];
-            Bias = new double[size];
+            Bias         = new double[size];
 
             Weights = new Matrix(nextSize, size);
             Weights.HeInitialization();
@@ -22,9 +22,9 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
         public PerceptronLayer(int size, double learningRate) {
             _learningRate = learningRate;
 
-            Neurons = new double[size];
+            Neurons      = new double[size];
             NeuronsError = new double[size];
-            Bias = new double[size];
+            Bias         = new double[size];
 
             Weights = new Matrix(size, size);
             for (var i = 0; i < size; i++)

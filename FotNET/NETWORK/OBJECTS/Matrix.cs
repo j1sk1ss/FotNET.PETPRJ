@@ -18,13 +18,10 @@
 
         public Matrix Transpose() {
             try {
-                var rows = Body.GetLength(0);
-                var columns = Body.GetLength(1);
-            
-                var temp = new double[columns, rows];
-                for (var i = 0; i < rows; i++) 
-                for (var j = 0; j < columns; j++) 
-                    temp[j, i] = Body[i, j];
+                var temp = new double[Col, Row];
+                for (var i = 0; i < Row; i++) 
+                    for (var j = 0; j < Col; j++) 
+                        temp[j, i] = Body[i, j];
             
                 return new Matrix(temp);
             }
@@ -39,8 +36,8 @@
                 var rotatedMatrix = new Matrix(new double[Row, Col]);
 
                 for (var i = 0; i < rotatedMatrix.Row; i++) 
-                for (var j = 0; j < rotatedMatrix.Col; j++) 
-                    rotatedMatrix.Body[j, i] = Body[Row - j - 1, Col - i - 1];
+                    for (var j = 0; j < rotatedMatrix.Col; j++) 
+                        rotatedMatrix.Body[j, i] = Body[Row - j - 1, Col - i - 1];
             
                 return rotatedMatrix;
             }
@@ -153,11 +150,13 @@
             return endMatrix;
         }
 
-        public double GetSum() {
+        public double Sum() {
             var sum = 0d;
-            for (var i = 0; i < Body.GetLength(0); i++)
-                for (var j = 0; j < Body.GetLength(1); j++)
+            
+            for (var i = 0; i < Row; i++)
+                for (var j = 0; j < Col; j++)
                     sum += Body[i, j];
+            
             return sum;
         }
 
@@ -166,8 +165,8 @@
                 var subMatrix = new Matrix(x2 - x1, y2 - y1);
 
                 for (var i = x1; i < x2; i++) 
-                for (var j = y1; j < y2; j++) 
-                    subMatrix.Body[i - x1, j - y1] = Body[i, j];
+                    for (var j = y1; j < y2; j++) 
+                        subMatrix.Body[i - x1, j - y1] = Body[i, j];
             
                 return subMatrix;
             }

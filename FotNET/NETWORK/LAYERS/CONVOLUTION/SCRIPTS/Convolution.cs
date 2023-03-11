@@ -14,7 +14,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
             for (var i = 0; i < conMat.Body.GetLength(0); i += stride) 
                 for (var j = 0; j < conMat.Body.GetLength(1); j += stride) {
                     var subMatrix = matrix.GetSubMatrix(i, j, i + xFilterSize, j + yFilterSize);
-                    conMat.Body[i, j] += (filter * subMatrix).GetSum() + bias;
+                    conMat.Body[i, j] += (filter * subMatrix).Sum() + bias;
                 }
             
             return conMat;

@@ -1,15 +1,10 @@
 ﻿namespace FotNET.NETWORK.LAYERS.SOFT_MAX.SCRIPTS {
     public static class SoftMax {
         public static List<double> Softmax(List<double> input) {
-            var result = new List<double>();
             var maxInput = input.Max();
-            var sum = 0.0;
-
-            for (var i = 0; i < input.Count; i++) {
-                result.Add(Math.Exp(input[i] - maxInput));
-                sum += result[i];
-            }
-
+            var result = input.Select(t => Math.Exp(t - maxInput)).ToList();
+            var sum = result.Sum();
+            
             for (var i = 0; i < input.Count; i++)
                 result[i] /= sum;
 
