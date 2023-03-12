@@ -8,7 +8,9 @@ namespace FotNET.NETWORK {
             Layers       = layers;
         }
 
-        public List<ILayer> Layers { get; }
+        private List<ILayer> Layers { get; }
+
+        public List<ILayer> GetLayers() => Layers;
 
         public int ForwardFeed(Tensor data) {
             try {
@@ -33,12 +35,9 @@ namespace FotNET.NETWORK {
         }
         
         public string GetWeights() =>
-            Layers.Aggregate("", (current, layer) => current + layer.GetData());
+            Layers.Aggregate(" ", (current, layer) => current + layer.GetData());
 
-        public void LoadWeights(string Weights) {
-            foreach (var layer in Layers) {
-                Weights = layer.LoadData(Weights);
-            }
-        }
+        public void LoadWeights(string weights) =>
+            Layers.Aggregate(weights, (current, layer) => layer.LoadData(current));
     }
 }
