@@ -1,6 +1,6 @@
 ﻿using FotNET.NETWORK.OBJECTS;
 
-namespace FotNET.NETWORK.LAYERS.INTERFACES {
+namespace FotNET.NETWORK.LAYERS {
     public interface ILayer {
         public Tensor GetNextLayer(Tensor tensor);
         public Tensor BackPropagate(Tensor error);

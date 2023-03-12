@@ -1,5 +1,4 @@
-﻿using FotNET.NETWORK.LAYERS.INTERFACES;
-using FotNET.NETWORK.OBJECTS;
+﻿using FotNET.NETWORK.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.FLATTEN {
     public class FlattenLayer : ILayer {

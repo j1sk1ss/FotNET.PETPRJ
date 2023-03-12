@@ -1,5 +1,4 @@
-﻿using FotNET.NETWORK.LAYERS.INTERFACES;
-using FotNET.NETWORK.OBJECTS;
+﻿using FotNET.NETWORK.OBJECTS;
 using Vector = FotNET.NETWORK.OBJECTS.Vector;
 
 namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
@@ -17,6 +16,8 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
 
             for (var i = 0; i < size; i++)
                 Bias[i] = .001d;
+            
+            _isEndLayer = false;
         }
 
         public PerceptronLayer(int size, double learningRate) {
@@ -29,10 +30,12 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             Weights = new Matrix(size, size);
             for (var i = 0; i < size; i++)
                 Weights.Body[i, i] = 1;
+
+            _isEndLayer = true;
         }
 
         private readonly double _learningRate;
-
+        private readonly bool _isEndLayer;
         private double[] Neurons { get; set; }
         private double[] Bias { get; }
         private double[] NeuronsError { get; set; }
@@ -48,16 +51,16 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
 
         public Tensor BackPropagate(Tensor error) {
             var previousError = error.Flatten().ToArray();
+            if (_isEndLayer) return new Vector(previousError).AsTensor(1, previousError.Length, 1);
             
             NeuronsError = Weights.Transpose() * previousError;
-            
             for (var j = 0; j < Weights.Body.GetLength(0); ++j)
                 for (var k = 0; k < Weights.Body.GetLength(1); ++k)
                     Weights.Body[j, k] -= Neurons[k] * previousError[j] * _learningRate;
 
             for (var j = 0; j < Weights.Body.GetLength(1); j++)
                 Bias[j] -= NeuronsError[j] * _learningRate;
-            
+
             return new Vector(NeuronsError).AsTensor(1, NeuronsError.Length, 1);
         }
 

@@ -3,7 +3,7 @@
         protected override double Activate(double value) => value switch {
             < 0 => value * .01d,
             > 1 => 1d + .01d * (value - 1d),
-            _ => value
+            _   => value
         };
 
         public override double Derivation(double value) => value * value is < 0 or > 1 ? .01d : value;
