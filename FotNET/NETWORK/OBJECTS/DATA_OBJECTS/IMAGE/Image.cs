@@ -1,6 +1,6 @@
-using FotNET.NETWORK.OBJECTS;
+using FotNET.NETWORK.FIT.DATA_OBJECTS;
 
-namespace FotNET.NETWORK.FIT.DATA_OBJECTS.IMAGE;
+namespace FotNET.NETWORK.OBJECTS.DATA_OBJECTS.IMAGE;
 
 public class Image : IData {
     public Image(double[,,] image, double[] rightAnswer) {

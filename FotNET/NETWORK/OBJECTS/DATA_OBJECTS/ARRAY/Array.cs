@@ -1,6 +1,6 @@
-using FotNET.NETWORK.OBJECTS;
+using FotNET.NETWORK.FIT.DATA_OBJECTS;
 
-namespace FotNET.NETWORK.FIT.DATA_OBJECTS.ARRAY;
+namespace FotNET.NETWORK.OBJECTS.DATA_OBJECTS.ARRAY;
 
 public class Array : IData {
     public Array(double[] data, double[] rightAnswer) {
