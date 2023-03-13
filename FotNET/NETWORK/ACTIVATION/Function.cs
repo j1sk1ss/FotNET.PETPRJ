@@ -12,8 +12,8 @@ namespace FotNET.NETWORK.ACTIVATION {
    
            return tensor;
        }
-   
-       public abstract double Derivation(double value);       
+
+       protected abstract double Derivation(double value);       
        
        public Tensor Derivation(Tensor tensor) {
            foreach (var channel in tensor.Channels)

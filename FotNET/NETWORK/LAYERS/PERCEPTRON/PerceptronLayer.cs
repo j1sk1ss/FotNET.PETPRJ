@@ -1,5 +1,4 @@
 ﻿using FotNET.NETWORK.OBJECTS;
-using Vector = FotNET.NETWORK.OBJECTS.Vector;
 
 namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
     public class PerceptronLayer : ILayer {

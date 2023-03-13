@@ -3,11 +3,14 @@ using FotNET.NETWORK.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.POOLING {
     public class PoolingLayer : ILayer {
-        public PoolingLayer(int poolSize) {
+        public PoolingLayer(Pooling pooling, int poolSize) {
+            Pooling      = pooling;
             _poolSize    = poolSize;
             _inputTensor = new Tensor(new Matrix(0, 0));
         }
 
+        private Pooling Pooling { get; set; }
+        
         private readonly int _poolSize;
         private Tensor _inputTensor;
 
@@ -15,11 +18,11 @@ namespace FotNET.NETWORK.LAYERS.POOLING {
 
         public Tensor GetNextLayer(Tensor tensor) {
             _inputTensor = tensor;
-            return Pooling.MaxPool(tensor, _poolSize);
+            return Pooling.Pool(tensor, _poolSize);
         }
 
         public Tensor BackPropagate(Tensor error) =>
-            Pooling.BackMaxPool(error.GetSameChannels(_inputTensor), _inputTensor, _poolSize);
+            Pooling.BackPool(error.GetSameChannels(_inputTensor), _inputTensor, _poolSize);
 
         public string GetData() => "";
         public string LoadData(string data) => data;

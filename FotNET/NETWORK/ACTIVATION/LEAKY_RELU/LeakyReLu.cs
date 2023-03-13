@@ -6,6 +6,6 @@
             _   => value
         };
 
-        public override double Derivation(double value) => value * value is < 0 or > 1 ? .01d : value;
+        protected override double Derivation(double value) => value * value is < 0 or > 1 ? .01d : value;
     }
 }

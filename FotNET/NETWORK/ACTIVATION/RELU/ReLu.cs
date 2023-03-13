@@ -4,7 +4,7 @@
             < 0 => value * .01d,
             _   => value
         };
-        
-        public override double Derivation(double value) => value * value < 0 ? .01d : 1;
+
+        protected override double Derivation(double value) => value * value < 0 ? .01d : 1;
     }
 }
