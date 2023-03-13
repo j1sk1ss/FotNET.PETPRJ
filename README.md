@@ -21,7 +21,7 @@ First of all u should download this library and includ it into ur own project. U
 For creating neuron network class u need do **SIMPLE** steps:
 1. Create neuron network object:
 
-		Network netwok = new Network(layers, new LeakyReLU());
+		Network netwok = new Network(layers);
 
 1.1. Also, before we start, u need to choose a model of neuron network. U can do this by creating a List of Layers:
 
@@ -44,9 +44,15 @@ For creating neuron network class u need do **SIMPLE** steps:
 
 		new ConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, convolutionStride, learningRate);
 		new new ActivationLayer(activateFunction);
-		new PoolingLayer(poolingSize);
+		new PoolingLayer(poolingType, poolingSize);
 		new PerceptronLayer(size, sizeOfNextLayer, learningRate);
 		new PerceptronLayer(size, learningRate)
+		
+1.1.1.1. Types of pooling u can find here:
+
+		new MaxPooling();
+		new MinPooling();
+		new AveragePooling();
 
 1.2. After it u should choose one of **ACTIVATION FUNCTIONS** or create ur own, but dont forget add IFunction interface:
 
@@ -99,3 +105,25 @@ For loading weights u should use same alghoritm.
 		}
 
 U can check that all weights are loaded correctly by checking end length of data. If length equals zero - loading was correct.
+
+------------
+
+#### Fitting and Testing
+
+##### Fitting
+
+Network class can be fitted and tested, and all what u need is a data set (list of data objects) and count of epochs (for fitting). Lets start on creation of data set.
+
+		new List<IData>() {
+			new Image(new double[28,28,1], new double[10])
+			...
+			new Image(new double[28,28,1], new double[10])
+		}
+This is a implementaion of data set. "new Image()" as u can see - implementaion of image. First part where we can see "new double[,,]" very simple and means x,y and depth. Second part is answer for this data set unit. For example we should choose one of ten numbers, and we should create an array where index of needed element have vale equals 1. 
+
+##### Testing
+
+After fitting u can test ur own model by using next method with test data set:
+
+		double accuracy = network.Test(testDataSet);
+
