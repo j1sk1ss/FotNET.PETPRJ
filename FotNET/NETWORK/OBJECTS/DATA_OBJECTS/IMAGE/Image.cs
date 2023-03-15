@@ -1,5 +1,3 @@
-using FotNET.NETWORK.FIT.DATA_OBJECTS;
-
 namespace FotNET.NETWORK.OBJECTS.DATA_OBJECTS.IMAGE;
 
 public class Image : IData {
