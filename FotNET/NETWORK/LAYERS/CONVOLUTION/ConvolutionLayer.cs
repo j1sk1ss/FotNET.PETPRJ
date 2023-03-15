@@ -4,7 +4,7 @@ using FotNET.NETWORK.OBJECTS;
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
     public class ConvolutionLayer : ILayer {
         public ConvolutionLayer(int filters,
-            int filterWeight, int filterHeight, int filterDepth, int stride, double learningRate) {
+            int filterWeight, int filterHeight, int filterDepth, int stride) {
             Filters = new Filter[filters];
             for (var j = 0; j < filters; j++) {
                 Filters[j] = new Filter(new List<Matrix>()) {
@@ -20,12 +20,10 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                 foreach (var matrix in filter.Channels)
                     matrix.HeInitialization();
 
-            _learningRate = learningRate;
             _stride       = stride;
             Input         = new Tensor(new Matrix(0, 0));
         }
 
-        private readonly double _learningRate;
         private readonly int _stride;
 
         private Filter[] Filters { get; }
@@ -52,7 +50,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
             return Convolution.GetConvolution(layer, Filters, _stride);
         }
 
-        public Tensor BackPropagate(Tensor error) {
+        public Tensor BackPropagate(Tensor error, double learningRate) {
             var inputTensor = Input;
             var extendedInput = inputTensor.GetSameChannels(error);
             var originalFilters = Filters;
@@ -63,9 +61,9 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
             for (var f = 0; f < Filters.Length; f++) {
                 for (var channel = 0; channel < Filters[f].Channels.Count; channel++) 
                     Filters[f].Channels[channel] -= Convolution.GetConvolution(extendedInput.Channels[f],
-                        error.Channels[f], _stride, Filters[f].Bias) * _learningRate;
+                        error.Channels[f], _stride, Filters[f].Bias) * learningRate;
                 
-                Filters[f].Bias -= error.Channels[f].Sum() * _learningRate;
+                Filters[f].Bias -= error.Channels[f].Sum() * learningRate;
             }
 
             return Convolution.GetExtendedConvolution(error, 

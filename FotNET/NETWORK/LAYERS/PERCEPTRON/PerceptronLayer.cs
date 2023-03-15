@@ -3,9 +3,7 @@
 namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
     public class PerceptronLayer : ILayer {
 
-        public PerceptronLayer(int size, int nextSize, double learningRate) {
-            _learningRate = learningRate;
-
+        public PerceptronLayer(int size, int nextSize) {
             Neurons      = new double[size];
             NeuronsError = new double[size];
             Bias         = new double[size];
@@ -19,9 +17,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             _isEndLayer = false;
         }
 
-        public PerceptronLayer(int size, double learningRate) {
-            _learningRate = learningRate;
-
+        public PerceptronLayer(int size) {
             Neurons      = new double[size];
             NeuronsError = new double[size];
             Bias         = new double[size];
@@ -33,7 +29,6 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             _isEndLayer = true;
         }
 
-        private readonly double _learningRate;
         private readonly bool _isEndLayer;
         private double[] Neurons { get; set; }
         private double[] Bias { get; }
@@ -48,17 +43,17 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             return new Vector(nextLayer).AsTensor(1, nextLayer.Length, 1);
         }
 
-        public Tensor BackPropagate(Tensor error) {
+        public Tensor BackPropagate(Tensor error, double learningRate) {
             var previousError = error.Flatten().ToArray();
             if (_isEndLayer) return new Vector(previousError).AsTensor(1, previousError.Length, 1);
             
             NeuronsError = Weights.Transpose() * previousError;
             for (var j = 0; j < Weights.Body.GetLength(0); ++j)
                 for (var k = 0; k < Weights.Body.GetLength(1); ++k)
-                    Weights.Body[j, k] -= Neurons[k] * previousError[j] * _learningRate;
+                    Weights.Body[j, k] -= Neurons[k] * previousError[j] * learningRate;
 
             for (var j = 0; j < Weights.Body.GetLength(1); j++)
-                Bias[j] -= NeuronsError[j] * _learningRate;
+                Bias[j] -= NeuronsError[j] * learningRate;
 
             return new Vector(NeuronsError).AsTensor(1, NeuronsError.Length, 1);
         }

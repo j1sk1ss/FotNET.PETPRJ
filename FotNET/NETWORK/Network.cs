@@ -25,11 +25,11 @@ namespace FotNET.NETWORK {
             }
         }
 
-        public void BackPropagation(double expectedAnswer) {
+        public void BackPropagation(double expectedAnswer, double learningRate) {
             try {
                 var errorTensor = LossFunction.GetErrorTensor(Layers[^1].GetValues(), (int)expectedAnswer);
                 for (var i = Layers.Count - 1; i >= 0; i--)
-                    errorTensor = Layers[i].BackPropagate(errorTensor);
+                    errorTensor = Layers[i].BackPropagate(errorTensor, learningRate);
             }
             catch (Exception) {
                 Console.WriteLine("Код ошибки: 2n");
@@ -42,9 +42,9 @@ namespace FotNET.NETWORK {
         public void LoadWeights(string weights) =>
             Layers.Aggregate(weights, (current, layer) => layer.LoadData(current));
 
-        public Network Fit(IData.Type type, string path, DataConfig config, int epochs) {
+        public Network Fit(IData.Type type, string path, DataConfig config, int epochs, double baseLearningRate) {
             var dataSet = Parse(type, path, config);
-            return FIT.Fit.FitModel(this, dataSet, epochs);
+            return FIT.Fit.FitModel(this, dataSet, epochs, baseLearningRate);
         }
 
         public double Test(IData.Type type, string path, DataConfig config) {

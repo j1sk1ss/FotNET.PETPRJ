@@ -8,7 +8,7 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION {
         private Function Function { get; }
 
         public Tensor GetNextLayer(Tensor tensor) => Function.Activate(tensor);
-        public Tensor BackPropagate(Tensor error) => Function.Derivation(error);
+        public Tensor BackPropagate(Tensor error, double learningRate) => Function.Derivation(error);
 
         public Tensor GetValues() => new Tensor(new Matrix(0,0));
         public string GetData() => "";

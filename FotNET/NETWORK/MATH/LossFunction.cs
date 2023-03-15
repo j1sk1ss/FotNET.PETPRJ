@@ -13,8 +13,7 @@ namespace FotNET.NETWORK.MATH {
             return new Vector(error.ToArray()).AsTensor(1, error.Count, 1);
         }
 
-        private static double Derivation(double prediction, double expected) {
-            return prediction * (1 - prediction) * (expected - prediction);
-        }
+        private static double Derivation(double prediction, double expected) =>
+             prediction * (1 - prediction) * (expected - prediction);
     }
 }
