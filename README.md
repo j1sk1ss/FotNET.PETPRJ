@@ -1,6 +1,6 @@
 # FotNET
-FotNET is a simple library for working with **CONVOLUTION NEURON NETWORKS** and **CLASSIC NEURON NETWORKS** like **PERCEPTRON**.
-The main future is that u can create ur own neuron network without libraries that takes all work. This project is open source and u can see a code, understand him.
+FotNET is a simple library for working with **CONVOLUTION NEURAL NETWORKS** and **CLASSIC NEURAL NETWORKS** like **PERCEPTRON**.
+The main part is that u can create ur own neural network without libraries that takes all work. This project is open source and u can see a code, download him and change every part what u need cuz it very simple to understand this prokject.
 
 ### Introduction:
 
@@ -18,12 +18,12 @@ First of all u should download this library and includ it into ur own project. U
 
 #### Creation:
 
-For creating neuron network class u need do **SIMPLE** steps:
-1. Create neuron network object:
+For creating neural network class u need do **SIMPLE** steps:
+1. Create neural network object:
 
 		Network netwok = new Network(layers);
 
-1.1. Also, before we start, u need to choose a model of neuron network. U can do this by creating a List of Layers:
+1.1. Also, before we start, u need to choose a model of neural network. U can do this by creating a List of Layers:
 
 		List<ILayer> layers = new List<ILayer> {
 			new ConvolutionLayer(); // Input tensor get convolved by filters
@@ -42,11 +42,11 @@ For creating neuron network class u need do **SIMPLE** steps:
 
 1.1.1. Every layer needs a parametrs, that u should choose by ur self:
 
-		new ConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, convolutionStride, learningRate);
+		new ConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, convolutionStride);
 		new new ActivationLayer(activateFunction);
 		new PoolingLayer(poolingType, poolingSize);
-		new PerceptronLayer(size, sizeOfNextLayer, learningRate);
-		new PerceptronLayer(size, learningRate)
+		new PerceptronLayer(size, sizeOfNextLayer);
+		new PerceptronLayer(size)
 		
 1.1.1.1. Types of pooling u can find here:
 
@@ -66,7 +66,7 @@ For creating neuron network class u need do **SIMPLE** steps:
 
 		network.ForwardFeed(image); // Put image or any tensor. 
 
-Neuron network after **FORWARD FEED** return a **INDEX** of a predicted class from classes that u add on last **PERCEPTRON LAYER**. 
+Neural network after **FORWARD FEED** return a **INDEX** of a predicted class from classes that u add on last **PERCEPTRON LAYER**. 
 
 If predicted class is wrong, we going to Back Propagation.
 
@@ -74,7 +74,7 @@ If predicted class is wrong, we going to Back Propagation.
 
 #### BackPropagation:
 
-		network.BackPropagation(expectedClass); // Index of expected class
+		network.BackPropagation(expectedClass, learningRate); // Index of expected class
 
 If expected class is different that was predicted, we should use **BACKPROPAGATION** method.
 
@@ -114,16 +114,28 @@ U can check that all weights are loaded correctly by checking end length of data
 
 Network class can be fitted and tested, and all what u need is a data set (list of data objects) and count of epochs (for fitting). Lets start on creation of data set.
 
-		new List<IData>() {
-			new Image(new double[28,28,1], new double[10])
-			...
-			new Image(new double[28,28,1], new double[10])
+		network.Fit(dataType, csvPath, csvConfig, epochCount, baseLearningRate);
+		// dataType  -> Array or Tensor image
+		// csvPath   -> path to csv file 
+		// csvConfig -> rule that includes how should be processed csv file
+		/*
+		DataConfig csvConfig = new DataConfig() {
+			StartRow          = 1, 
+			InputColumnStart  = 1,
+			InputColumnEnd    = 10,
+			OutputColumnStart = 12,
+			OutputColumnEnd   = 16,
+			Delimiters        = new[] {";"}
 		}
+		*/
+		// epochCount -> count of epochs
+		// baseLearningRate -> start learning rate 
+
 This is a implementaion of data set. "new Image()" as u can see - implementaion of image. First part where we can see "new double[,,]" very simple and means x,y and depth. Second part is answer for this data set unit. For example we should choose one of ten numbers, and we should create an array where index of needed element have vale equals 1. 
 
 ##### Testing
 
 After fitting u can test ur own model by using next method with test data set:
 
-		double accuracy = network.Test(testDataSet);
+		double accuracy = network.Test(dataType, csvPath, csvConfig);
 
