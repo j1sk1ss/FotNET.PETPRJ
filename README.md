@@ -21,7 +21,7 @@ First of all u should download this library and includ it into ur own project. U
 For creating neuron network class u need do **SIMPLE** steps:
 1. Create neuron network object:
 
-		Network netwok = new Network(layers);
+		Network netwok = new Network(layers, learningRate);
 
 1.1. Also, before we start, u need to choose a model of neuron network. U can do this by creating a List of Layers:
 
@@ -42,11 +42,11 @@ For creating neuron network class u need do **SIMPLE** steps:
 
 1.1.1. Every layer needs a parametrs, that u should choose by ur self:
 
-		new ConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, convolutionStride, learningRate);
+		new ConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, convolutionStride);
 		new new ActivationLayer(activateFunction);
 		new PoolingLayer(poolingType, poolingSize);
-		new PerceptronLayer(size, sizeOfNextLayer, learningRate);
-		new PerceptronLayer(size, learningRate)
+		new PerceptronLayer(size, sizeOfNextLayer);
+		new PerceptronLayer(size)
 		
 1.1.1.1. Types of pooling u can find here:
 
@@ -114,11 +114,23 @@ U can check that all weights are loaded correctly by checking end length of data
 
 Network class can be fitted and tested, and all what u need is a data set (list of data objects) and count of epochs (for fitting). Lets start on creation of data set.
 
-		new List<IData>() {
-			new Image(new double[28,28,1], new double[10])
-			...
-			new Image(new double[28,28,1], new double[10])
+		network.Fit(dataType, csvPath, csvConfig, epochCount, baseLearningRate);
+		// dataType  -> Array or Tensor image
+		// csvPath   -> path to csv file 
+		// csvConfig -> rule that includes how should be processed csv file
+		/*
+		DataConfig csvConfig = new DataConfig() {
+			StartRow          = 1, 
+			InputColumnStart  = 1,
+			InputColumnEnd    = 10,
+			OutputColumnStart = 12,
+			OutputColumnEnd   = 16,
+			Delimiters        = new[] {";"}
 		}
+		*/
+		// epochCount -> count of epochs
+		// baseLearningRate -> start learning rate 
+
 This is a implementaion of data set. "new Image()" as u can see - implementaion of image. First part where we can see "new double[,,]" very simple and means x,y and depth. Second part is answer for this data set unit. For example we should choose one of ten numbers, and we should create an array where index of needed element have vale equals 1. 
 
 ##### Testing
