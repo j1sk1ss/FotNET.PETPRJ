@@ -21,7 +21,7 @@ First of all u should download this library and includ it into ur own project. U
 For creating neuron network class u need do **SIMPLE** steps:
 1. Create neuron network object:
 
-		Network netwok = new Network(layers, learningRate);
+		Network netwok = new Network(layers);
 
 1.1. Also, before we start, u need to choose a model of neuron network. U can do this by creating a List of Layers:
 
@@ -74,7 +74,7 @@ If predicted class is wrong, we going to Back Propagation.
 
 #### BackPropagation:
 
-		network.BackPropagation(expectedClass); // Index of expected class
+		network.BackPropagation(expectedClass, learningRate); // Index of expected class
 
 If expected class is different that was predicted, we should use **BACKPROPAGATION** method.
 
