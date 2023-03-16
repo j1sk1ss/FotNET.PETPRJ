@@ -137,5 +137,5 @@ This is a implementaion of data set. "new Image()" as u can see - implementaion 
 
 After fitting u can test ur own model by using next method with test data set:
 
-		double accuracy = network.Test(testDataSet);
+		double accuracy = network.Test(dataType, csvPath, csvConfig);
 
