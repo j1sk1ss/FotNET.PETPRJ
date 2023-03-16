@@ -47,7 +47,7 @@
             }
         }
 
-        public static double[] operator *(Matrix matrix, double[] vector) {
+        public static double[] operator *(double[] vector, Matrix matrix) {
             try {
                 var endVector = new double[matrix.Row];
 
