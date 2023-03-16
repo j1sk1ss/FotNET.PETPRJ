@@ -1,6 +1,6 @@
 using FotNET.NETWORK.OBJECTS.DATA_OBJECTS;
 
-namespace FotNET.NETWORK.FIT;
+namespace FotNET.NETWORK.MODEL;
 
 public static class Fit {
     public static Network FitModel(Network network, List<IData> dataSet, int epochs, double baseLearningRate) {
@@ -25,10 +25,4 @@ public static class Fit {
 
         return network;
     }
-
-    public static double TestModel(Network network, List<IData> dataSet) =>
-        dataSet.Count / (double)(from data in dataSet let prediction = 
-            network.ForwardFeed(data.AsTensor()) where prediction == 
-                                                       data.GetRight().GetMaxIndex() select data).Count();
-    
 }

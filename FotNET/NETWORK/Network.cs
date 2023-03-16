@@ -10,7 +10,7 @@ namespace FotNET.NETWORK {
             Layers       = layers;
         }
 
-        private List<ILayer> Layers { get; }
+        private List<ILayer> Layers { get; set; }
 
         public List<ILayer> GetLayers() => Layers;
 
@@ -42,28 +42,16 @@ namespace FotNET.NETWORK {
         public void LoadWeights(string weights) =>
             Layers.Aggregate(weights, (current, layer) => layer.LoadData(current));
 
-        public Network Fit(IData.Type type, string path, DataConfig config, int epochs, double baseLearningRate) {
-            var dataSet = Parse(type, path, config);
-            return FIT.Fit.FitModel(this, dataSet, epochs, baseLearningRate);
-        }
+        public void Fit(IData.Type type, string path, DataConfig config, int epochs, double baseLearningRate) =>
+             Layers = MODEL.Fit.FitModel(this, Parse(type, path, config), epochs, baseLearningRate).Layers;
+        
+        public double Test(IData.Type type, string path, DataConfig config) =>
+             MODEL.Test.TestModel(this, Parse(type, path, config));
 
-        public double Test(IData.Type type, string path, DataConfig config) {
-            var dataSet = Parse(type, path, config);
-            return FIT.Fit.TestModel(this, dataSet);
-        }
-
-        private List<IData> Parse(IData.Type type, string path, DataConfig config) {
-            var dataSet = new List<IData>();
-            
-            switch (type) {
-                case IData.Type.Array:
-                    dataSet.AddRange(Parser.ParseArray(path, config));
-                    break;
-                case IData.Type.Image:
-                    break;
-            }
-
-            return dataSet;
-        }
+        private static List<IData> Parse(IData.Type type, string path, DataConfig config) => type switch {
+            IData.Type.Array => Parser.CsvToArrays(path, config),
+            IData.Type.Image => null!,
+            _                => null!
+        };
     }
 }
