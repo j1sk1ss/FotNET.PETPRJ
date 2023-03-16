@@ -25,9 +25,9 @@ namespace FotNET.NETWORK {
             }
         }
 
-        public void BackPropagation(double expectedAnswer, double learningRate) {
+        public void BackPropagation(double expectedAnswer, double expectedValue, double learningRate) {
             try {
-                var errorTensor = LossFunction.GetErrorTensor(Layers[^1].GetValues(), (int)expectedAnswer);
+                var errorTensor = LossFunction.GetErrorTensor(Layers[^1].GetValues(), (int)expectedAnswer, expectedValue);
                 for (var i = Layers.Count - 1; i >= 0; i--)
                     errorTensor = Layers[i].BackPropagate(errorTensor, learningRate);
             }
@@ -49,7 +49,7 @@ namespace FotNET.NETWORK {
 
         public double Test(IData.Type type, string path, DataConfig config) {
             var dataSet = Parse(type, path, config);
-            return dataSet.Count / FIT.Fit.TestModel(this, dataSet);
+            return FIT.Fit.TestModel(this, dataSet);
         }
 
         private List<IData> Parse(IData.Type type, string path, DataConfig config) {

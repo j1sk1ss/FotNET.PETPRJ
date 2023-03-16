@@ -6,17 +6,21 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>FotNET</Title>
     <Authors>j1sk1ss</Authors>
-    <Description>Library for working with CNN and classic NN</Description>
+    <Description>Library for working with CNN and classic NN for classification data</Description>
     <PackageProjectUrl>https://github.com/j1sk1ss/FotNET.MPRJ</PackageProjectUrl>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <Version>1.0.1</Version>
+    <Version>1.0.3</Version>
     <RepositoryUrl>https://github.com/j1sk1ss/FotNET.MPRJ</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>CNN, FNN</PackageTags>
+    <PackageTags>CNN, FNN, Classification, Tensors</PackageTags>
+    <PackageIcon>packageIcon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="https:\raw.githubusercontent.com\j1sk1ss\FotNET.MPRJ\master\README.md" />
+    <None Include="packageIcon.png" Pack="true" PackagePath="">
+      <Pack>True</Pack>
+    </None>
   </ItemGroup>
 
 </Project>
