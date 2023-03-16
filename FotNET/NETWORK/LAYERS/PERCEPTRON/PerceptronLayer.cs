@@ -6,7 +6,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
         public PerceptronLayer(int size, int nextSize) {
             Neurons      = new double[size];
             NeuronsError = new double[size];
-            Bias         = new double[size];
+            Bias         = new double[nextSize];
 
             Weights = new Matrix(nextSize, size);
             Weights.HeInitialization();

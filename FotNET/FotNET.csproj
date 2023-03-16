@@ -14,6 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>CNN, FNN, Classification, Tensors</PackageTags>
     <PackageIcon>packageIcon.png</PackageIcon>
+    <PackageVersion>1.0.4</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
