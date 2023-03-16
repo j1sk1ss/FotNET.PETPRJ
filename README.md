@@ -1,6 +1,6 @@
 # FotNET
-FotNET is a simple library for working with **CONVOLUTION NEURON NETWORKS** and **CLASSIC NEURON NETWORKS** like **PERCEPTRON**.
-The main future is that u can create ur own neuron network without libraries that takes all work. This project is open source and u can see a code, understand him.
+FotNET is a simple library for working with **CONVOLUTION NEURAL NETWORKS** and **CLASSIC NEURAL NETWORKS** like **PERCEPTRON**.
+The main part is that u can create ur own neural network without libraries that takes all work. This project is open source and u can see a code, download him and change every part what u need cuz it very simple to understand this prokject.
 
 ### Introduction:
 
@@ -18,12 +18,12 @@ First of all u should download this library and includ it into ur own project. U
 
 #### Creation:
 
-For creating neuron network class u need do **SIMPLE** steps:
-1. Create neuron network object:
+For creating neural network class u need do **SIMPLE** steps:
+1. Create neural network object:
 
 		Network netwok = new Network(layers);
 
-1.1. Also, before we start, u need to choose a model of neuron network. U can do this by creating a List of Layers:
+1.1. Also, before we start, u need to choose a model of neural network. U can do this by creating a List of Layers:
 
 		List<ILayer> layers = new List<ILayer> {
 			new ConvolutionLayer(); // Input tensor get convolved by filters
@@ -66,7 +66,7 @@ For creating neuron network class u need do **SIMPLE** steps:
 
 		network.ForwardFeed(image); // Put image or any tensor. 
 
-Neuron network after **FORWARD FEED** return a **INDEX** of a predicted class from classes that u add on last **PERCEPTRON LAYER**. 
+Neural network after **FORWARD FEED** return a **INDEX** of a predicted class from classes that u add on last **PERCEPTRON LAYER**. 
 
 If predicted class is wrong, we going to Back Propagation.
 
