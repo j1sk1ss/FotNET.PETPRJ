@@ -1,4 +1,4 @@
-namespace FotNET.NETWORK.ACTIVATION.TANGENSOID {
+namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.TANGENSOID {
     public class Tangensoid : Function {
         protected override double Activate(double value) => value switch {
             < 0 => .01d * (1 - Math.Pow(value, 2)),

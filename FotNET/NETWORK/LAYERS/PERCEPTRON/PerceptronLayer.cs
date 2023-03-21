@@ -4,8 +4,8 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
     public class PerceptronLayer : ILayer {
 
         public PerceptronLayer(int size, int nextSize) {
-            Neurons      = new double[size];
-            Bias         = new double[nextSize];
+            Neurons = new double[size];
+            Bias    = new double[nextSize];
 
             Weights = new Matrix(nextSize, size);
             Weights.HeInitialization();
@@ -17,8 +17,8 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
         }
 
         public PerceptronLayer(int size) {
-            Neurons      = new double[size];
-            Bias         = new double[size];
+            Neurons = new double[size];
+            Bias    = new double[size];
 
             Weights = new Matrix(size, size);
             for (var i = 0; i < size; i++)

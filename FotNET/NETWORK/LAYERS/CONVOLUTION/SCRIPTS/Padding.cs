@@ -20,6 +20,5 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
             
             return newTensor;
         }
-
     }
 }

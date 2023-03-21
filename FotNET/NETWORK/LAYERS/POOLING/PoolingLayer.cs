@@ -9,22 +9,21 @@ namespace FotNET.NETWORK.LAYERS.POOLING {
             _inputTensor = new Tensor(new Matrix(0, 0));
         }
 
-        private Pooling Pooling { get; set; }
+        private Pooling Pooling { get; }
         
         private readonly int _poolSize;
         private Tensor _inputTensor;
 
         public Tensor GetValues() => _inputTensor;
 
-        public Tensor GetNextLayer(Tensor tensor) {
-            _inputTensor = tensor;
-            return Pooling.Pool(tensor, _poolSize);
-        }
-
+        public Tensor GetNextLayer(Tensor tensor) =>
+            Pooling.Pool(_inputTensor = tensor, _poolSize);
+        
         public Tensor BackPropagate(Tensor error, double learningRate) =>
             Pooling.BackPool(error.GetSameChannels(_inputTensor), _inputTensor, _poolSize);
 
         public string GetData() => "";
+        
         public string LoadData(string data) => data;
     }
 }

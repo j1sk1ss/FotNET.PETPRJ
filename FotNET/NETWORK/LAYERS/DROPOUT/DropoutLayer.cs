@@ -11,10 +11,12 @@ public class DropoutLayer : ILayer {
     private double Percent { get; }
     
     public Tensor GetNextLayer(Tensor tensor) {
+        var neuronsCount = (int)(tensor.Flatten().Count * (Percent / 100d));
+        
         foreach (var channel in tensor.Channels) 
             for (var i = 0; i < channel.Body.GetLength(0); i++)
                 for (var j = 0; j < channel.Body.GetLength(1); j++)
-                    if (new Random().Next() % 100 <= Percent)
+                    if (new Random().Next() % 100 <= Percent && --neuronsCount > 0)
                         channel.Body[i, j] = 0;
         
         return tensor;

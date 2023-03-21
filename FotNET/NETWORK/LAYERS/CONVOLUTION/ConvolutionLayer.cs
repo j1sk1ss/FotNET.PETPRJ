@@ -6,6 +6,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         public ConvolutionLayer(int filters,
             int filterWeight, int filterHeight, int filterDepth, int stride) {
             Filters = new Filter[filters];
+            
             for (var j = 0; j < filters; j++) {
                 Filters[j] = new Filter(new List<Matrix>()) {
                     Bias = .001d
@@ -20,8 +21,8 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                 foreach (var matrix in filter.Channels)
                     matrix.HeInitialization();
 
-            _stride       = stride;
-            Input         = new Tensor(new Matrix(0, 0));
+            _stride = stride;
+            Input   = new Tensor(new Matrix(0, 0));
         }
 
         private readonly int _stride;
@@ -45,10 +46,8 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
         public Tensor GetValues() => Input;
 
-        public Tensor GetNextLayer(Tensor layer) {
-            Input = layer;
-            return Convolution.GetConvolution(layer, Filters, _stride);
-        }
+        public Tensor GetNextLayer(Tensor layer) =>
+            Convolution.GetConvolution(Input = layer, Filters, _stride);
 
         public Tensor BackPropagate(Tensor error, double learningRate) {
             var inputTensor = Input;

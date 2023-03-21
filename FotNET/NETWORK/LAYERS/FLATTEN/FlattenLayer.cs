@@ -16,6 +16,7 @@ namespace FotNET.NETWORK.LAYERS.FLATTEN {
                 _inputTensor.Channels[0].Body.GetLength(1), _inputTensor.Channels.Count);
 
         public string GetData() => "";
+        
         public string LoadData(string data) => data;
     }
 }

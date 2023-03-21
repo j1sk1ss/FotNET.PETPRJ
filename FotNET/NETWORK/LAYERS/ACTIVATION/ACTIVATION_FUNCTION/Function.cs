@@ -1,6 +1,6 @@
 using FotNET.NETWORK.OBJECTS;
 
-namespace FotNET.NETWORK.ACTIVATION {
+namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION {
    public abstract class Function {
        protected abstract double Activate(double value);
 
