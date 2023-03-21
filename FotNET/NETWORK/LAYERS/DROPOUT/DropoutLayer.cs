@@ -1,4 +1,5 @@
 using FotNET.NETWORK.OBJECTS;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.DROPOUT;
 
@@ -14,8 +15,8 @@ public class DropoutLayer : ILayer {
         var neuronsCount = (int)(tensor.Flatten().Count * (Percent / 100d));
         
         foreach (var channel in tensor.Channels) 
-            for (var i = 0; i < channel.Body.GetLength(0); i++)
-                for (var j = 0; j < channel.Body.GetLength(1); j++)
+            for (var i = 0; i < channel.Rows; i++)
+                for (var j = 0; j < channel.Columns; j++)
                     if (new Random().Next() % 100 <= Percent && --neuronsCount > 0)
                         channel.Body[i, j] = 0;
         

@@ -1,4 +1,4 @@
-﻿namespace FotNET.NETWORK.OBJECTS {
+﻿namespace FotNET.NETWORK.OBJECTS.MATH_OBJECTS {
     public class Vector {
         public Vector(double[] array) {
             Body = array;
@@ -13,9 +13,7 @@
             set => SetElement(key, value);
         }
 
-        private void SetElement(int index, double value) {
-            Body[index] = value;
-        }
+        private void SetElement(int index, double value) => Body[index] = value;
 
         public static double[] operator +(Vector vector1, Vector vector2) {
             try {
@@ -66,7 +64,7 @@
                     tensor.Channels.Add(new Matrix(x, y));
                     for (var i = 0; i < x; i++)
                         for (var j = 0; j < y; j++) {
-                            if (Body.Length <= position) return null!;
+                            if (Size <= position) return null!;
                             tensor.Channels[^1].Body[i, j] = Body[position++];
                         }
                 }

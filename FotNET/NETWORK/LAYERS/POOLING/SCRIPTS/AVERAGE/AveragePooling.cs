@@ -1,11 +1,11 @@
-using FotNET.NETWORK.OBJECTS;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.AVERAGE;
 
 public class AveragePooling : Pooling {
     protected override Matrix Pool(Matrix matrix, int poolSize) {
-        var outputWidth  = matrix.Body.GetLength(0) / poolSize;
-        var outputHeight = matrix.Body.GetLength(1) / poolSize;
+        var outputWidth  = matrix.Rows / poolSize;
+        var outputHeight = matrix.Columns / poolSize;
 
         var output = new double[outputHeight, outputWidth];
 
@@ -23,13 +23,12 @@ public class AveragePooling : Pooling {
     }
 
     protected override Matrix BackPool(Matrix matrix, Matrix referenceMatrix, int poolSize) {
-        var backPooledMatrix = new Matrix(referenceMatrix.Body.GetLength(0),
-            referenceMatrix.Body.GetLength(1));
+        var backPooledMatrix = new Matrix(referenceMatrix.Rows, referenceMatrix.Columns);
 
-        for (var x = 0; x < matrix.Body.GetLength(0); x++) 
-            for (var y = 0; y < matrix.Body.GetLength(1); y++) 
-                for (var i = 0; i < referenceMatrix.Body.GetLength(0); i++) 
-                    for (var j = 0; j < referenceMatrix.Body.GetLength(0); j++) 
+        for (var x = 0; x < matrix.Rows; x++) 
+            for (var y = 0; y < matrix.Columns; y++) 
+                for (var i = 0; i < referenceMatrix.Rows; i++) 
+                    for (var j = 0; j < referenceMatrix.Columns; j++) 
                         backPooledMatrix.Body[i, j] += matrix.Body[x, y] / poolSize * 2;   
         
         return backPooledMatrix;

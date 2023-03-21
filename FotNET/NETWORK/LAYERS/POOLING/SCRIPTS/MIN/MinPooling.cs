@@ -1,11 +1,12 @@
 using FotNET.NETWORK.OBJECTS;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.MIN;
 
 public class MinPooling : Pooling {
     protected override Matrix Pool(Matrix matrix, int poolSize) {
-        var outputWidth  = matrix.Body.GetLength(0) / poolSize;
-        var outputHeight = matrix.Body.GetLength(1) / poolSize;
+        var outputWidth  = matrix.Rows / poolSize;
+        var outputHeight = matrix.Columns / poolSize;
 
         var pooledMatrix = new Matrix(new double[outputWidth, outputHeight]);
 
@@ -26,11 +27,10 @@ public class MinPooling : Pooling {
     }
 
     protected override Matrix BackPool(Matrix matrix, Matrix referenceMatrix, int poolSize) {
-        var backPooledMatrix = new Matrix(referenceMatrix.Body.GetLength(0),
-            referenceMatrix.Body.GetLength(1));
+        var backPooledMatrix = new Matrix(referenceMatrix.Rows, referenceMatrix.Columns);
 
-        for (var x = 0; x < matrix.Body.GetLength(0); x++) 
-            for (var y = 0; y < matrix.Body.GetLength(1); y++) {
+        for (var x = 0; x < matrix.Rows; x++) 
+            for (var y = 0; y < matrix.Rows; y++) {
                 var minValue = double.MaxValue;
 
                 var minX = 0;

@@ -1,4 +1,5 @@
 ﻿using FotNET.NETWORK.OBJECTS;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.MATH {
     public static class LossFunction {

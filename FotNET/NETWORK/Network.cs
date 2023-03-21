@@ -3,6 +3,7 @@ using FotNET.NETWORK.LAYERS;
 using FotNET.NETWORK.MATH;
 using FotNET.NETWORK.OBJECTS;
 using FotNET.NETWORK.OBJECTS.DATA_OBJECTS;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK {
     public class Network {

@@ -1,3 +1,5 @@
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+
 namespace FotNET.NETWORK.OBJECTS.DATA_OBJECTS.IMAGE;
 
 public class Image : IData {

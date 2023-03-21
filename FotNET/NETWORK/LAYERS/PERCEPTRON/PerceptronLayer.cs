@@ -1,4 +1,5 @@
 ﻿using FotNET.NETWORK.OBJECTS;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
     public class PerceptronLayer : ILayer {
@@ -44,11 +45,11 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             var previousError = error.Flatten().ToArray();
             if (_isEndLayer) return new Vector(previousError).AsTensor(1, previousError.Length, 1);
             
-            for (var j = 0; j < Weights.Body.GetLength(0); ++j)
-                for (var k = 0; k < Weights.Body.GetLength(1); ++k)
+            for (var j = 0; j < Weights.Rows; ++j)
+                for (var k = 0; k < Weights.Columns; ++k)
                     Weights.Body[j, k] -= Neurons[k] * previousError[j] * learningRate;
 
-            for (var j = 0; j < Weights.Body.GetLength(0); j++)
+            for (var j = 0; j < Weights.Rows; j++)
                 Bias[j] -= previousError[j] * learningRate;
 
             var neuronsError = previousError * Weights.Transpose();
@@ -65,8 +66,8 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             var position = 0;
             var dataNumbers = data.Split(" ");
 
-            for (var i = 0; i < Weights.Body.GetLength(0); i++)
-                for (var j = 0; j < Weights.Body.GetLength(1); j++)
+            for (var i = 0; i < Weights.Rows; i++)
+                for (var j = 0; j < Weights.Columns; j++)
                     Weights.Body[i, j] = double.Parse(dataNumbers[position++]);
 
             for (var j = 0; j < Bias.Length; j++)

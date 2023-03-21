@@ -1,5 +1,6 @@
 ﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.OBJECTS;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
     public class ConvolutionLayer : ILayer {
@@ -84,8 +85,8 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
             foreach (var filter in Filters) {
                 foreach (var channel in filter.Channels)
-                    for (var x = 0; x < channel.Body.GetLength(0); x++)
-                        for (var y = 0; y < channel.Body.GetLength(1); y++)
+                    for (var x = 0; x < channel.Rows; x++)
+                        for (var y = 0; y < channel.Columns; y++)
                             channel.Body[x, y] = double.Parse(dataNumbers[position++]);
 
                 filter.Bias = double.Parse(dataNumbers[position++]);

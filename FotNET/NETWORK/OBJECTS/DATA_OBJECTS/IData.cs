@@ -1,3 +1,5 @@
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+
 namespace FotNET.NETWORK.OBJECTS.DATA_OBJECTS;
 
 public interface IData {

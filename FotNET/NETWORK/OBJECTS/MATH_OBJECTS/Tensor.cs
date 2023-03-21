@@ -1,4 +1,4 @@
-﻿namespace FotNET.NETWORK.OBJECTS {
+﻿namespace FotNET.NETWORK.OBJECTS.MATH_OBJECTS {
     public class Tensor {
         public Tensor(Matrix matrix) => Channels = new List<Matrix> { matrix };
 
@@ -51,7 +51,7 @@
             var tensor = new Tensor(Channels);
 
             for (var i = 0; i < channels; i++) tensor.Channels.Add(
-                new Matrix(tensor.Channels[0].Body.GetLength(0), tensor.Channels[0].Body.GetLength(0)));
+                new Matrix(tensor.Channels[0].Rows, tensor.Channels[0].Columns));
 
             return tensor;
         }
@@ -62,8 +62,8 @@
             for (var i = 0; i < channels * 2; i += 2) {
                 matrix.Add(Channels[i]);
                 
-                for (var x = 0; x < Channels[i].Body.GetLength(0); x++) 
-                    for (var y = 0; y < Channels[i].Body.GetLength(1); y++) 
+                for (var x = 0; x < Channels[i].Rows; x++) 
+                    for (var y = 0; y < Channels[i].Columns; y++) 
                         matrix[^1].Body[x, y] = Math.Max(Channels[i].Body[x, y], Channels[i + 1].Body[x, y]);
             }
 
@@ -147,8 +147,8 @@
             return endTensor;
         }
 
-        public string GetInfo() => $"x: {Channels[0].Body.GetLength(0)}\n" +
-                                   $"y: {Channels[0].Body.GetLength(1)}\n" +
+        public string GetInfo() => $"x: {Channels[0].Rows}\n" +
+                                   $"y: {Channels[0].Columns}\n" +
                                    $"depth: {Channels.Count}";
         
         public Filter AsFilter() => new Filter(Channels);

@@ -1,5 +1,6 @@
 ﻿using FotNET.NETWORK.LAYERS.POOLING.SCRIPTS;
 using FotNET.NETWORK.OBJECTS;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.POOLING {
     public class PoolingLayer : ILayer {

@@ -1,4 +1,5 @@
 ﻿using FotNET.NETWORK.OBJECTS;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.FLATTEN {
     public class FlattenLayer : ILayer {
@@ -12,8 +13,8 @@ namespace FotNET.NETWORK.LAYERS.FLATTEN {
         }
 
         public Tensor BackPropagate(Tensor error, double learningRate) =>
-             new Vector(error.Flatten().ToArray()).AsTensor(_inputTensor.Channels[0].Body.GetLength(0),
-                _inputTensor.Channels[0].Body.GetLength(1), _inputTensor.Channels.Count);
+             new Vector(error.Flatten().ToArray()).AsTensor(_inputTensor.Channels[0].Rows,
+                _inputTensor.Channels[0].Columns, _inputTensor.Channels.Count);
 
         public string GetData() => "";
         

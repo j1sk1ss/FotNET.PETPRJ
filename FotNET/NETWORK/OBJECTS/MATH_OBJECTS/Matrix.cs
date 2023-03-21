@@ -1,26 +1,26 @@
-﻿namespace FotNET.NETWORK.OBJECTS {
+﻿namespace FotNET.NETWORK.OBJECTS.MATH_OBJECTS {
     public class Matrix {
         public Matrix(double[,] body) {
-            Row  = body.GetLength(0);
-            Col  = body.GetLength(1);
-            Body = body;
+            Rows    = body.GetLength(0);
+            Columns = body.GetLength(1);
+            Body    = body;
         }
 
-        public Matrix(int row, int col) {
-            Row  = row;
-            Col  = col;
-            Body = new double[row, col];
+        public Matrix(int rows, int columns) {
+            Rows    = rows;
+            Columns = columns;
+            Body    = new double[rows, columns];
         }
 
-        private int Row { get; }
-        private int Col { get; }
+        public int Rows { get; }
+        public int Columns { get; }
         public double[,] Body { get; }
 
         public Matrix Transpose() {
             try {
-                var temp = new double[Col, Row];
-                for (var i = 0; i < Row; i++) 
-                    for (var j = 0; j < Col; j++) 
+                var temp = new double[Columns, Rows];
+                for (var i = 0; i < Rows; i++) 
+                    for (var j = 0; j < Columns; j++) 
                         temp[j, i] = Body[i, j];
             
                 return new Matrix(temp);
@@ -33,11 +33,11 @@
 
         public Matrix Flip() {
             try {
-                var rotatedMatrix = new Matrix(new double[Row, Col]);
+                var rotatedMatrix = new Matrix(new double[Rows, Columns]);
 
-                for (var i = 0; i < rotatedMatrix.Row; i++) 
-                    for (var j = 0; j < rotatedMatrix.Col; j++) 
-                        rotatedMatrix.Body[j, i] = Body[Row - j - 1, Col - i - 1];
+                for (var i = 0; i < rotatedMatrix.Rows; i++) 
+                    for (var j = 0; j < rotatedMatrix.Columns; j++) 
+                        rotatedMatrix.Body[j, i] = Body[Rows - j - 1, Columns - i - 1];
             
                 return rotatedMatrix;
             }
@@ -49,11 +49,11 @@
 
         public static double[] operator *(double[] vector, Matrix matrix) {
             try {
-                var endVector = new double[matrix.Row];
+                var endVector = new double[matrix.Rows];
 
-                for (var x = 0; x < matrix.Row; ++x) {
+                for (var x = 0; x < matrix.Rows; ++x) {
                     double tmp = 0;
-                    for (var y = 0; y < matrix.Col; ++y)
+                    for (var y = 0; y < matrix.Columns; ++y)
                         tmp += matrix.Body[x, y] * vector[y];
 
                     endVector[x] = tmp;
@@ -69,14 +69,11 @@
 
         public static Matrix operator +(Matrix matrix1, Matrix matrix2) {
             try {
-                var xSize = matrix1.Body.GetLength(0);
-                var ySize = matrix2.Body.GetLength(1);
+                var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
-                var endMatrix = new Matrix(new double[xSize, ySize]);
-
-                for (var i = 0; i < xSize; i++)
-                for (var j = 0; j < ySize; j++)
-                    endMatrix.Body[i, j] = matrix1.Body[i, j] + matrix2.Body[i, j];
+                for (var i = 0; i < matrix1.Rows; i++)
+                    for (var j = 0; j < matrix1.Columns; j++)
+                        endMatrix.Body[i, j] = matrix1.Body[i, j] + matrix2.Body[i, j];
 
                 return endMatrix;
             }
@@ -88,14 +85,11 @@
 
         public static Matrix operator *(Matrix matrix1, Matrix matrix2) {
             try {
-                var xSize = matrix1.Body.GetLength(0);
-                var ySize = matrix2.Body.GetLength(1);
+                var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
-                var endMatrix = new Matrix(new double[xSize, ySize]);
-
-                for (var i = 0; i < xSize; i++)
-                for (var j = 0; j < ySize; j++)
-                    endMatrix.Body[i, j] = matrix1.Body[i, j] * matrix2.Body[i, j];
+                for (var i = 0; i < matrix1.Rows; i++)
+                    for (var j = 0; j < matrix1.Columns; j++)
+                        endMatrix.Body[i, j] = matrix1.Body[i, j] * matrix2.Body[i, j];
 
                 return endMatrix;
             }
@@ -107,14 +101,11 @@
 
         public static Matrix operator -(Matrix matrix1, Matrix matrix2) {
             try {
-                var xSize = matrix1.Body.GetLength(0);
-                var ySize = matrix2.Body.GetLength(1);
+                var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
-                var endMatrix = new Matrix(new double[xSize, ySize]);
-
-                for (var i = 0; i < xSize; i++)
-                for (var j = 0; j < ySize; j++)
-                    endMatrix.Body[i, j] = matrix1.Body[i, j] - matrix2.Body[i, j];
+                for (var i = 0; i < matrix1.Rows; i++)
+                    for (var j = 0; j < matrix1.Columns; j++)
+                        endMatrix.Body[i, j] = matrix1.Body[i, j] - matrix2.Body[i, j];
 
                 return endMatrix;
             }
@@ -125,27 +116,21 @@
         }
 
         public static Matrix operator -(Matrix matrix1, double value) {
-            var xSize = matrix1.Body.GetLength(0);
-            var ySize = matrix1.Body.GetLength(1);
+            var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
-            var endMatrix = new Matrix(new double[xSize, ySize]);
-
-            for (var i = 0; i < xSize; i++)
-                for (var j = 0; j < ySize; j++)
-                    endMatrix.Body[i, j] = matrix1.Body[i, j] - value;
+            for (var i = 0; i < matrix1.Rows; i++)
+                for (var j = 0; j < matrix1.Columns; j++)
+                        endMatrix.Body[i, j] = matrix1.Body[i, j] - value;
 
             return endMatrix;
         }
 
         public static Matrix operator *(Matrix matrix1, double value) {
-            var xSize = matrix1.Body.GetLength(0);
-            var ySize = matrix1.Body.GetLength(1);
+            var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
-            var endMatrix = new Matrix(new double[xSize, ySize]);
-
-            for (var i = 0; i < xSize; i++)
-                for (var j = 0; j < ySize; j++)
-                    endMatrix.Body[i, j] = matrix1.Body[i, j] * value;
+            for (var i = 0; i < matrix1.Rows; i++)
+                for (var j = 0; j < matrix1.Columns; j++)
+                        endMatrix.Body[i, j] = matrix1.Body[i, j] * value;
 
             return endMatrix;
         }
@@ -153,8 +138,8 @@
         public double Sum() {
             var sum = 0d;
             
-            for (var i = 0; i < Row; i++)
-                for (var j = 0; j < Col; j++)
+            for (var i = 0; i < Rows; i++)
+                for (var j = 0; j < Columns; j++)
                     sum += Body[i, j];
             
             return sum;
@@ -177,17 +162,17 @@
         }
 
         public void HeInitialization() {
-            var scale = Math.Sqrt(2.0 / Col);
-            for (var i = 0; i < Row; i++)
-                for (var j = 0; j < Col; j++)
+            var scale = Math.Sqrt(2.0 / Columns);
+            for (var i = 0; i < Rows; i++)
+                for (var j = 0; j < Columns; j++)
                     Body[i, j] = new Random().NextDouble() * scale * 2 - scale;
         }
 
         public string GetValues() {
             var tempValues = "";
 
-            for (var i = 0; i < Row; i++)
-                for (var j = 0; j < Col; j++)
+            for (var i = 0; i < Rows; i++)
+                for (var j = 0; j < Columns; j++)
                     tempValues += Body[i, j] + " ";
 
             return tempValues;
@@ -196,8 +181,8 @@
         public string Print() {
             var tempValues = "";
 
-            for (var i = 0; i < Row; i++) {
-                for (var j = 0; j < Col; j++) 
+            for (var i = 0; i < Rows; i++) {
+                for (var j = 0; j < Columns; j++) 
                     tempValues += Body[i, j] + " ";
                 
                 tempValues += "\n";
@@ -209,8 +194,8 @@
         public List<double> GetAsList() {
             var tempValues = new List<double>();
 
-            for (var i = 0; i < Row; i++)
-                for (var j = 0; j < Col; j++)
+            for (var i = 0; i < Rows; i++)
+                for (var j = 0; j < Columns; j++)
                     tempValues.Add(Body[i, j]);
 
             return tempValues;
