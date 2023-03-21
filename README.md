@@ -46,7 +46,7 @@ For creating neural network class u need do **SIMPLE** steps:
 1.1.1. Every layer needs a parametrs, that u should choose by ur self:
 
 		new ConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, convolutionStride);
-		new new ActivationLayer(activateFunction);
+		new ActivationLayer(activateFunction);
 		new PoolingLayer(poolingType, poolingSize);
 		new PerceptronLayer(size, sizeOfNextLayer);
 		new PerceptronLayer(size);
