@@ -28,13 +28,16 @@ For creating neural network class u need do **SIMPLE** steps:
 		List<ILayer> layers = new List<ILayer> {
 			new ConvolutionLayer(); // Input tensor get convolved by filters
 			new ActivationLayer(); // Input tensor get activated
+			new DropoutLayer();
 			new PoolingLayer(); // Input tensor get pooled
 			new ConvolutionLayer();
 			new ActivationLayer();
+			new DropoutLayer();
 			new PoolingLayer();
 			new FlattenLayer(); // Input tensor get converted to 1d tensor
 			new PerceptronLayer(); // Input 1d tensor multiply with weights 
 			new ActivationLayer();
+			new DropoutLayer();
 			new PerceptronLayer();
 			new ActivationLayer();
 			new SoftMaxLayer(); 
@@ -46,7 +49,8 @@ For creating neural network class u need do **SIMPLE** steps:
 		new new ActivationLayer(activateFunction);
 		new PoolingLayer(poolingType, poolingSize);
 		new PerceptronLayer(size, sizeOfNextLayer);
-		new PerceptronLayer(size)
+		new PerceptronLayer(size);
+		new DropoutLayer(percentOfDropped);
 		
 1.1.1.1. Types of pooling u can find here:
 
@@ -59,6 +63,7 @@ For creating neural network class u need do **SIMPLE** steps:
 		new ReLU();
 		new LeakyReLU();
 		new Sigmoid();
+		new Tangensoid();
 
 ------------
 
@@ -74,7 +79,7 @@ If predicted class is wrong, we going to Back Propagation.
 
 #### BackPropagation:
 
-		network.BackPropagation(expectedClass, learningRate); // Index of expected class
+		network.BackPropagation(expectedClass, expectedValue, learningRate); // Index of expected class and a value (usualy is 1)
 
 If expected class is different that was predicted, we should use **BACKPROPAGATION** method.
 
@@ -84,14 +89,11 @@ If expected class is different that was predicted, we should use **BACKPROPAGATI
 
 #### Save:
 
-All weights can be saved by getting them from every layer. 
+All weights can be saved by using next method. 
 
 **EXAMPLE:**
 
-		data = "";
-		foreach (var layer in layers) {
-			data += layer.GetData();
-		}
+		data = network.GetWeights();
 
 #### Load:
 
@@ -99,12 +101,7 @@ For loading weights u should use same alghoritm.
 
 **EXAMPLE:**
 
-		data = globalData; // weights that converted into string
-		foreach (var layer in layers) {
-			data = layer.LoadData(data);
-		}
-
-U can check that all weights are loaded correctly by checking end length of data. If length equals zero - loading was correct.
+		network.LoadWeights(data);
 
 ------------
 
