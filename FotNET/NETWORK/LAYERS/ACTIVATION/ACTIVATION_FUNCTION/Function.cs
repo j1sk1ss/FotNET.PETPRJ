@@ -1,4 +1,3 @@
-using FotNET.NETWORK.OBJECTS;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION {
@@ -14,6 +13,21 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION {
            return tensor;
        }
 
+       public Matrix Activate(Matrix matrix) {
+           for (var x = 0; x < matrix.Rows; x++)
+               for (var y = 0; y < matrix.Columns; y++)
+                   matrix.Body[x, y] = Activate(matrix.Body[x, y]);
+           
+           return matrix;
+       }
+
+       public double[] Activate(double[] array) {
+           for (var i = 0; i < array.Length; i++)
+               array[i] = Activate(array[i]);
+
+           return array;
+       }
+       
        protected abstract double Derivation(double value);       
        
        public Tensor Derivation(Tensor tensor) {
@@ -23,6 +37,21 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION {
                        channel.Body[x, y] = Derivation(channel.Body[x, y]);
    
            return tensor;
+       }
+       
+       public Matrix Derivation(Matrix matrix) {
+           for (var x = 0; x < matrix.Rows; x++)
+               for (var y = 0; y < matrix.Columns; y++)
+                   matrix.Body[x, y] = Derivation(matrix.Body[x, y]);
+           
+           return matrix;
+       }
+       
+       public double[] Derivation(double[] array) {
+           for (var i = 0; i < array.Length; i++)
+               array[i] = Derivation(array[i]);
+
+           return array;
        }
    } 
 }

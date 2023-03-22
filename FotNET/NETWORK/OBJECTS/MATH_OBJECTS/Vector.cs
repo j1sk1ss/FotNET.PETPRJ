@@ -34,6 +34,13 @@
         
             return vector1;
         }
+        
+        public static Vector operator +(Vector vector1, double value) {
+            for (var i = 0; i < vector1.Size; i++) 
+                vector1[i] += value;
+        
+            return vector1;
+        }
 
         public static Vector operator *(Vector vector1, Vector vector2) {
             try {
