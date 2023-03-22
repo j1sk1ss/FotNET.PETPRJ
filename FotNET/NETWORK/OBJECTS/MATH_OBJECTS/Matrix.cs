@@ -6,6 +6,15 @@
             Body    = body;
         }
 
+        public Matrix(double[] body) {
+            Rows    = body.Length;
+            Columns = 1;
+
+            Body = new double[Rows, Columns];
+            for (var i = 0; i < Rows; i++)
+                Body[i, 1] = body[i];
+        }
+        
         public Matrix(int rows, int columns) {
             Rows    = rows;
             Columns = columns;
@@ -46,6 +55,8 @@
                 return null!;
             }
         }
+
+        public double Average() => GetAsList().Average();
 
         public static double[] operator *(double[] vector, Matrix matrix) {
             try {

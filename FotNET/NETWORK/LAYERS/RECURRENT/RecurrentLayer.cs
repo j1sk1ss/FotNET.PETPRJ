@@ -25,17 +25,17 @@ public class RecurrentLayer : ILayer {
         OutputWeights.HeInitialization();
     }
     
-    private Matrix InputWeights { get; }
-    
-    private Matrix HiddenWeights { get; }
-    
-    private double[] HiddenBias { get; }
-    
-    private Matrix OutputWeights { get; }
-    
-    private double[] OutputBias { get; }
+    private Matrix InputWeights { get; set; }
 
-    private Function Function { get; }
+    private Matrix HiddenWeights { get; set; }
+    
+    private double[] HiddenBias { get; set; }
+    
+    private Matrix OutputWeights { get; set; }
+    
+    private double[] OutputBias { get; set; }
+
+    private Function Function { get; set; }
     
     
     private List<double[]> HiddenNeurons { get; set; }
@@ -71,16 +71,43 @@ public class RecurrentLayer : ILayer {
     public Tensor BackPropagate(Tensor error, double learningRate) {
         var sequence = error.Flatten();
         
-        for (var i = sequence.Count - 1; i >= 0; i--) {
-            var currentError = sequence[i];
-            var outputGradient = HiddenNeurons[i]
-        }
-        /*
-         * l1_grad = loss_grad[1].reshape(1,1)
+        var hiddenWeightGradient = new double[HiddenNeurons.Count];
+        
+        var outputGradient = new Matrix(0, 0);
+        var hiddenGradient = new Matrix(0, 0);
+        var inputGradient  = new Matrix(0, 0);
+        
+        for (var step = sequence.Count - 1; step >= 0; step--) {
+            var currentError = sequence[step];
 
-o_weight_grad += hiddens[1][:,np.newaxis] @ l1_grad
-o_bias_grad += np.mean(l1_grad)
-         */
+            outputGradient = OutputWeights.Transpose() * currentError;
+            if (step == 0)
+                hiddenGradient = outputGradient;
+            else
+                hiddenGradient = outputGradient + new Vector(HiddenNeurons[step - 1] 
+                                                             * HiddenWeights.Transpose()).AsMatrix(1, outputGradient.Columns, 0);
+
+            HiddenNeurons[step - 1] = Function.Derivation(new Tensor(hiddenGradient)).Channels[0].GetAsList().ToArray();
+
+            if (step > 0) {
+                hiddenWeightGradient = new Vector(hiddenWeightGradient) + new Vector(HiddenNeurons[step - 1] * hiddenGradient);
+            }
+            
+            inputGradient = hiddenGradient * currentError;
+
+            InputWeights  -= inputGradient * learningRate;
+            HiddenWeights -= hiddenGradient * learningRate;
+            
+            for (var bias = 0; bias < HiddenBias.Length; bias++)
+                HiddenBias[bias] -= hiddenGradient.Average() * learningRate;
+
+            OutputWeights -= outputGradient * learningRate;
+            
+            for (var bias = 0; bias < OutputBias.Length; bias++)
+                OutputBias[bias] -= currentError * learningRate;
+        }
+
+        return null!;
     }
 
     public Tensor GetValues()
