@@ -12,7 +12,7 @@
 
             Body = new double[Rows, Columns];
             for (var i = 0; i < Rows; i++)
-                Body[i, 1] = body[i];
+                Body[i, 0] = body[i];
         }
         
         public Matrix(int rows, int columns) {
@@ -88,8 +88,8 @@
 
                 return endMatrix;
             }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 4m");
+            catch (Exception ex) {
+                Console.WriteLine("Код ошибки: 4m\n" + ex);
                 return null!;
             }
         }
@@ -104,12 +104,23 @@
 
                 return endMatrix;
             }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 5m");
+            catch (Exception ex) {
+                Console.WriteLine("Код ошибки: 5m\n" + ex);
                 return null!;
             }
         }
 
+        public static Matrix Multiply(Matrix firstMatrix, Matrix secondMatrix) {
+            var endMatrix = new Matrix(firstMatrix.Rows, secondMatrix.Columns);
+
+            for (var i = 0; i < endMatrix.Rows; i++) 
+                for (var j = 0; j < endMatrix.Columns; j++) 
+                    for (var k = 0; k < secondMatrix.Rows; k++) 
+                        endMatrix.Body[i, j] += firstMatrix.Body[i, k] * secondMatrix.Body[k, j];
+            
+            return endMatrix;
+        }
+        
         public static Matrix operator -(Matrix matrix1, Matrix matrix2) {
             try {
                 var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
@@ -120,8 +131,8 @@
 
                 return endMatrix;
             }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 6m");
+            catch (Exception ex) {
+                Console.WriteLine("Код ошибки: 6m\n" + ex);
                 return null!;
             }
         }

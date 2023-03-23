@@ -22,8 +22,8 @@
             
                 return vector1.Body;
             }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 1v");
+            catch (Exception ex) {
+                Console.WriteLine("Код ошибки: 1v\n" + ex);
                 return null!;
             }
         }

@@ -19,8 +19,8 @@ namespace FotNET.NETWORK {
                 data = Layers.Aggregate(data, (current, layer) => layer.GetNextLayer(current));
                 return data.GetMaxIndex();
             }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 1n");
+            catch (Exception ex) {
+                Console.WriteLine("Код ошибки: 1n\n" + ex);
                 return 0;
             }
         }
@@ -31,8 +31,8 @@ namespace FotNET.NETWORK {
                 for (var i = Layers.Count - 1; i >= 0; i--)
                     errorTensor = Layers[i].BackPropagate(errorTensor, learningRate);
             }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 2n");
+            catch (Exception ex) {
+                Console.WriteLine("Код ошибки: 2n\n" + ex);
             }
         }
         
