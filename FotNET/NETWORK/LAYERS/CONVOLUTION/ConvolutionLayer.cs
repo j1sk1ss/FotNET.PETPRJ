@@ -81,7 +81,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
         public string LoadData(string data) {
             var position = 0;
-            var dataNumbers = data.Split(" ");
+            var dataNumbers = data.Split(" ",  StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var filter in Filters) {
                 foreach (var channel in filter.Channels)

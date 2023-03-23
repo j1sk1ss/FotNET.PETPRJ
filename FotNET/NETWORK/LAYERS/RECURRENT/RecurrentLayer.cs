@@ -56,7 +56,7 @@ public class RecurrentLayer : ILayer {
     
     public string LoadData(string data) {
         var position = 0;
-        var dataNumbers = data.Split(" ");
+        var dataNumbers = data.Split(" ",  StringSplitOptions.RemoveEmptyEntries);
         
         for (var x = 0; x < InputWeights.Rows; x++)
             for (var y = 0; y < InputWeights.Columns; y++)

@@ -63,7 +63,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
 
         public string LoadData(string data) {
             var position = 0;
-            var dataNumbers = data.Split(" ");
+            var dataNumbers = data.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
             for (var i = 0; i < Weights.Rows; i++)
                 for (var j = 0; j < Weights.Columns; j++)

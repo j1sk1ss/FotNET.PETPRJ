@@ -9,36 +9,36 @@ public class ManyToOne : IRecurrent {
         for (var step = 0; step < sequence.Count; step++) {
             var currentElement = sequence[step];
             var inputNeurons = (layer.InputWeights * currentElement).GetAsList().ToArray();
-            
+
             if (step > 0)
-                layer.HiddenNeurons.Add(new Vector(new Vector(inputNeurons) 
-                                                   + new Vector(layer.HiddenNeurons[step - 1] 
+                layer.HiddenNeurons.Add(new Vector(new Vector(inputNeurons)
+                                                   + new Vector(layer.HiddenNeurons[step - 1]
                                                                 * layer.HiddenWeights)) + new Vector(layer.HiddenBias));
             else
                 layer.HiddenNeurons.Add(inputNeurons);
 
             layer.HiddenNeurons[^1] = layer.Function.Activate(layer.HiddenNeurons[^1]);
-            layer.OutputNeurons.Add((new Vector(layer.HiddenNeurons[^1] * layer.OutputWeights) + layer.OutputBias).Body[0]);
+            layer.OutputNeurons.Add(
+                (new Vector(layer.HiddenNeurons[^1] * layer.OutputWeights) + layer.OutputBias).Body[0]);
         }
-        
-        return new Tensor(new Matrix(new[]{layer.OutputNeurons[^1]}));
+
+        return new Tensor(new Matrix(new[] { layer.OutputNeurons[^1] }));
     }
     
     public Tensor BackPropagate(RecurrentLayer layer, Tensor error, double learningRate) {
         var layerError = error.Flatten()[0];
         var nextHidden = (layer.OutputWeights.Transpose() * layerError).GetAsList().ToArray();
-        
+
         for (var step = layer.HiddenNeurons.Count - 1; step >= 0; step--) {
             var inputGradient = (new Vector(nextHidden) * layerError).Body;
-            layer.InputWeights  -= new Matrix(inputGradient).Transpose() * learningRate;
-            
+            layer.InputWeights -= new Matrix(inputGradient).Transpose() * learningRate;
+
             if (nextHidden.Length == 0)
                 nextHidden = (layer.OutputWeights.Transpose() * layerError).GetAsList().ToArray();
-            else {
-                nextHidden = (layer.OutputWeights.Transpose() * layerError 
+            else
+                nextHidden = (layer.OutputWeights.Transpose() * layerError
                               + new Vector(nextHidden * layer.HiddenWeights.Transpose())
-                                  .AsMatrix(1, layer.OutputWeights.Rows, 0)).GetAsList().ToArray(); 
-            }
+                                  .AsMatrix(1, layer.OutputWeights.Rows, 0)).GetAsList().ToArray();
 
             nextHidden = layer.Function.Derivation(nextHidden);
 
