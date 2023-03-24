@@ -1,5 +1,4 @@
 ﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
-using FotNET.NETWORK.OBJECTS;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
@@ -53,11 +52,14 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         public Tensor BackPropagate(Tensor error, double learningRate) {
             var inputTensor = Input;
             var extendedInput = inputTensor.GetSameChannels(error);
-            var originalFilters = Filters;
+            
+            var originalFilters = new Filter[Filters.Length];
+            for (var i = 0; i < Filters.Length; i++)
+                originalFilters[i] = new Filter(new List<Matrix>(Filters[i].Channels));
             
             for (var i = 0; i < originalFilters.Length; i++)
                 originalFilters[i] = originalFilters[i].GetSameChannels(error).AsFilter();
-
+            
             for (var f = 0; f < Filters.Length; f++) {
                 for (var channel = 0; channel < Filters[f].Channels.Count; channel++) 
                     Filters[f].Channels[channel] -= Convolution.GetConvolution(extendedInput.Channels[f],
@@ -65,17 +67,19 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                 
                 Filters[f].Bias -= error.Channels[f].Sum() * learningRate;
             }
-
+            
             return Convolution.GetExtendedConvolution(error, 
                 FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
         }
 
         public string GetData() {
             var temp = "";
+            
             foreach (var filter in Filters) {
                 temp = filter.Channels.Aggregate(temp, (current, channel) => current + channel.GetValues());
                 temp += filter.Bias + " ";
             }
+            
             return temp;
         }
 

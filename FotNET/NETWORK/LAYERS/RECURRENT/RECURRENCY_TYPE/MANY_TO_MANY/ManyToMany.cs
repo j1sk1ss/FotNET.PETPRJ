@@ -27,6 +27,8 @@ public class ManyToMany : IRecurrent {
     public Tensor BackPropagate(RecurrentLayer layer, Tensor error, double learningRate) {
         var sequence = error.Flatten();
         var nextHidden = (layer.OutputWeights.Transpose() * sequence[^1]).GetAsList().ToArray();
+
+        learningRate /= sequence.Count;
         
         for (var step = sequence.Count - 1; step >= 0; step--) {
             var currentError = sequence[step];
