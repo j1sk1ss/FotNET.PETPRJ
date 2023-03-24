@@ -1,5 +1,5 @@
 # FotNET
-FotNET is a simple library for working with **CONVOLUTION NEURAL NETWORKS** and **CLASSIC NEURAL NETWORKS** like **PERCEPTRON**.
+FotNET is a simple library for working with **RECURRENT NEURAL NETWORKS**, **CONVOLUTION NEURAL NETWORKS** and **CLASSIC NEURAL NETWORKS** like **PERCEPTRON**.
 The main part is that u can create ur own neural network without libraries that takes all work. This project is open source and u can see a code, download him and change every part what u need cuz it very simple to understand this prokject.
 
 ### Introduction:
@@ -42,6 +42,14 @@ For creating neural network class u need do **SIMPLE** steps:
 			new ActivationLayer();
 			new SoftMaxLayer(); 
 		}
+		
+		>> **OR**
+		
+		List<ILayer> layers = new List<ILayer> {
+			new FlattenLayer();
+			new RecurrentLayer();
+			new SoftMaxLayer(); 
+		}
 
 1.1.1. Every layer needs a parametrs, that u should choose by ur self:
 
@@ -51,6 +59,7 @@ For creating neural network class u need do **SIMPLE** steps:
 		new PerceptronLayer(size, sizeOfNextLayer);
 		new PerceptronLayer(size);
 		new DropoutLayer(percentOfDropped);
+		new RecurrentLayer(activationFunction, recurrencyType, hiddenLayerSize);
 		
 1.1.1.1. Types of pooling u can find here:
 
