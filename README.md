@@ -59,6 +59,7 @@ For creating neural network class u need do **SIMPLE** steps:
 		new PerceptronLayer(size, sizeOfNextLayer);
 		new PerceptronLayer(size);
 		new DropoutLayer(percentOfDropped);
+		new RecurrentLayer(activationFunction, recurrencyType, hiddenLayerSize);
 		
 1.1.1.1. Types of pooling u can find here:
 
