@@ -42,6 +42,14 @@ For creating neural network class u need do **SIMPLE** steps:
 			new ActivationLayer();
 			new SoftMaxLayer(); 
 		}
+		
+		>> **OR**
+		
+		List<ILayer> layers = new List<ILayer> {
+			new FlattenLayer();
+			new RecurrentLayer();
+			new SoftMaxLayer(); 
+		}
 
 1.1.1. Every layer needs a parametrs, that u should choose by ur self:
 
