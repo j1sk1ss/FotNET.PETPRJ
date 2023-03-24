@@ -1,5 +1,5 @@
 # FotNET
-FotNET is a simple library for working with **CONVOLUTION NEURAL NETWORKS** and **CLASSIC NEURAL NETWORKS** like **PERCEPTRON**.
+FotNET is a simple library for working with **RECURRENT NEURAL NETWORKS**, **CONVOLUTION NEURAL NETWORKS** and **CLASSIC NEURAL NETWORKS** like **PERCEPTRON**.
 The main part is that u can create ur own neural network without libraries that takes all work. This project is open source and u can see a code, download him and change every part what u need cuz it very simple to understand this prokject.
 
 ### Introduction:
