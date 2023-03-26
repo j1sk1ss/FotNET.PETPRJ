@@ -81,11 +81,13 @@ public class RecurrentLayer : ILayer {
             
             if (nextHidden.Length == 0)
                 nextHidden = (OutputWeights.Transpose() * currentError).GetAsList().ToArray();
-            else 
-                nextHidden = (OutputWeights.Transpose() * currentError 
+            else {
+                var position = 0;
+                nextHidden = (OutputWeights.Transpose() * currentError
                               + new Vector(nextHidden * HiddenWeights.Transpose())
-                                  .AsMatrix(1, OutputWeights.Rows, 0)).GetAsList().ToArray(); 
-            
+                                  .AsMatrix(1, OutputWeights.Rows, ref position)).GetAsList().ToArray();
+            }
+
             nextHidden = Function.Derivation(nextHidden);
 
             if (step > 0) {

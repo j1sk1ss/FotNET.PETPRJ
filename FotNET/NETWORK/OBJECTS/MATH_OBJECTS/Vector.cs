@@ -62,13 +62,13 @@
             return vector1;
         }
 
-        public Matrix AsMatrix(int x, int y, int pos) {
+        public Matrix AsMatrix(int x, int y, ref int pos) {
             var matrix = new Matrix(x, y);
-            var position = pos;
+            
             for (var i = 0; i < x; i++)
                 for (var j = 0; j < y; j++) {
-                    if (Size <= position) return null!;
-                    matrix.Body[i, j] = Body[position++];
+                    if (Size <= pos) return null!;
+                    matrix.Body[i, j] = Body[pos++];
             }
 
             return matrix;
@@ -80,7 +80,7 @@
                 var position = 0;
 
                 for (var k = 0; k < channels; k++) 
-                    tensor.Channels.Add(AsMatrix(x,y, position));
+                    tensor.Channels.Add(AsMatrix(x,y, ref position));
                 
                 return tensor;
             }
