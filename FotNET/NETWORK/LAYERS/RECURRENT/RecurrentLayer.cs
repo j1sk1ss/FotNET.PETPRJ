@@ -74,7 +74,7 @@ public class RecurrentLayer : ILayer {
 
         learningRate /= sequence.Count;
         
-        for (var step = sequence.Count - 1; step >= 0; step--) {
+        for (var step = HiddenNeurons.Count - 1; step >= 0; step--) {
             var currentError = RecurrentType == RecurrencyType.ManyToMany ? sequence[step] : sequence[0];
             var inputGradient = (new Vector(nextHidden) * currentError).Body;
             InputWeights  -= new Matrix(inputGradient).Transpose() * learningRate;

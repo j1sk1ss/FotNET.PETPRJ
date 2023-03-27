@@ -1,7 +1,7 @@
 ﻿using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
-    internal static class Padding {
+    public static class Padding {
         private static Matrix GetPadding(Matrix matrix, int paddingSize) {
             var newMatrix = new Matrix(matrix.Rows + paddingSize * 2, matrix.Columns + paddingSize * 2);
 
