@@ -32,7 +32,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
         private static Filter[] FlipFilters(Filter[] filters) {
             for (var i = 0; i < filters.Length; i++)
-                filters[i] = filters[i].Flip();
+                filters[i] = filters[i].Flip().AsFilter();
 
             return filters;
         }

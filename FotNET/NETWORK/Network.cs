@@ -6,18 +6,15 @@ using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK {
     public class Network {
-        public Network(List<ILayer> layers) {
-            Layers       = layers;
-        }
-
+        public Network(List<ILayer> layers) => Layers = layers;
+        
         private List<ILayer> Layers { get; set; }
 
         public List<ILayer> GetLayers() => Layers;
 
         public int ForwardFeed(Tensor data) {
             try {
-                data = Layers.Aggregate(data, (current, layer) => layer.GetNextLayer(current));
-                return data.GetMaxIndex();
+                return Layers.Aggregate(data, (current, layer) => layer.GetNextLayer(current)).GetMaxIndex();
             }
             catch (Exception ex) {
                 Console.WriteLine("Код ошибки: 1n\n" + ex);

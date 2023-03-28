@@ -11,7 +11,7 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION {
         
         public Tensor BackPropagate(Tensor error, double learningRate) => Function.Derivation(error);
 
-        public Tensor GetValues() => new Tensor(new Matrix(0,0));
+        public Tensor GetValues() => null!;
         
         public string GetData() => "";
         
