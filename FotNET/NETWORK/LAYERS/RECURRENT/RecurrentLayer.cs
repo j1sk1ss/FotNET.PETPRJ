@@ -45,8 +45,12 @@ public class RecurrentLayer : ILayer {
     public List<double> OutputNeurons { get; }
 
 
-    public Tensor GetNextLayer(Tensor tensor) => 
-        RecurrentType.GetNextLayer(this, tensor);
+    public Tensor GetNextLayer(Tensor tensor) {
+        HiddenNeurons.Clear();
+        OutputNeurons.Clear();
+
+        return RecurrentType.GetNextLayer(this, tensor);
+    }
 
     public Tensor BackPropagate(Tensor error, double learningRate) =>
         RecurrentType.BackPropagate(this, error, learningRate);

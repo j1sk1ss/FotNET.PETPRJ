@@ -20,7 +20,7 @@ public class RecurrentTests {
             new RecurrentLayer(new LeakyReLu(), new ManyToMany(), 10),
             new SoftMaxLayer()
         });
-        model.ForwardFeed(testTensorData);
+        model.ForwardFeed(testTensorData, AnswerType.Class);
 
         var layers = model.GetLayers();
         Console.WriteLine($"Layer {layers.Count}:\nInput Tensor on layer:\n{layers[^1].GetValues().Channels[0].Print()}\n");
@@ -34,7 +34,7 @@ public class RecurrentTests {
             new RecurrentLayer(new LeakyReLu(), new ManyToOne(), 10),
             new SoftMaxLayer()
         });
-        model.ForwardFeed(testTensorData);
+        model.ForwardFeed(testTensorData, AnswerType.Class);
 
         var layers = model.GetLayers();
         Console.WriteLine($"Layer {layers.Count}:\nInput Tensor on layer:\n{layers[^1].GetValues().Channels[0].Print()}\n");
@@ -48,7 +48,7 @@ public class RecurrentTests {
             new RecurrentLayer(new LeakyReLu(), new OneToMany(), 10),
             new SoftMaxLayer()
         });
-        model.ForwardFeed(testTensorData);
+        model.ForwardFeed(testTensorData, AnswerType.Class);
 
         var layers = model.GetLayers();
         Console.WriteLine($"Layer {layers.Count}:\nInput Tensor on layer:\n{layers[^1].GetValues().Channels[0].Print()}\n");
@@ -62,7 +62,7 @@ public class RecurrentTests {
             new RecurrentLayer(new LeakyReLu(), new ManyToMany(), 10),
             new SoftMaxLayer()
         });
-        model.ForwardFeed(testTensorData);
+        model.ForwardFeed(testTensorData, AnswerType.Class);
 
         var layers = model.GetLayers();
         for (var layer = 0; layer < layers.Count; layer++) 
@@ -82,7 +82,7 @@ public class RecurrentTests {
             new RecurrentLayer(new LeakyReLu(), new ManyToOne(), 10),
             new SoftMaxLayer()
         });
-        model.ForwardFeed(testTensorData);
+        model.ForwardFeed(testTensorData, AnswerType.Value);
 
         var layers = model.GetLayers();
         for (var layer = 0; layer < layers.Count; layer++) 
@@ -102,7 +102,7 @@ public class RecurrentTests {
             new RecurrentLayer(new LeakyReLu(), new OneToMany(), 10),
             new SoftMaxLayer()
         });
-        model.ForwardFeed(testTensorData);
+        model.ForwardFeed(testTensorData, AnswerType.Class);
 
         var layers = model.GetLayers();
         for (var layer = 0; layer < layers.Count; layer++) 

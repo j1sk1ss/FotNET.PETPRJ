@@ -12,9 +12,14 @@ namespace FotNET.NETWORK {
 
         public List<ILayer> GetLayers() => Layers;
 
-        public int ForwardFeed(Tensor data) {
+        public double ForwardFeed(Tensor data, AnswerType answerType) {
             try {
-                return Layers.Aggregate(data, (current, layer) => layer.GetNextLayer(current)).GetMaxIndex();
+                var tensor = Layers.Aggregate(data, (current, layer) => layer.GetNextLayer(current));
+                return answerType switch {
+                    AnswerType.Class => tensor.GetMaxIndex(),
+                    AnswerType.Value => tensor.Flatten()[tensor.GetMaxIndex()],
+                    _                => 0
+                };
             }
             catch (Exception ex) {
                 Console.WriteLine("Код ошибки: 1n\n" + ex);

@@ -21,7 +21,7 @@ public class ManyToOne : IRecurrentType {
                 (new Vector(layer.HiddenNeurons[^1] * layer.OutputWeights) + layer.OutputBias).Body[0]);
         }
 
-        return new Tensor(new Matrix(new[]{layer.OutputNeurons[0]}));
+        return new Tensor(new Matrix(new[]{layer.OutputNeurons[^1]}));
     }
 
     public Tensor BackPropagate(RecurrentLayer layer, Tensor error, double learningRate) {
