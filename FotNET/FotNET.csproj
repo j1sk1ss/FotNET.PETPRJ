@@ -14,8 +14,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>RNN, CNN, FNN, Classification, Tensors</PackageTags>
     <PackageIcon>packageIcon.png</PackageIcon>
-    <PackageVersion>2.0.1</PackageVersion>
-    <PackageReleaseNotes>Added RNN layers to constructor</PackageReleaseNotes>
+    <PackageVersion>2.0.2</PackageVersion>
+    <PackageReleaseNotes>fixed bugs with RNN (MTO method)</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

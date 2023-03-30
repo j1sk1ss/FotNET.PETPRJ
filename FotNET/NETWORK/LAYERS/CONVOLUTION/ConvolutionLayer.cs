@@ -3,9 +3,9 @@ using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
     public class ConvolutionLayer : ILayer {
-        public ConvolutionLayer(int filters,
-            int filterWeight, int filterHeight, int filterDepth, int stride) {
-            Filters = new Filter[filters];
+        public ConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth, int stride) {
+            _backPropagate = true;
+            Filters        = new Filter[filters];
             
             for (var j = 0; j < filters; j++) {
                 Filters[j] = new Filter(new List<Matrix>()) {
@@ -25,7 +25,27 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
             Input   = new Tensor(new Matrix(0, 0));
         }
 
+        public ConvolutionLayer(string filtersPath, int filterDepth, int stride) {
+            var filters = File.ReadAllText(filtersPath).Split("/");
+            
+            _backPropagate = false;
+            Filters = new Filter[filters.Length];
+            
+            for (var j = 0; j < filters.Length; j++) {
+                Filters[j] = new Filter(new List<Matrix>()) {
+                    Bias = .001d
+                };
+
+                for (var i = 0; i < filterDepth; i++)
+                    Filters[j].Channels.Add(new Matrix(filters[j]));
+            }
+
+            _stride = stride;
+            Input   = new Tensor(new Matrix(0, 0));
+        }
+        
         private readonly int _stride;
+        private readonly bool _backPropagate;
 
         private Filter[] Filters { get; }
         private Tensor Input { get; set; }
@@ -60,13 +80,14 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
             for (var i = 0; i < originalFilters.Length; i++)
                 originalFilters[i] = originalFilters[i].GetSameChannels(error).AsFilter();
             
-            for (var f = 0; f < Filters.Length; f++) {
-                for (var channel = 0; channel < Filters[f].Channels.Count; channel++) 
-                    Filters[f].Channels[channel] -= Convolution.GetConvolution(extendedInput.Channels[f],
-                        error.Channels[f], _stride, Filters[f].Bias) * learningRate;
-                
-                Filters[f].Bias -= error.Channels[f].Sum() * learningRate;
-            }
+            if (_backPropagate)
+                for (var f = 0; f < Filters.Length; f++) {
+                    for (var channel = 0; channel < Filters[f].Channels.Count; channel++) 
+                        Filters[f].Channels[channel] -= Convolution.GetConvolution(extendedInput.Channels[f],
+                            error.Channels[f], _stride, Filters[f].Bias) * learningRate;
+                    
+                    Filters[f].Bias -= error.Channels[f].Sum() * learningRate;
+                }
             
             return Convolution.GetExtendedConvolution(error, 
                 FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
