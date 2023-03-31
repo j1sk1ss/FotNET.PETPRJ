@@ -1,3 +1,4 @@
+using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace UnitTests;
@@ -5,11 +6,8 @@ namespace UnitTests;
 public class MathTests {
     [Test]
     public void MatrixAddMatrix() {
-        var firstMatrix = new Matrix(5, 5);
-        var secondMatrix = new Matrix(5,5);
-        
-        firstMatrix.HeInitialization();
-        secondMatrix.HeInitialization();
+        var firstMatrix = new HeInitialization().Initialize(new Matrix(5, 5));
+        var secondMatrix = new HeInitialization().Initialize(new Matrix(5,5));
         
         Console.WriteLine(firstMatrix.Print() + "+ \n" + secondMatrix.Print() + "=>\n");
         firstMatrix += secondMatrix;
@@ -18,10 +16,8 @@ public class MathTests {
 
     [Test]
     public void MatrixMultiplyNumber() {
-        var matrix = new Matrix(5, 5);
+        var matrix = new HeInitialization().Initialize(new Matrix(5, 5));
         var number = 4d;
-        
-        matrix.HeInitialization();
         
         Console.WriteLine(matrix.Print() + "* " + number + "=>\n");
         matrix *= number;
@@ -30,11 +26,8 @@ public class MathTests {
 
     [Test]
     public void MatrixMultiplyMatrix() {
-        var firstMatrix = new Matrix(5, 5);
-        var secondMatrix = new Matrix(5,5);
-        
-        firstMatrix.HeInitialization();
-        secondMatrix.HeInitialization();
+        var firstMatrix = new HeInitialization().Initialize(new Matrix(5, 5));
+        var secondMatrix = new HeInitialization().Initialize(new Matrix(5,5));
         
         Console.WriteLine(firstMatrix.Print() + "* \n" + secondMatrix.Print() + "=>\n");
         firstMatrix *= secondMatrix;
@@ -43,11 +36,8 @@ public class MathTests {
 
     [Test]
     public void FullMatrixMultiplyMatrix() {
-        var firstMatrix = new Matrix(5, 3);
-        var secondMatrix = new Matrix(1,5);
-        
-        firstMatrix.HeInitialization();
-        secondMatrix.HeInitialization();
+        var firstMatrix = new HeInitialization().Initialize(new Matrix(5, 5));
+        var secondMatrix = new HeInitialization().Initialize(new Matrix(5,5));
         
         Console.WriteLine(firstMatrix.Print() + "* \n" + secondMatrix.Print() + "=>\n");
         firstMatrix = Matrix.Multiply(firstMatrix, secondMatrix);
@@ -55,10 +45,9 @@ public class MathTests {
     }
 
     [Test]
-    public void FlipMatrix()
-    {
-        var firstMatrix = new Matrix(5, 5);
-        firstMatrix.HeInitialization();
+    public void FlipMatrix() {
+        var firstMatrix = new HeInitialization().Initialize(new Matrix(5, 5));
+        
         Console.WriteLine(firstMatrix.Print() + "=>\n");
         Console.WriteLine(firstMatrix.Flip().Print());
     }

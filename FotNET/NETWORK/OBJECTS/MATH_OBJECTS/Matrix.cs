@@ -197,13 +197,6 @@
             }
         }
 
-        public void HeInitialization() {
-            var scale = Math.Sqrt(2.0 / Columns);
-            for (var i = 0; i < Rows; i++)
-                for (var j = 0; j < Columns; j++)
-                    Body[i, j] = new Random().NextDouble() * scale * 2 - scale;
-        }
-
         public string GetValues() {
             var tempValues = "";
 

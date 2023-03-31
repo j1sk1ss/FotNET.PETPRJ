@@ -1,20 +1,18 @@
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION;
 using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE;
+using FotNET.NETWORK.MATH.Initialization;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.RECURRENT;
 
 public class RecurrentLayer : ILayer {
 
-    public RecurrentLayer(Function function, IRecurrentType recurrentType, int size) {
-        InputWeights  = new Matrix(1, size);
-        HiddenWeights = new Matrix(size, size);
-        OutputWeights = new Matrix(size, 1);
+    public RecurrentLayer(Function function, IRecurrentType recurrentType, int size, 
+        IWeightsInitialization weightsInitialization) {
+        InputWeights  = weightsInitialization.Initialize(new Matrix(1, size));
+        HiddenWeights = weightsInitialization.Initialize(new Matrix(size, size));
+        OutputWeights = weightsInitialization.Initialize(new Matrix(size, 1));
 
-        InputWeights.HeInitialization();
-        HiddenWeights.HeInitialization();
-        OutputWeights.HeInitialization();
-        
         HiddenNeurons = new List<double[]>();
         OutputNeurons = new List<double>();
         

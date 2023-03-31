@@ -1,14 +1,13 @@
-﻿using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+﻿using FotNET.NETWORK.MATH.Initialization;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
     public class PerceptronLayer : ILayer {
 
-        public PerceptronLayer(int size, int nextSize) {
+        public PerceptronLayer(int size, int nextSize, IWeightsInitialization weightsInitialization) {
             Neurons = new double[size];
             Bias    = new double[nextSize];
-
-            Weights = new Matrix(nextSize, size);
-            Weights.HeInitialization();
+            Weights = weightsInitialization.Initialize(new Matrix(nextSize, size));
 
             for (var i = 0; i < nextSize; i++)
                 Bias[i] = .001d;
