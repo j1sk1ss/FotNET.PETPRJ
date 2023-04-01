@@ -53,13 +53,16 @@ For creating neural network class u need do **SIMPLE** steps:
 
 1.1.1. Every layer needs a parametrs, that u should choose by ur self:
 
-		new ConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, convolutionStride);
+		new ConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, weightInitialization, convolutionStride);
+		// or
+		new ConvolutionLayer(pathToFilter, convolutionStride); // path to filter is a path to ur custom filter. Example of custom filters u can find in the end of ReadMe.
+		
 		new ActivationLayer(activateFunction);
 		new PoolingLayer(poolingType, poolingSize);
-		new PerceptronLayer(size, sizeOfNextLayer);
+		new PerceptronLayer(size, sizeOfNextLayer, weightInitialization);
 		new PerceptronLayer(size);
 		new DropoutLayer(percentOfDropped);
-		new RecurrentLayer(activationFunction, recurrencyType, hiddenLayerSize);
+		new RecurrentLayer(activationFunction, recurrencyType, hiddenLayerSize, weightInitialization);
 		
 1.1.1.1. Types of pooling u can find here:
 
@@ -67,10 +70,17 @@ For creating neural network class u need do **SIMPLE** steps:
 		new MinPooling();
 		new AveragePooling();
 
+1.1.1.2. Variants of weight initialization:
+
+		new HeInitialization(); // Usualy uses with ReLU, Leaky ReLU and Double Leaky ReLU
+		new XavierInitialization(); // Also uses with Tanghensoid and Sighmoid
+		new NormalizedXavierInitialization(); // Same with upper activation function, but normalized
+
 1.2. After it u should choose one of **ACTIVATION FUNCTIONS** or create ur own, but dont forget add IFunction interface:
 
-		new ReLU();
-		new LeakyReLU();
+		new ReLu();
+		new LeakyReLu();
+		new DoubleLeakyReLu();
 		new Sigmoid();
 		new Tangensoid();
 
@@ -145,3 +155,28 @@ After fitting u can test ur own model by using next method with test data set:
 
 		double accuracy = network.Test(dataType, csvPath, csvConfig);
 
+------------
+
+### Examples
+
+#### Custom filters
+
+U should create a custom file.txt, after fill it like:
+
+	1 0 1
+	1 0 1
+	1 0 1
+
+If u want add few filters, add other constructions and separate them by '//n\':
+
+	1 0 1
+	1 0 1
+	1 0 1
+	/
+	0 0 0
+	1 1 1
+	0 0 0
+	/
+	1 0 0
+	0 1 0
+	0 0 1
