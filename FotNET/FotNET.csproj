@@ -14,7 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>RNN, CNN, FNN, Classification, Tensors</PackageTags>
     <PackageIcon>packageIcon.png</PackageIcon>
-    <PackageVersion>2.0.3</PackageVersion>
+    <PackageVersion>2.1.0</PackageVersion>
     <PackageReleaseNotes>fixed bugs with RNN (MTO method)</PackageReleaseNotes>
   </PropertyGroup>
 
@@ -23,6 +23,10 @@
     <None Include="packageIcon.png" Pack="true" PackagePath="">
       <Pack>True</Pack>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NETWORK\DATA\JPEG" />
   </ItemGroup>
 
 </Project>
