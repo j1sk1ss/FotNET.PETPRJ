@@ -14,7 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>RNN, CNN, FNN, Classification, Tensors</PackageTags>
     <PackageIcon>packageIcon.png</PackageIcon>
-    <PackageVersion>2.0.2</PackageVersion>
+    <PackageVersion>2.0.3</PackageVersion>
     <PackageReleaseNotes>fixed bugs with RNN (MTO method)</PackageReleaseNotes>
   </PropertyGroup>
 
