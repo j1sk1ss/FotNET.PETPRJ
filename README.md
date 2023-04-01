@@ -83,6 +83,10 @@ For creating neural network class u need do **SIMPLE** steps:
 		new DoubleLeakyReLu();
 		new Sigmoid();
 		new Tangensoid();
+		new GeLu();
+		new BinaryStep();
+		new SoftPlus();
+		new Identity();
 
 ------------
 
