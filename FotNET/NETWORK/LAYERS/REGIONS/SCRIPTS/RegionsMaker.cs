@@ -35,20 +35,23 @@ public static class RegionsMaker {
         return regions; 
     } 
 
-    private static IEnumerable<Tuple<Rectangle, Rectangle, float>?> ComputeSimilarities
-        (IReadOnlyList<Rectangle> regions, Bitmap bitmap) { 
-        var similarities = new ConcurrentBag<Tuple<Rectangle, Rectangle, float>>();
+    private static IEnumerable<Tuple<Rectangle, Rectangle, float>> ComputeSimilarities(IReadOnlyList<Rectangle> regions, Bitmap bitmap) { 
+        var similarities = new ConcurrentQueue<Tuple<Rectangle, Rectangle, float>>();
+        var bitmapClones = new List<Bitmap>();
         
-        Parallel.ForEach(Partitioner.Create(0, regions.Count, 25), range => {
-            for (var i = range.Item1; i < range.Item2; i++)
-                for (var j = i + 1; j < regions.Count; j++) 
-                    similarities.Add(new Tuple<Rectangle, Rectangle, float>(regions[i], regions[j], 
-                        ComputeSimilarity(regions[i], regions[j], bitmap)));
+        for (var i = 0; i < regions.Count; i++)
+            bitmapClones.Add((Bitmap)bitmap.Clone());
+        
+        Parallel.For(0, regions.Count, i => {
+            if (i + 1 >= regions.Count) return;
+            for (var j = i + 1; j < regions.Count; j++) 
+                similarities.Enqueue(new Tuple<Rectangle, Rectangle, float>(regions[i], regions[j], 
+                    ComputeSimilarity(regions[i], regions[j], bitmapClones[i])));
         });
-        
-        return similarities;
-    } 
 
+        return similarities;
+    }
+    
     private static float ComputeSimilarity(Rectangle firstRectangle, Rectangle secondRectangle, Bitmap bitmap) => 
         ComputeColorSimilarity(bitmap, firstRectangle, secondRectangle) * 
         ComputeTextureSimilarity(bitmap, firstRectangle, secondRectangle) * 
@@ -207,18 +210,18 @@ public static class RegionsMaker {
         var twoSigmaSquared = 2 * Math.Pow(sigma, 2);
         var sum = 0f;
 
-        Parallel.For((long)0, sizeX, i => {
+        Parallel.For((long)-radiusX, radiusX, i => {
             for (var j = -radiusY; j <= radiusY; j++) {
                 var distanceSquared = i * i + j * j;
                 var kernelValue = (float)Math.Exp(-distanceSquared / twoSigmaSquared) / (float)(Math.PI * twoSigmaSquared);
                 kernel[i, j + radiusY] = kernelValue;
-                Interlocked.Add(ref sum, kernelValue);
+                Volatile.Write(ref sum, Volatile.Read(ref sum) + kernelValue); 
             }
         });
 
         for (var i = 0; i < sizeX; i++)
-        for (var j = 0; j < sizeY; j++)
-            kernel[i, j] /= sum;
+            for (var j = 0; j < sizeY; j++)
+                kernel[i, j] /= Volatile.Read(ref sum);
 
         return kernel;
     }
