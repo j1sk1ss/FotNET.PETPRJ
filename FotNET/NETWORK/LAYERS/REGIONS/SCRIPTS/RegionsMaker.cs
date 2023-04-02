@@ -36,9 +36,18 @@ public static class RegionsMaker {
     } 
 
     private static IEnumerable<Tuple<Rectangle, Rectangle, float>> ComputeSimilarities(IReadOnlyList<Rectangle> regions, Bitmap bitmap) { 
-        var similarities = new ConcurrentQueue<Tuple<Rectangle, Rectangle, float>>();
-        var bitmapClones = new List<Bitmap>();
+        //var similarities = new ConcurrentQueue<Tuple<Rectangle, Rectangle, float>>();
+        //var bitmapClones = new List<Bitmap>();
         
+        var similarities = new List<Tuple<Rectangle, Rectangle, float>?>(); 
+        
+        for (var i = 0; i < regions.Count; i++) 
+        for (var j = i + 1; j < regions.Count; j++) { 
+            var similarity = ComputeSimilarity(regions[i], regions[j], bitmap); 
+            similarities.Add(new Tuple<Rectangle, Rectangle, float>(regions[i], regions[j], similarity)); 
+        } 
+        
+        /*      
         for (var i = 0; i < regions.Count; i++)
             bitmapClones.Add((Bitmap)bitmap.Clone());
         
@@ -48,7 +57,8 @@ public static class RegionsMaker {
                 similarities.Enqueue(new Tuple<Rectangle, Rectangle, float>(regions[i], regions[j], 
                     ComputeSimilarity(regions[i], regions[j], bitmapClones[i])));
         });
-
+        */
+        
         return similarities;
     }
     
@@ -204,12 +214,27 @@ public static class RegionsMaker {
     } 
 
     private static float[,] ComputeGaussianKernel(int sizeX, int sizeY, float sigma) {
-        var kernel = new float[sizeX, sizeY];
-        var radiusX = sizeX / 2;
-        var radiusY = sizeY / 2;
-        var twoSigmaSquared = 2 * Math.Pow(sigma, 2);
-        var sum = 0f;
+        var kernel = new float[sizeX, sizeY]; 
+        var radiusX = sizeX / 2; 
+        var radiusY = sizeY / 2; 
+        var twoSigmaSquared = 2 * sigma * sigma; 
+        float sum = 0; 
 
+        for (var i = -radiusX; i <= radiusX; i++) 
+        for (var j = -radiusY; j <= radiusY; j++) { 
+            var distanceSquared = i * i + j * j; 
+            var kernelValue = (float)Math.Exp(-distanceSquared / twoSigmaSquared) / (float)(Math.PI * twoSigmaSquared); 
+            kernel[i + radiusX, j + radiusY] = kernelValue; 
+            sum += kernelValue; 
+        } 
+
+        for (var i = 0; i < sizeX; i++) 
+        for (var j = 0; j < sizeY; j++) 
+            kernel[i, j] /= sum;
+
+        return kernel; 
+        
+        /*
         Parallel.For((long)-radiusX, radiusX, i => {
             for (var j = -radiusY; j <= radiusY; j++) {
                 var distanceSquared = i * i + j * j;
@@ -224,6 +249,7 @@ public static class RegionsMaker {
                 kernel[i, j] /= Volatile.Read(ref sum);
 
         return kernel;
+        */
     }
 
 
