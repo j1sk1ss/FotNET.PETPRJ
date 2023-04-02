@@ -9,6 +9,7 @@ using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.OneToMany;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+using NUnit.Framework;
 
 namespace UnitTests;
 

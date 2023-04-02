@@ -1,5 +1,6 @@
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+using NUnit.Framework;
 
 namespace UnitTests;
 
