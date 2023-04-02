@@ -1,15 +1,23 @@
 using System.Collections.Concurrent;
 using System.Drawing;
 
-namespace FotNET.NETWORK.LAYERS.REGIONS.SCRIPTS;
+namespace FotNET.NETWORK.DATA.IMAGE.REGIONS.SCRIPTS;
 
 public static class RegionsMaker {
+    private static Bitmap _grayImage = null!;
+    private static Bitmap _firstBlurred = null!;
+    private static Bitmap _secondBlurred = null!;
+    
     public static IEnumerable<Rectangle> GetRegions(Bitmap bitmap, int minSize, int count) {
         var regions = DivideImageIntoRegions(bitmap, minSize);
         
+        _grayImage = Grayscale(bitmap); 
+        _firstBlurred = GaussianBlur(_grayImage, 5, 5, 1.0f); 
+        _secondBlurred = GaussianBlur(_grayImage, 5, 5, 2.0f); 
+        
         for (var i = 0; i < count; i++) { 
             var similarities = ComputeSimilarities(regions, bitmap); 
-            var mostSimilar = similarities.MaxBy(s => s!.Item3);
+            var mostSimilar = similarities.MaxBy(s => s.Item3);
             if (mostSimilar == null) continue;
             
             var mergedRegion = MergeRegions(mostSimilar.Item1, mostSimilar.Item2); 
@@ -36,35 +44,19 @@ public static class RegionsMaker {
     } 
 
     private static IEnumerable<Tuple<Rectangle, Rectangle, float>> ComputeSimilarities(IReadOnlyList<Rectangle> regions, Bitmap bitmap) { 
-        //var similarities = new ConcurrentQueue<Tuple<Rectangle, Rectangle, float>>();
-        //var bitmapClones = new List<Bitmap>();
-        
-        var similarities = new List<Tuple<Rectangle, Rectangle, float>?>(); 
-        
+        var similarities = new ConcurrentQueue<Tuple<Rectangle, Rectangle, float>>();
+
         for (var i = 0; i < regions.Count; i++) 
-        for (var j = i + 1; j < regions.Count; j++) { 
-            var similarity = ComputeSimilarity(regions[i], regions[j], bitmap); 
-            similarities.Add(new Tuple<Rectangle, Rectangle, float>(regions[i], regions[j], similarity)); 
-        } 
-        
-        /*      
-        for (var i = 0; i < regions.Count; i++)
-            bitmapClones.Add((Bitmap)bitmap.Clone());
-        
-        Parallel.For(0, regions.Count, i => {
-            if (i + 1 >= regions.Count) return;
             for (var j = i + 1; j < regions.Count; j++) 
                 similarities.Enqueue(new Tuple<Rectangle, Rectangle, float>(regions[i], regions[j], 
-                    ComputeSimilarity(regions[i], regions[j], bitmapClones[i])));
-        });
-        */
+                    ComputeSimilarity(regions[i], regions[j], bitmap)));
         
         return similarities;
     }
     
     private static float ComputeSimilarity(Rectangle firstRectangle, Rectangle secondRectangle, Bitmap bitmap) => 
         ComputeColorSimilarity(bitmap, firstRectangle, secondRectangle) * 
-        ComputeTextureSimilarity(bitmap, firstRectangle, secondRectangle) * 
+        ComputeTextureSimilarity(firstRectangle, secondRectangle) * 
         ComputeSizeSimilarity(firstRectangle, secondRectangle); 
     
     private static float ComputeColorSimilarity(Bitmap bitmap, Rectangle firstRectangle, Rectangle secondRectangle) =>
@@ -75,16 +67,14 @@ public static class RegionsMaker {
          (float)Math.Sqrt(Math.Pow(firstColor.R - secondColor.R, 2) + Math.Pow(firstColor.G - secondColor.G, 2) +
                                 Math.Pow(firstColor.B - secondColor.B, 2));
 
-    private static float ComputeTextureSimilarity(Bitmap image, Rectangle firstRectangle, Rectangle secondRectangle) {
+    private static float ComputeTextureSimilarity(Rectangle firstRectangle, Rectangle secondRectangle) {
         unsafe {
-            var firstTexture  = GetTexture(image, firstRectangle);
-            var secondTexture = GetTexture(image, secondRectangle);
+            var firstTexture  = GetTexture(firstRectangle);
+            var secondTexture = GetTexture(secondRectangle);
             
             if (firstTexture.GetLength(0) != secondTexture.GetLength(0) ||
                 firstTexture.GetLength(1) != secondTexture.GetLength(1)) 
                 return 0;
-            
-            var numPixels = firstRectangle.Width * firstRectangle.Height;
             
             var sumOfSquaredDifferences = stackalloc float[Environment.ProcessorCount];
             for (var i = 0; i < Environment.ProcessorCount; i++) 
@@ -101,24 +91,17 @@ public static class RegionsMaker {
             for (var i = 0; i < Environment.ProcessorCount; i++)
                 meanSquaredDifference += sumOfSquaredDifferences[i];
             
-            return 1.0f / (1.0f + meanSquaredDifference / numPixels);
+            return 1.0f / (1.0f + meanSquaredDifference / firstRectangle.Width * firstRectangle.Height);
         }
     }
-
     
-    private static float[,] GetTexture(Bitmap image, Rectangle rectangle) {
+    private static float[,] GetTexture(Rectangle rectangle) {
         var texture = new float[rectangle.Width, rectangle.Height]; 
         
-        var grayImage     = Grayscale(image); 
-        var firstBlurred  = GaussianBlur(grayImage, 5, 5, 1.0f); 
-        var secondBlurred = GaussianBlur(grayImage, 5, 5, 2.0f); 
-        
         for (var x = 0; x < rectangle.Width; x++) 
-            for (var y = 0; y < rectangle.Height; y++) { 
-                float pixelValue = secondBlurred.GetPixel(x + rectangle.X, y + rectangle.Y).R 
-                                   - firstBlurred.GetPixel(x + rectangle.X, y + rectangle.Y).R; 
-                texture[x, y] = pixelValue; 
-            } 
+            for (var y = 0; y < rectangle.Height; y++) 
+                texture[x, y] = _secondBlurred.GetPixel(x + rectangle.X, y + rectangle.Y).R 
+                                - _firstBlurred.GetPixel(x + rectangle.X, y + rectangle.Y).R; 
         
         return texture; 
     } 
@@ -191,9 +174,9 @@ public static class RegionsMaker {
                         var color = image.GetPixel(x + i, y + j); 
                         var kernelValue = kernel[i + radiusX, j + radiusY]; 
                         
-                        red    += kernelValue * color.R; 
-                        green  += kernelValue * color.G; 
-                        blue   += kernelValue * color.B; 
+                        red   += kernelValue * color.R; 
+                        green += kernelValue * color.G; 
+                        blue  += kernelValue * color.B; 
                         
                         weight += kernelValue;
                     } 
@@ -204,9 +187,9 @@ public static class RegionsMaker {
                     blue  /= weight; 
                 } 
                 
-                red = Math.Min(Math.Max(red, 0), 255); 
+                red   = Math.Min(Math.Max(red, 0), 255); 
                 green = Math.Min(Math.Max(green, 0), 255); 
-                blue = Math.Min(Math.Max(blue, 0), 255); 
+                blue  = Math.Min(Math.Max(blue, 0), 255); 
                 blurredImage.SetPixel(x, y, Color.FromArgb((int)red, (int)green, (int)blue)); 
             } 
          
@@ -218,39 +201,22 @@ public static class RegionsMaker {
         var radiusX = sizeX / 2; 
         var radiusY = sizeY / 2; 
         var twoSigmaSquared = 2 * sigma * sigma; 
-        float sum = 0; 
-
-        for (var i = -radiusX; i <= radiusX; i++) 
-        for (var j = -radiusY; j <= radiusY; j++) { 
-            var distanceSquared = i * i + j * j; 
-            var kernelValue = (float)Math.Exp(-distanceSquared / twoSigmaSquared) / (float)(Math.PI * twoSigmaSquared); 
-            kernel[i + radiusX, j + radiusY] = kernelValue; 
-            sum += kernelValue; 
-        } 
-
-        for (var i = 0; i < sizeX; i++) 
-        for (var j = 0; j < sizeY; j++) 
-            kernel[i, j] /= sum;
-
-        return kernel; 
+        var kernelValues = new ConcurrentBag<float>();
         
-        /*
-        Parallel.For((long)-radiusX, radiusX, i => {
+        Parallel.For(-radiusX, (long)radiusX, i => {
             for (var j = -radiusY; j <= radiusY; j++) {
-                var distanceSquared = i * i + j * j;
-                var kernelValue = (float)Math.Exp(-distanceSquared / twoSigmaSquared) / (float)(Math.PI * twoSigmaSquared);
-                kernel[i, j + radiusY] = kernelValue;
-                Volatile.Write(ref sum, Volatile.Read(ref sum) + kernelValue); 
+                var distanceSquared = Math.Pow(i, 2) + Math.Pow(j, 2);
+                kernel[i + radiusX, j + radiusY] = (float)Math.Exp(-distanceSquared / twoSigmaSquared) / (float)(Math.PI * twoSigmaSquared);
+                kernelValues.Add(kernel[i + radiusX, j + radiusY]); 
             }
         });
-
+        
+        var sum = kernelValues.Sum();
+        
         for (var i = 0; i < sizeX; i++)
             for (var j = 0; j < sizeY; j++)
                 kernel[i, j] /= Volatile.Read(ref sum);
 
         return kernel;
-        */
     }
-
-
 }
