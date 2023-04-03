@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+
 using FotNET.DATA.IMAGE;
 using FotNET.DATA.IMAGE.REGIONS.SCRIPTS;
 using FotNET.NETWORK;
@@ -12,16 +13,16 @@ public static class ComputerVision {
         
         var objects = RegionsMaker.GetRegions(bitmap, 50, 3);
 
-        for (var i = 0; i < objects.Count; i++) {
-            var tensor = Parser.ImageToTensor(new Bitmap(bitmap.Clone(objects[i], bitmap.PixelFormat), 
+        foreach (var rectangle in objects) {
+            var tensor = Parser.ImageToTensor(new Bitmap(bitmap.Clone(rectangle, bitmap.PixelFormat), 
                 new Size(convolutionX, convolutionY)));
             
             var prediction = model.ForwardFeed(tensor, AnswerType.Class);
             var predictionValue = model.ForwardFeed(tensor, AnswerType.Value);
             if (predictionValue < minValue) continue;
 
-            graphics.DrawRectangle(pen, objects[i]);
-            graphics.DrawString($"class: {prediction}", new Font("Tahoma", 8), Brushes.Black, objects[i].Location);
+            graphics.DrawRectangle(pen, rectangle);
+            graphics.DrawString($"class: {prediction}", new Font("Tahoma", 8), Brushes.Black, rectangle.Location);
         }
         
         return bitmap;
