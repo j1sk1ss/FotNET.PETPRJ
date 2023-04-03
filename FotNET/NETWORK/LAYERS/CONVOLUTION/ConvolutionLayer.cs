@@ -28,7 +28,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         }
 
         public ConvolutionLayer(string filtersPath, int filterDepth, int stride) {
-            var filters = File.ReadAllText(filtersPath).Split("/");
+            var filters = File.ReadAllText(filtersPath).Split("/", StringSplitOptions.RemoveEmptyEntries);
             
             _backPropagate = false;
             Filters = new Filter[filters.Length];

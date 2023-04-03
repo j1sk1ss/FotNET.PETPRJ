@@ -22,7 +22,7 @@
         }
 
         public Matrix(string data) {
-            var rows = data.Split("\n");
+            var rows = data.Split("\n", StringSplitOptions.RemoveEmptyEntries);
 
             Rows    = rows.Length;
             Columns = rows[0].Split(" ", StringSplitOptions.RemoveEmptyEntries).Length;
@@ -31,7 +31,9 @@
             for (var x = 0; x < Rows; x++) {
                 var elements = rows[x].Split(" ", StringSplitOptions.RemoveEmptyEntries);
                 for (var y = 0; y < Columns; y++)
-                    Body[x, y] = double.Parse(elements[y]);
+                    if (double.TryParse(elements[y], out var db)) Body[x, y] = db;
+                    else Body[x, y] = 0;
+
             }
         }
         

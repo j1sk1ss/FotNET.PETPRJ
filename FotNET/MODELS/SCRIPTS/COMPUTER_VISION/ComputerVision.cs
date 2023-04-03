@@ -21,7 +21,7 @@ public static class ComputerVision {
             if (predictionValue < minValue) continue;
 
             graphics.DrawRectangle(pen, objects[i]);
-            graphics.DrawString($"class: {prediction}", new Font("Tahoma", 3), Brushes.Black, objects[i].Location);
+            graphics.DrawString($"class: {prediction}", new Font("Tahoma", 8), Brushes.Black, objects[i].Location);
         }
         
         return bitmap;
