@@ -7,7 +7,7 @@ namespace FotNET.NETWORK.LAYERS.FLATTEN {
         public Tensor GetValues() => _inputTensor;
 
         public Tensor GetNextLayer(Tensor tensor) {
-            _inputTensor = tensor;
+            _inputTensor = new Tensor(new List<Matrix>(tensor.Channels));
             return new Vector(tensor.Flatten().ToArray()).AsTensor(1, tensor.Flatten().Count, 1);
         }
 

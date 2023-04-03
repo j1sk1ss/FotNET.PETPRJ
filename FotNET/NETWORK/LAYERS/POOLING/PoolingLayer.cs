@@ -16,8 +16,10 @@ namespace FotNET.NETWORK.LAYERS.POOLING {
 
         public Tensor GetValues() => _inputTensor;
 
-        public Tensor GetNextLayer(Tensor tensor) =>
-            Pooling.Pool(_inputTensor = tensor, _poolSize);
+        public Tensor GetNextLayer(Tensor tensor) {
+            _inputTensor = new Tensor(new List<Matrix>(tensor.Channels));
+            return Pooling.Pool(tensor, _poolSize);
+        }
         
         public Tensor BackPropagate(Tensor error, double learningRate) =>
             Pooling.BackPool(error.GetSameChannels(_inputTensor), _inputTensor, _poolSize);

@@ -27,16 +27,17 @@ public class PoolingTests {
     [Test]
     public void BackMaxPooling() {
         var maxPool = new MaxPooling();
-        var vector = new Vector(new[] { 0d, 1d, 1d, 2d, 3d, 3d, 2d, 1d });
-        var tensor = vector.AsTensor(2, 2, 2);
+        var vector = new Vector(new[] { 0d, 1d, 1d, 2d, 3d, 3d, 2d, 1d, 0d, 1d, 1d, 2d, 3d, 3d, 2d, 1d, 0d, 1d, 1d, 2d, 3d, 3d, 2d, 1d, 0d, 1d, 1d, 2d, 3d, 3d, 2d, 1d });
+        var tensor = vector.AsTensor(4, 4, 2);
         var newTensor = new Tensor(new List<Matrix>(tensor.Channels));
-        maxPool.Pool(newTensor, 2);
+
+        maxPool.Pool(newTensor, 4);
         
         Console.WriteLine("Tensor is: " + newTensor.GetInfo() + "\n");
         Console.WriteLine("First channel:\n" + newTensor.Channels[0].Print());
         Console.WriteLine("Second channel:\n" + newTensor.Channels[1].Print());
 
-        newTensor = maxPool.BackPool(newTensor, tensor, 2);
+        newTensor = maxPool.BackPool(newTensor, tensor, 4);
         
         Console.WriteLine("Tensor is: " + newTensor.GetInfo() + "\n");
         Console.WriteLine("First channel:\n" + newTensor.Channels[0].Print());

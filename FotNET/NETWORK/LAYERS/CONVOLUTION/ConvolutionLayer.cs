@@ -68,8 +68,10 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
         public Tensor GetValues() => Input;
 
-        public Tensor GetNextLayer(Tensor layer) =>
-            Convolution.GetConvolution(Input = layer, Filters, _stride);
+        public Tensor GetNextLayer(Tensor layer) {
+            Input = new Tensor(new List<Matrix>(layer.Channels));
+            return Convolution.GetConvolution(layer, Filters, _stride);
+        }
 
         public Tensor BackPropagate(Tensor error, double learningRate) {
             var inputTensor = Input;

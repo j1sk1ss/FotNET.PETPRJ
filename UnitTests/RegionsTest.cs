@@ -7,7 +7,7 @@ namespace UnitTests;
 public class RegionsTest {
     [Test]
     public void RegionsCreation() {
-        var bitmap = (Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//fight.jpg");
+        var bitmap = (Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//fight.jpg");
         var subBitmaps = RegionsMaker.GetRegions(bitmap, 75, 3);
         var images = subBitmaps.Select(rec => bitmap.Clone(rec, bitmap.PixelFormat)).ToList();
 
