@@ -2,7 +2,7 @@ using FotNET.NETWORK.OBJECTS.DATA_OBJECTS;
 using Microsoft.VisualBasic.FileIO;
 using Array = FotNET.NETWORK.OBJECTS.DATA_OBJECTS.ARRAY.Array;
 
-namespace FotNET.NETWORK.DATA.CSV;
+namespace FotNET.DATA.CSV;
 
 public static class Parser {
     public static List<IData> CsvToArrays(string path, DataConfig dataConfig) {

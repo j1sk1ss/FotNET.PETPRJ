@@ -1,14 +1,14 @@
 using System.Collections.Concurrent;
 using System.Drawing;
 
-namespace FotNET.NETWORK.DATA.IMAGE.REGIONS.SCRIPTS;
+namespace FotNET.DATA.IMAGE.REGIONS.SCRIPTS;
 
 public static class RegionsMaker {
     private static Bitmap _grayImage = null!;
     private static Bitmap _firstBlurred = null!;
     private static Bitmap _secondBlurred = null!;
     
-    public static IEnumerable<Rectangle> GetRegions(Bitmap bitmap, int minSize, int count) {
+    public static List<Rectangle> GetRegions(Bitmap bitmap, int minSize, int count) {
         var regions = DivideImageIntoRegions(bitmap, minSize);
         
         _grayImage = Grayscale(bitmap); 

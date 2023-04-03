@@ -1,4 +1,4 @@
-namespace FotNET.NETWORK.DATA.CSV;
+namespace FotNET.DATA.CSV;
 
 public struct DataConfig {
     public int StartRow;

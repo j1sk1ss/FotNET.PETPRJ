@@ -11,9 +11,9 @@ using FotNET.NETWORK.MATH.Initialization.HE;
 
 namespace FotNET.MODELS.NUMBER_CLASSIFICATION;
 
-public static class ComputerVision {
+public static class CnnClassification {
     public static Network SimpleConvolutionNetwork = new Network(new List<ILayer> {
-        new ConvolutionLayer(6, 5,5,1, new HeInitialization(), 1),
+        new ConvolutionLayer(6, 5,5,3, new HeInitialization(), 1),
         new ActivationLayer(new DoubleLeakyReLu()),
         new PoolingLayer(new MaxPooling(), 2),
         new ConvolutionLayer(16, 5, 5, 6, new HeInitialization(), 1),
@@ -28,7 +28,7 @@ public static class ComputerVision {
     });
     
     public static Network DeepConvolutionNetwork = new Network(new List<ILayer> {
-        new ConvolutionLayer(16, 5,5,1, new HeInitialization(), 1),
+        new ConvolutionLayer(16, 5,5,3, new HeInitialization(), 1),
         new ActivationLayer(new DoubleLeakyReLu()),
         new ConvolutionLayer(32, 5, 5, 16, new HeInitialization(), 1),
         new ActivationLayer(new DoubleLeakyReLu()),

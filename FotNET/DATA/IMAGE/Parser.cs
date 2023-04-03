@@ -1,7 +1,7 @@
 using System.Drawing;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
-namespace FotNET.NETWORK.DATA.IMAGE;
+namespace FotNET.DATA.IMAGE;
 
 public static class Parser {
     public static double[,,] ImageToArray(string path) {
@@ -41,6 +41,25 @@ public static class Parser {
         return tensor;
     }
 
+    public static Tensor ImageToTensor(Bitmap bitmap) {
+        var tensor = new Tensor(new List<Matrix>());
+        
+        for (var depth = 0; depth < 3; depth++) {
+            tensor.Channels.Add(new Matrix(bitmap.Height, bitmap.Width));
+            for (var i = 0; i < bitmap.Height; i++)
+                for (var j = 0; j < bitmap.Width; j++) {
+                    tensor.Channels[^1].Body[i,j] = depth switch {
+                        0 => bitmap.GetPixel(j, i).R,
+                        1 => bitmap.GetPixel(j, i).G,
+                        2 => bitmap.GetPixel(j, i).B,
+                        _ => 0
+                    } / 255d;
+                }
+        }
+
+        return tensor;
+    }
+    
     public static Bitmap TensorToImage(Tensor tensor) {
         var bitmap = new Bitmap(tensor.Channels[0].Rows, tensor.Channels[0].Columns);
         
