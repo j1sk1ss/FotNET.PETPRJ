@@ -6,15 +6,15 @@ using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.ManyToOne;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.MATH.Initialization.Xavier;
 
-namespace FotNET.MODELS.TEXT_CLASSIFICATION;
+namespace FotNET.MODELS.VALUE_CLASSIFICATION;
 
-public static class TextClassification {
-    public static Network SimpleTextClassification = new Network(new List<ILayer> {
+public static class ValueClassification {
+    public static Network SimpleValueClassification = new Network(new List<ILayer> {
         new RecurrentLayer(new Tangensoid(), new ManyToOne(), 10, new XavierInitialization()),
         new SoftMaxLayer()
     });
     
-    public static Network DeepTextClassification = new Network(new List<ILayer> {
+    public static Network DeepValueClassification = new Network(new List<ILayer> {
         new RecurrentLayer(new Tangensoid(), new ManyToOne(), 100, new XavierInitialization()),
         new SoftMaxLayer()
     });

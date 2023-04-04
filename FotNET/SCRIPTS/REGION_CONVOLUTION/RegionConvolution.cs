@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using FotNET.DATA.IMAGE;
-using FotNET.DATA.IMAGE.REGIONS.SCRIPTS;
 using FotNET.NETWORK;
+using FotNET.SCRIPTS.REGION_CONVOLUTION.SCRIPTS;
 
-namespace FotNET.MODELS.SCRIPTS.REGION_CONVOLUTION_NN;
+namespace FotNET.SCRIPTS.REGION_CONVOLUTION;
 
 public static class RegionConvolution {
     public static Bitmap ForwardFeed(Bitmap bitmap, int cellSize, int stepsCount, Network model, 
@@ -22,7 +22,8 @@ public static class RegionConvolution {
             if (predictionValue < minValue) continue;
 
             graphics.DrawRectangle(pen, rectangle);
-            graphics.DrawString($"class: {prediction}", new Font("Tahoma", 8), Brushes.Black, rectangle.Location);
+            graphics.DrawString($"class: {prediction}\n{predictionValue}", 
+                new Font("Tahoma", 8), Brushes.Black, rectangle.Location);
         }
         
         return bitmap;

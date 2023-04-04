@@ -9,12 +9,11 @@ using FotNET.NETWORK.LAYERS.POOLING;
 using FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.MAX;
 using FotNET.NETWORK.MATH.Initialization.HE;
 
-namespace FotNET.MODELS.NUMBER_CLASSIFICATION;
+namespace FotNET.MODELS.IMAGE_CLASSIFICATION;
 
 public static class CnnClassification {
     public static Network SimpleConvolutionNetwork = new Network(new List<ILayer> {
         new ConvolutionLayer(6, 5,5,3, new HeInitialization(), 1),
-        //new ConvolutionLayer(@"C://Users//j1sk1ss//Desktop//filterTest.txt", 3, 1),
         new ActivationLayer(new DoubleLeakyReLu()),
         new PoolingLayer(new MaxPooling(), 2),
         new ConvolutionLayer(16, 5, 5, 6, new HeInitialization(), 1),

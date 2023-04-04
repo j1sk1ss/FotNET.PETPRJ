@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using FotNET.MODELS.NUMBER_CLASSIFICATION;
-using FotNET.MODELS.SCRIPTS.REGION_CONVOLUTION_NN;
+using FotNET.MODELS.IMAGE_CLASSIFICATION;
+using FotNET.SCRIPTS.REGION_CONVOLUTION;
 
 namespace UnitTests;
 

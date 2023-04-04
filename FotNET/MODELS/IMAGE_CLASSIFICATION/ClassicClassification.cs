@@ -5,7 +5,7 @@ using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.DOUBLE_LEAKY_RELU;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
 using FotNET.NETWORK.MATH.Initialization.HE;
 
-namespace FotNET.MODELS.NUMBER_CLASSIFICATION;
+namespace FotNET.MODELS.IMAGE_CLASSIFICATION;
 
 public static class ClassicClassification {
     public static Network SimplePerceptron = new Network(new List<ILayer> {

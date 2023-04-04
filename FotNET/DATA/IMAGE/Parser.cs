@@ -5,7 +5,7 @@ namespace FotNET.DATA.IMAGE;
 
 public static class Parser {
     public static double[,,] ImageToArray(string path) {
-        var bitmap = (Bitmap)Bitmap.FromFile(path);
+        var bitmap = (Bitmap)Image.FromFile(path);
         var array = new double[bitmap.Height, bitmap.Width, 3];
         
         for (var depth = 0; depth < 3; depth++)
@@ -22,7 +22,7 @@ public static class Parser {
     }
 
     public static Tensor ImageToTensor(string path) {
-        var bitmap = (Bitmap)Bitmap.FromFile(path);
+        var bitmap = (Bitmap)Image.FromFile(path);
         var tensor = new Tensor(new List<Matrix>());
 
         for (var depth = 0; depth < 3; depth++) {

@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using FotNET.DATA.IMAGE.REGIONS.SCRIPTS;
+using FotNET.SCRIPTS.REGION_CONVOLUTION.SCRIPTS;
 
 namespace UnitTests;
 

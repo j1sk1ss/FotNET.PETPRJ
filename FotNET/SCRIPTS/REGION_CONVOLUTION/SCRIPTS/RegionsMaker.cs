@@ -1,7 +1,8 @@
 using System.Collections.Concurrent;
 using System.Drawing;
+using System.Drawing.Imaging;
 
-namespace FotNET.DATA.IMAGE.REGIONS.SCRIPTS;
+namespace FotNET.SCRIPTS.REGION_CONVOLUTION.SCRIPTS;
 
 public static class RegionsMaker {
     private static Bitmap _grayImage     = null!;
@@ -75,18 +76,14 @@ public static class RegionsMaker {
         unsafe {
             var firstTexture  = Texture(firstRectangle);
             var secondTexture = Texture(secondRectangle);
-            
-            if (firstTexture.GetLength(0) != secondTexture.GetLength(0) ||
-                firstTexture.GetLength(1) != secondTexture.GetLength(1)) 
-                return 0;
-            
+
             var sumOfSquaredDifferences = stackalloc float[Environment.ProcessorCount];
             for (var i = 0; i < Environment.ProcessorCount; i++) 
                 sumOfSquaredDifferences[i] = 0.0f;
             
-            Parallel.For(0, firstRectangle.Width, 
+            Parallel.For(0, Math.Min(firstRectangle.Width, secondRectangle.Width), 
                 new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, x => {
-                    for (var y = 0; y < firstRectangle.Height; y++) 
+                    for (var y = 0; y < Math.Min(firstRectangle.Height, secondRectangle.Height); y++) 
                         sumOfSquaredDifferences[Environment.CurrentManagedThreadId % Environment.ProcessorCount] 
                             += (float)Math.Pow(firstTexture[x, y] - secondTexture[x, y], 2.0f);
                 });
@@ -128,20 +125,43 @@ public static class RegionsMaker {
         return new Rectangle(x, y, width, height); 
     } 
 
-    private static Color AverageColor(Bitmap bitmap) { 
-        long red = 0, green = 0, blue = 0; 
-        
-        for (var x = 0; x < bitmap.Width; x++) 
-            for (var y = 0; y < bitmap.Height; y++) { 
-                var color = bitmap.GetPixel(x, y); 
-                red   += color.R; 
-                green += color.G; 
-                blue  += color.B; 
-            } 
-        
-        long numPixels = bitmap.Width * bitmap.Height; 
+    private static Color AverageColor(Bitmap bitmap) {
+        var width  = bitmap.Width;
+        var height = bitmap.Height;
 
-        return Color.FromArgb((int)(red / numPixels), (int)(green / numPixels), (int)(blue / numPixels)); 
+        const int minDiversion = 15; 
+        var dropped = 0; 
+        
+        long[] totals = { 0, 0, 0 };
+        var bppModifier = bitmap.PixelFormat == PixelFormat.Format24bppRgb ? 3 : 4;
+
+        var srcData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+        var stride = srcData.Stride;
+        var scan = srcData.Scan0;
+
+        unsafe {
+            var scanned = (byte*)(void*)scan;
+
+            for (var y = 0; y < height; y++) {
+                for (var x = 0; x < width; x++) {
+                    var idx = (y * stride) + x * bppModifier;
+                    
+                    var red   = scanned[idx + 2];
+                    var green = scanned[idx + 1];
+                    var blue  = scanned[idx];
+                    
+                    if (Math.Abs(red - green) > minDiversion || Math.Abs(red - blue) > minDiversion || Math.Abs(green - blue) > minDiversion) {
+                        totals[2] += red;
+                        totals[1] += green;
+                        totals[0] += blue;
+                    }
+                    else dropped++;
+                }
+            }
+        }
+
+        var count = width * height - dropped;
+        return Color.FromArgb((int)(totals[2] / count), (int)(totals[1] / count), (int)(totals[0] / count)); 
     } 
 
     private static Bitmap Grayscale(Bitmap bitmap) { 
@@ -160,7 +180,9 @@ public static class RegionsMaker {
     private static Bitmap GaussianBlur(Bitmap image, int kernelSizeX, int kernelSizeY, float sigma) { 
         var radiusX = kernelSizeX / 2; 
         var radiusY = kernelSizeY / 2; 
+        
         var kernel = GaussianKernel(kernelSizeX, kernelSizeY, sigma); 
+        
         var blurredImage = new Bitmap(image.Width, image.Height); 
         
         for (var x = 0; x < image.Width; x++)  
@@ -199,9 +221,12 @@ public static class RegionsMaker {
 
     private static float[,] GaussianKernel(int sizeX, int sizeY, float sigma) {
         var kernel = new float[sizeX, sizeY]; 
+        
         var radiusX = sizeX / 2; 
         var radiusY = sizeY / 2; 
-        var twoSigmaSquared = 2 * sigma * sigma; 
+        
+        var twoSigmaSquared = 2 * Math.Pow(sigma, 2); 
+        
         var kernelValues = new ConcurrentBag<float>();
         
         Parallel.For(-radiusX, (long)radiusX, i => {
