@@ -161,7 +161,8 @@ public static class RegionsMaker {
         }
 
         var count = width * height - dropped;
-        return Color.FromArgb((int)(totals[2] / count), (int)(totals[1] / count), (int)(totals[0] / count)); 
+        return Color.FromArgb((int)(totals[2] / (count == 0 ? 1 : count)), 
+            (int)(totals[1] / (count == 0 ? 1 : count)), (int)(totals[0] / (count == 0 ? 1 : count))); 
     } 
 
     private static Bitmap Grayscale(Bitmap bitmap) { 
