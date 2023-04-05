@@ -7,14 +7,15 @@ namespace UnitTests;
 public class RegionsTest {
     [Test]
     public void RegionsCreation() {
-        var bitmap = (Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//test1.jpg");
-        var subBitmaps = RegionsMaker.GetRegions(bitmap, 64, 9);
+        var bitmap = (Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//test.jpg");
+        var subBitmaps = RegionsMaker.GetRegions(bitmap, 100, 1);
 
         var graphics = Graphics.FromImage(bitmap);
-        foreach (var image in subBitmaps) {
-            graphics.DrawRectangle(Pens.Black, image);
-        }
+        foreach (var image in subBitmaps) 
+            graphics.DrawRectangle(new Pen(Color.Black), image);
         
-        bitmap.Save(@$"D:\загрузки\{Guid.NewGuid()}.png", ImageFormat.Png);
+        bitmap.Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
+        foreach (var image in subBitmaps) 
+            bitmap.Clone(image, bitmap.PixelFormat).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
     }
 }

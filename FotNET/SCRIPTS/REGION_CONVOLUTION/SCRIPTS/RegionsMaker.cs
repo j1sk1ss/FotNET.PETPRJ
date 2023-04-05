@@ -16,15 +16,26 @@ public static class RegionsMaker {
         _firstBlurred  = GaussianBlur(_grayImage, 5, 5, 1.0f); 
         _secondBlurred = GaussianBlur(_grayImage, 5, 5, 2.0f); 
         
-        for (var i = 0; i < stepsCount; i++) { 
-            var similar = Similarities(regions, bitmap).MaxBy(s => s.Item3);
-            if (similar == null) continue;
+        for (var i = 0; i < stepsCount; i++) {
+            var similar = Similarities(regions, bitmap);
+            regions.Clear();
             
-            regions.Remove(similar.Item1); 
-            regions.Remove(similar.Item2); 
-            
-            regions.Add(MergeRegions(similar.Item1, similar.Item2)); 
+            for (var j = 0; j < similar.Count; j++) {
+                if (similar[j].Count <= 0) continue;
+                var region = similar[j][0].Item1;
+                
+                foreach (var neighbor in similar[j]) {
+                    if (neighbor.Item3 <= .001) continue;
+                    region = MergeRegions(region, neighbor.Item2);
+                }
+
+                regions.Add(region);
+            }
         }
+
+        for (var i = 0; i < regions.Count; i++) 
+            for (var j = i + 1; j < regions.Count; j++) 
+                if (regions[i] == regions[j]) regions.RemoveAt(j);
         
         return regions; 
     } 
@@ -33,7 +44,7 @@ public static class RegionsMaker {
         var width  = image.Width; 
         var height = image.Height; 
 
-        var regions   = new List<Rectangle>(); 
+        var regions = new List<Rectangle>(); 
         for (var y = 0; y < height; y += minSize) 
             for (var x = 0; x < width; x += minSize) 
                 regions.Add(new Rectangle(x, y, Math.Min(minSize, width - x), Math.Min(minSize, height - y))); 
@@ -41,32 +52,59 @@ public static class RegionsMaker {
         return regions; 
     } 
 
-    private static IEnumerable<Tuple<Rectangle, Rectangle, float>> Similarities(IReadOnlyList<Rectangle> regions, Bitmap bitmap) {
-        var similarities = new ConcurrentQueue<Tuple<Rectangle, Rectangle, float>>();
-
-        var bitmapLock = new object();
-        Parallel.ForEach(Partitioner.Create(0, regions.Count), range => {
-            for (var i = range.Item1; i < range.Item2; i++) 
-                for (var j = i + 1; j < regions.Count; j++) 
-                    lock (bitmapLock) {
-                        var bitmapCopy = (Bitmap)bitmap.Clone();
-                        similarities.Enqueue(new Tuple<Rectangle, Rectangle, float>(regions[i], regions[j],
-                            Similarity(regions[i], regions[j], bitmapCopy)));
-                    }
-        });
+    private static List<List<Tuple<Rectangle, Rectangle, float>>> Similarities(IReadOnlyList<Rectangle> regions, Bitmap bitmap) {
+        var similarities = new List<List<Tuple<Rectangle, Rectangle, float>>>();
+        
+        foreach (var region in regions) {
+            var neighbors = GetNeighbors(region, regions);
+            var regionsList = new List<Tuple<Rectangle, Rectangle, float>>();
+            
+            foreach (var neighbor in neighbors) 
+                regionsList.Add(new Tuple<Rectangle, Rectangle, float>(region, neighbor, Similarity(region, neighbor, bitmap)));
+            
+            similarities.Add(regionsList);
+        }
 
         return similarities;
     }
+    
+    private static List<Rectangle> GetNeighbors(Rectangle rect, IReadOnlyCollection<Rectangle> rects) {
+        var offsets = new List<Point>();
+        for (var i = -1; i <= 1; i++)
+            for (var j = -1; j <= 1; j++)
+                offsets.Add(new Point(i, j));
 
-    
-    private static float Similarity(Rectangle firstRectangle, Rectangle secondRectangle, Bitmap bitmap) => 
-        ColorSimilarity(bitmap, firstRectangle, secondRectangle) * 
+        var neighbors = new List<Rectangle>();
+        foreach (var offset in offsets) {
+            var neighbor = rect with { X = rect.X + offset.X * rect.Width, Y = rect.Y + offset.Y * rect.Height };
+            if (neighbor != rect && rects.Any(rectangle => rectangle != rect && rectangle.IntersectsWith(neighbor)))
+                neighbors.Add(neighbor);
+        }
+
+        return neighbors;
+    }
+
+    private static float Similarity(Rectangle firstRectangle, Rectangle secondRectangle, Bitmap bitmap) =>
+        ColorSimilarity(bitmap, firstRectangle, secondRectangle) *
         TextureSimilarity(firstRectangle, secondRectangle) * 
-        Similarity(firstRectangle, secondRectangle); 
+        Similarity(firstRectangle, secondRectangle) *
+        FitSimilarity(firstRectangle, secondRectangle); 
     
-    private static float ColorSimilarity(Bitmap bitmap, Rectangle firstRectangle, Rectangle secondRectangle) =>
-        ColorDistance(AverageColor(bitmap.Clone(firstRectangle, bitmap.PixelFormat)), 
-            AverageColor(bitmap.Clone(secondRectangle, bitmap.PixelFormat))); 
+    private static float ColorSimilarity(Bitmap bitmap, Rectangle firstRectangle, Rectangle secondRectangle) {
+        var tempBitmap = new Bitmap(Math.Max(firstRectangle.Width, secondRectangle.Width),
+            Math.Max(firstRectangle.Height, secondRectangle.Height),
+            bitmap.PixelFormat);
+
+        using var graphics = Graphics.FromImage(tempBitmap);
+        graphics.DrawImage(bitmap, 0, 0, firstRectangle, GraphicsUnit.Pixel);
+        var firstRegionBitmap = tempBitmap.Clone(firstRectangle with { X = 0, Y = 0 }, bitmap.PixelFormat);
+
+        graphics.DrawImage(bitmap, 0, 0, secondRectangle, GraphicsUnit.Pixel);
+        var secondRegionBitmap = tempBitmap.Clone(secondRectangle with { X = 0, Y = 0 }, bitmap.PixelFormat);
+        
+        return ColorDistance(AverageColor(firstRegionBitmap), AverageColor(secondRegionBitmap));
+    }
+
     
     private static float ColorDistance(Color firstColor, Color secondColor) =>
          (float)Math.Sqrt(Math.Pow(firstColor.R - secondColor.R, 2) + Math.Pow(firstColor.G - secondColor.G, 2) +
@@ -98,23 +136,40 @@ public static class RegionsMaker {
     
     private static float[,] Texture(Rectangle rectangle) {
         var texture = new float[rectangle.Width, rectangle.Height]; 
-        
-        for (var x = 0; x < rectangle.Width; x++) 
-            for (var y = 0; y < rectangle.Height; y++) 
-                texture[x, y] = _secondBlurred.GetPixel(x + rectangle.X, y + rectangle.Y).R 
-                                - _firstBlurred.GetPixel(x + rectangle.X, y + rectangle.Y).R; 
-        
-        return texture; 
-    } 
 
+        for (var x = 0; x < rectangle.Width; x++) 
+        for (var y = 0; y < rectangle.Height; y++) {
+            var bitmapX = x + rectangle.X;
+            var bitmapY = y + rectangle.Y;
+            
+            if (bitmapX < 0 || bitmapX >= _firstBlurred.Width ||
+                bitmapY < 0 || bitmapY >= _firstBlurred.Height || 
+                bitmapX >= _secondBlurred.Width || bitmapY >= _secondBlurred.Height)
+                continue; 
+            
+            texture[x, y] = _secondBlurred.GetPixel(bitmapX, bitmapY).R 
+                            - _firstBlurred.GetPixel(bitmapX, bitmapY).R; 
+        }
+    
+        return texture; 
+    }
+    
     private static float Similarity(Rectangle firstRectangle, Rectangle secondRectangle) { 
         var firstArea = firstRectangle.Width * firstRectangle.Height; 
         var secondArea = secondRectangle.Width * secondRectangle.Height; 
         
         var ratio = Math.Min(firstArea, secondArea) / Math.Max(firstArea, secondArea);
         return ratio; 
-    } 
+    }
 
+    private static float FitSimilarity(Rectangle firstRectangle, Rectangle secondRectangle) {
+        if (firstRectangle.Left >= secondRectangle.Left &&
+            firstRectangle.Right <= secondRectangle.Right &&
+            firstRectangle.Top >= secondRectangle.Top &&
+            firstRectangle.Bottom <= secondRectangle.Bottom) return 1000f;
+        return 1f;
+    }
+    
     private static Rectangle MergeRegions(Rectangle firstRectangle, Rectangle secondRectangle) {
         var x = Math.Min(firstRectangle.X, secondRectangle.X); 
         var y = Math.Min(firstRectangle.Y, secondRectangle.Y); 
