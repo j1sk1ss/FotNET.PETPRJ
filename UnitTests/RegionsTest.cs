@@ -8,7 +8,7 @@ public class RegionsTest {
     [Test]
     public void RegionsCreation() {
         var bitmap = (Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//test.jpg");
-        var subBitmaps = RegionsMaker.GetRegions(bitmap, 100, 1);
+        var subBitmaps = RegionsMaker.GetRegions(bitmap, 64, 1);
 
         var graphics = Graphics.FromImage(bitmap);
         foreach (var image in subBitmaps) 
