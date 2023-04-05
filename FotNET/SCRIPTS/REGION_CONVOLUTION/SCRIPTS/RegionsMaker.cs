@@ -16,7 +16,6 @@ public static class RegionsMaker {
                 var region = similar[j][0].Item1;
                 
                 foreach (var neighbor in similar[j]) {
-                    Console.WriteLine(neighbor.Item3);
                     if (neighbor.Item3 <= 50) continue;
                     region = MergeRegions(region, neighbor.Item2);
                 }
