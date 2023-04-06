@@ -5,9 +5,9 @@ using Array = FotNET.NETWORK.OBJECTS.DATA_OBJECTS.ARRAY.Array;
 namespace FotNET.DATA.CSV;
 
 public static class Parser {
-    public static List<IData> CsvToArrays(string path, DataConfig dataConfig) {
-        var data = Parse(path, dataConfig.StartRow, dataConfig.Delimiters);
-        return new List<IData>(data.Select(datum => new Array(datum, dataConfig)).ToList());
+    public static List<IData> CsvToArrays(string path, Config config) {
+        var data = Parse(path, config.StartRow, config.Delimiters);
+        return new List<IData>(data.Select(datum => new Array(datum, config)).ToList());
     }
     
     private static IEnumerable<string[]> Parse(string path, int startRow, string[] delimiters) {

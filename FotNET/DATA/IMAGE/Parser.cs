@@ -1,9 +1,25 @@
 using System.Drawing;
+using FotNET.NETWORK.OBJECTS.DATA_OBJECTS;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.DATA.IMAGE;
 
 public static class Parser {
+    public static List<IData> FilesToImages(string directoryPath, string labelsPath) {
+        var files = Directory.GetFiles(directoryPath);
+        var images = new List<IData>();
+
+        var labels = File.ReadAllText(labelsPath).Split("\n", StringSplitOptions.RemoveEmptyEntries);
+        
+        for (var i = 0; i < files.Length; i++) {
+            var currentLabel = Array.ConvertAll(
+                File.ReadAllText(labels[i]).Split(" ", StringSplitOptions.RemoveEmptyEntries), double.Parse);
+            images.Add(new DATA_OBJECTS.IMAGE.Image(ImageToArray(files[i]), currentLabel));
+        }
+
+        return images;
+    }
+
     public static double[,,] ImageToArray(string path) {
         var bitmap = (Bitmap)Image.FromFile(path);
         var array = new double[bitmap.Height, bitmap.Width, 3];

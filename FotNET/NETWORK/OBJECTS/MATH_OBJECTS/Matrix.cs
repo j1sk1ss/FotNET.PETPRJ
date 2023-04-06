@@ -42,88 +42,58 @@
         public double[,] Body { get; }
 
         public Matrix Transpose() {
-            try {
-                var temp = new double[Columns, Rows];
-                for (var i = 0; i < Rows; i++) 
-                    for (var j = 0; j < Columns; j++) 
-                        temp[j, i] = Body[i, j];
-            
-                return new Matrix(temp);
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 1m");
-                return null!;
-            }
+            var temp = new double[Columns, Rows];
+            for (var i = 0; i < Rows; i++) 
+                for (var j = 0; j < Columns; j++) 
+                    temp[j, i] = Body[i, j];
+        
+            return new Matrix(temp);
         }
 
         public Matrix Flip() {
-            try {
-                var rotatedMatrix = new Matrix(new double[Rows, Columns]);
+            var rotatedMatrix = new Matrix(new double[Rows, Columns]);
 
-                for (var i = 0; i < rotatedMatrix.Rows; i++) 
-                    for (var j = 0; j < rotatedMatrix.Columns; j++) 
-                        rotatedMatrix.Body[j, i] = Body[Rows - j - 1, Columns - i - 1];
-            
-                return rotatedMatrix;
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 2m");
-                return null!;
-            }
+            for (var i = 0; i < rotatedMatrix.Rows; i++) 
+                for (var j = 0; j < rotatedMatrix.Columns; j++) 
+                    rotatedMatrix.Body[j, i] = Body[Rows - j - 1, Columns - i - 1];
+        
+            return rotatedMatrix;
         }
 
         public double Average() => GetAsList().Average();
 
         public static double[] operator *(double[] vector, Matrix matrix) {
-            try {
-                var endVector = new double[matrix.Rows];
+            var endVector = new double[matrix.Rows];
 
-                for (var x = 0; x < matrix.Rows; ++x) {
-                    double tmp = 0;
-                    for (var y = 0; y < matrix.Columns; ++y)
-                        tmp += matrix.Body[x, y] * vector[y];
+            for (var x = 0; x < matrix.Rows; ++x) {
+                double tmp = 0;
+                for (var y = 0; y < matrix.Columns; ++y)
+                    tmp += matrix.Body[x, y] * vector[y];
 
-                    endVector[x] = tmp;
-                }
-
-                return endVector;
+                endVector[x] = tmp;
             }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 3m");
-                return null!;
-            }
+
+            return endVector;
         }
 
         public static Matrix operator +(Matrix matrix1, Matrix matrix2) {
-            try {
-                var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
+            var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
-                for (var i = 0; i < matrix1.Rows; i++)
-                    for (var j = 0; j < matrix1.Columns; j++)
-                        endMatrix.Body[i, j] = matrix1.Body[i, j] + matrix2.Body[i, j];
+            for (var i = 0; i < matrix1.Rows; i++)
+                for (var j = 0; j < matrix1.Columns; j++)
+                    endMatrix.Body[i, j] = matrix1.Body[i, j] + matrix2.Body[i, j];
 
-                return endMatrix;
-            }
-            catch (Exception ex) {
-                Console.WriteLine("Код ошибки: 4m\n" + ex);
-                return null!;
-            }
+            return endMatrix;
         }
 
         public static Matrix operator *(Matrix matrix1, Matrix matrix2) {
-            try {
-                var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
+            var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
-                for (var i = 0; i < matrix1.Rows; i++)
-                    for (var j = 0; j < matrix1.Columns; j++)
-                        endMatrix.Body[i, j] = matrix1.Body[i, j] * matrix2.Body[i, j];
+            for (var i = 0; i < matrix1.Rows; i++)
+                for (var j = 0; j < matrix1.Columns; j++)
+                    endMatrix.Body[i, j] = matrix1.Body[i, j] * matrix2.Body[i, j];
 
-                return endMatrix;
-            }
-            catch (Exception ex) {
-                Console.WriteLine("Код ошибки: 5m\n" + ex);
-                return null!;
-            }
+            return endMatrix;
         }
 
         public static Matrix Multiply(Matrix firstMatrix, Matrix secondMatrix) {
@@ -138,19 +108,13 @@
         }
         
         public static Matrix operator -(Matrix matrix1, Matrix matrix2) {
-            try {
-                var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
+            var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
-                for (var i = 0; i < matrix1.Rows; i++)
-                    for (var j = 0; j < matrix1.Columns; j++)
-                        endMatrix.Body[i, j] = matrix1.Body[i, j] - matrix2.Body[i, j];
+            for (var i = 0; i < matrix1.Rows; i++)
+                for (var j = 0; j < matrix1.Columns; j++)
+                    endMatrix.Body[i, j] = matrix1.Body[i, j] - matrix2.Body[i, j];
 
-                return endMatrix;
-            }
-            catch (Exception ex) {
-                Console.WriteLine("Код ошибки: 6m\n" + ex);
-                return null!;
-            }
+            return endMatrix;
         }
 
         public static Matrix operator -(Matrix matrix1, double value) {
@@ -184,19 +148,13 @@
         }
 
         public Matrix GetSubMatrix(int x1, int y1, int x2, int y2) {
-            try {
-                var subMatrix = new Matrix(x2 - x1, y2 - y1);
+            var subMatrix = new Matrix(x2 - x1, y2 - y1);
 
-                for (var i = x1; i < x2; i++) 
-                    for (var j = y1; j < y2; j++) 
-                        subMatrix.Body[i - x1, j - y1] = Body[i, j];
-            
-                return subMatrix;
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 7m");
-                return null!;
-            }
+            for (var i = x1; i < x2; i++) 
+                for (var j = y1; j < y2; j++) 
+                    subMatrix.Body[i - x1, j - y1] = Body[i, j];
+        
+            return subMatrix;
         }
 
         public string GetValues() {

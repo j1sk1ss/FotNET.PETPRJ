@@ -7,44 +7,26 @@
         public List<Matrix> Channels { get; protected init; }
 
         public List<double> Flatten() {
-            try {
-                var flatten = new List<double>();
-                foreach (var matrix in Channels) flatten.AddRange(matrix.GetAsList());
-                return flatten;
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 1t");
-                return null!;
-            }
+            var flatten = new List<double>();
+            foreach (var matrix in Channels) flatten.AddRange(matrix.GetAsList());
+            return flatten;
         }
 
         public Tensor Flip() {
-            try {
-                foreach (var matrix in Channels)
-                    matrix.Flip();
+            foreach (var matrix in Channels)
+                matrix.Flip();
 
-                return new Tensor(Channels);
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 2t");
-                return null!;
-            }
+            return new Tensor(Channels);
         }
 
         public Tensor GetSameChannels(Tensor reference) {
-            try {
-                if (Channels.Count != reference.Channels.Count) {
-                    return Channels.Count < reference.Channels.Count
-                        ? IncreaseChannels(reference.Channels.Count - Channels.Count)
-                        : CropChannels(reference.Channels.Count);
-                }
+            if (Channels.Count != reference.Channels.Count) {
+                return Channels.Count < reference.Channels.Count
+                    ? IncreaseChannels(reference.Channels.Count - Channels.Count)
+                    : CropChannels(reference.Channels.Count);
+            }
 
-                return this;
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 3t");
-                return null!;
-            }
+            return this;
         }
 
         private Tensor IncreaseChannels(int channels) {
@@ -85,48 +67,30 @@
         }
         
         public static Tensor operator +(Tensor tensor1, Tensor tensor2) {
-            try {
-                var endTensor = new Tensor(tensor1.Channels);
+            var endTensor = new Tensor(tensor1.Channels);
 
-                for (var i = 0; i < endTensor.Channels.Count; i++)
-                    endTensor.Channels[i] = tensor1.Channels[i] + tensor2.Channels[i];
+            for (var i = 0; i < endTensor.Channels.Count; i++)
+                endTensor.Channels[i] = tensor1.Channels[i] + tensor2.Channels[i];
 
-                return endTensor;
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 4t");
-                return null!;
-            }
+            return endTensor;
         }
 
         public static Tensor operator -(Tensor tensor1, Tensor tensor2) {
-            try {
-                var endTensor = new Tensor(tensor1.Channels);
+            var endTensor = new Tensor(tensor1.Channels);
 
-                for (var i = 0; i < endTensor.Channels.Count; i++)
-                    endTensor.Channels[i] = tensor1.Channels[i] - tensor2.Channels[i];
+            for (var i = 0; i < endTensor.Channels.Count; i++)
+                endTensor.Channels[i] = tensor1.Channels[i] - tensor2.Channels[i];
 
-                return endTensor;
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 5t");
-                return null!;
-            }
+            return endTensor;
         }
 
         public static Tensor operator *(Tensor tensor1, Tensor tensor2) {
-            try {
-                var endTensor = new Tensor(tensor1.Channels);
+            var endTensor = new Tensor(tensor1.Channels);
 
-                for (var i = 0; i < endTensor.Channels.Count; i++)
-                    endTensor.Channels[i] = tensor1.Channels[i] * tensor2.Channels[i];
+            for (var i = 0; i < endTensor.Channels.Count; i++)
+                endTensor.Channels[i] = tensor1.Channels[i] * tensor2.Channels[i];
 
-                return endTensor;
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 6t");
-                return null!;
-            }
+            return endTensor;
         }
 
         public static Tensor operator -(Tensor tensor1, double value) {

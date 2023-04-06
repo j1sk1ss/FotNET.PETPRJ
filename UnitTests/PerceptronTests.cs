@@ -24,8 +24,10 @@ public class PerceptronTests {
         model.ForwardFeed(testTensorData, AnswerType.Class);
 
         var layers = model.GetLayers();
-        for (var layer = 0; layer < layers.Count; layer++) 
+        for (var layer = 0; layer < layers.Count; layer++) {
+            if (layers[layer].GetValues() == null) continue;
             Console.WriteLine($"Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetValues().GetInfo()}\n");
+        }
     }
 
     [Test]

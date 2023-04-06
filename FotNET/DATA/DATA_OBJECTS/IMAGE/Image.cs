@@ -1,6 +1,7 @@
+using FotNET.NETWORK.OBJECTS.DATA_OBJECTS;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
-namespace FotNET.NETWORK.OBJECTS.DATA_OBJECTS.IMAGE;
+namespace FotNET.DATA.DATA_OBJECTS.IMAGE;
 
 public class Image : IData {
     public Image(double[,,] image, double[] rightAnswer) {
@@ -16,8 +17,7 @@ public class Image : IData {
 
     public Tensor AsTensor() {
         var tensor = new Tensor(new List<Matrix>());
-        for (var depth = 0; depth < Body.GetLength(2); depth++)
-        {
+        for (var depth = 0; depth < Body.GetLength(2); depth++) {
             tensor.Channels.Add(new Matrix(Body.GetLength(0), Body.GetLength(1)));
             for (var x = 0; x < Body.GetLength(0); x++)
                 for (var y = 0; y < Body.GetLength(1); y++)

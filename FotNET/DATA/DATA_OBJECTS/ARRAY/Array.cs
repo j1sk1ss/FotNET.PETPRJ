@@ -1,10 +1,11 @@
+using FotNET.DATA;
 using FotNET.DATA.CSV;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.OBJECTS.DATA_OBJECTS.ARRAY;
 
 public class Array : IData {
-    public Array(string[] data, DataConfig config) {
+    public Array(string[] data, Config config) {
         Body  = new double[config.InputColumnEnd - config.InputColumnStart];
         Right = new double[config.OutputColumnEnd - config.OutputColumnStart];
 

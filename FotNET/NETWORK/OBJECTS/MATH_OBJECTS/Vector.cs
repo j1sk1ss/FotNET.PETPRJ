@@ -16,16 +16,10 @@
         private void SetElement(int index, double value) => Body[index] = value;
 
         public static double[] operator +(Vector vector1, Vector vector2) {
-            try {
-                for (var i = 0; i < vector1.Size; i++) 
-                    vector1[i] += vector2[i];
-            
-                return vector1.Body;
-            }
-            catch (Exception ex) {
-                Console.WriteLine("Код ошибки: 1v\n" + ex);
-                return null!;
-            }
+            for (var i = 0; i < vector1.Size; i++) 
+                vector1[i] += vector2[i];
+        
+            return vector1.Body;
         }
 
         public static Vector operator -(Vector vector1, double value) {
@@ -43,16 +37,10 @@
         }
 
         public static Vector operator *(Vector vector1, Vector vector2) {
-            try {
-                for (var i = 0; i < vector1.Size; i++) 
-                    vector1[i] *= vector2[i];
-            
-                return vector1;
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 2v");
-                return null!;
-            }
+            for (var i = 0; i < vector1.Size; i++) 
+                vector1[i] *= vector2[i];
+        
+            return vector1;
         }
 
         public static Vector operator *(Vector vector1, double value) {
@@ -75,19 +63,13 @@
         }
         
         public Tensor AsTensor(int x, int y, int channels) {
-            try {
-                var tensor = new Tensor(new List<Matrix>());
-                var position = 0;
+            var tensor = new Tensor(new List<Matrix>());
+            var position = 0;
 
-                for (var k = 0; k < channels; k++) 
-                    tensor.Channels.Add(AsMatrix(x,y, ref position));
-                
-                return tensor;
-            }
-            catch (Exception) {
-                Console.WriteLine("Код ошибки: 3v");
-                return null!;
-            }
+            for (var k = 0; k < channels; k++) 
+                tensor.Channels.Add(AsMatrix(x,y, ref position));
+            
+            return tensor;
         }
 
         public string Print() =>
