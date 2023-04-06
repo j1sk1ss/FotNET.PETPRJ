@@ -1,9 +1,10 @@
+using FotNET.NETWORK.MATH.LOSS_FUNCTION;
 using FotNET.NETWORK.OBJECTS.DATA_OBJECTS;
 
 namespace FotNET.NETWORK.MODEL;
 
 public static class Fit {
-    public static Network FitModel(Network network, List<IData> dataSet, int epochs, double baseLearningRate) {
+    public static Network FitModel(Network network, List<IData> dataSet, int epochs, LossFunction lossFunction, double baseLearningRate) {
         for (var epoch = 0; epoch < epochs; epoch++)
             foreach (var datum in dataSet) {
                 var predictedClass = network.ForwardFeed(datum.AsTensor(), AnswerType.Class);
@@ -14,13 +15,13 @@ public static class Fit {
 
                 if (predictedClass != expectedClass) {
                     network.BackPropagation(expectedClass, expectedValue,
-                        baseLearningRate * Math.Pow(.1, epoch));
+                        lossFunction, baseLearningRate * Math.Pow(.1, epoch));
                     continue;
                 }
                 
                 if (Math.Abs(predictedValue - expectedValue) > .1)
                     network.BackPropagation(expectedClass, expectedValue,
-                        baseLearningRate * Math.Pow(.1, epoch));
+                        lossFunction, baseLearningRate * Math.Pow(.1, epoch));
             }
 
         return network;

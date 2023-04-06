@@ -5,6 +5,7 @@ using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.SIGMOID;
 using FotNET.NETWORK.LAYERS.FLATTEN;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
 using FotNET.NETWORK.MATH.Initialization.Xavier;
+using FotNET.NETWORK.MATH.LOSS_FUNCTION.ONE_BY_ONE;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace UnitTests;
@@ -47,7 +48,7 @@ public class PerceptronTests {
             Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nWeights:\n{layers[layer].GetData()}\n");
 
         model.ForwardFeed(testTensorData, AnswerType.Class);
-        model.BackPropagation(0, 1, .015d);
+        model.BackPropagation(0, 1, new OneByOne(), .015d);
         
         for (var layer = 0; layer < layers.Count; layer++) 
             Console.WriteLine($"(AFTER) Layer {layer + 1}:\nWeights:\n{layers[layer].GetData()}\n");

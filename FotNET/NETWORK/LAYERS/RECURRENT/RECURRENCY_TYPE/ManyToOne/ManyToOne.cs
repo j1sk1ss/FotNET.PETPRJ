@@ -30,7 +30,7 @@ public class ManyToOne : IRecurrentType {
         
         for (var step = layer.HiddenNeurons.Count - 1; step >= 0; step--) {
             var inputGradient = (new Vector(nextHidden) * currentError).Body;
-            layer.InputWeights  -= new Matrix(inputGradient).Transpose() * learningRate;
+            layer.InputWeights -= new Matrix(inputGradient).Transpose() * learningRate;
             
             if (nextHidden.Length == 0)
                 nextHidden = (layer.OutputWeights.Transpose() * currentError).GetAsList().ToArray();

@@ -8,6 +8,7 @@ using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.ManyToOne;
 using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.OneToMany;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.MATH.Initialization.HE;
+using FotNET.NETWORK.MATH.LOSS_FUNCTION.ONE_BY_ONE;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 using NUnit.Framework;
 
@@ -70,7 +71,7 @@ public class RecurrentTests {
         for (var layer = 0; layer < layers.Count; layer++) 
             Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetData()}\n");
 
-        model.BackPropagation(0, 1, .15d);
+        model.BackPropagation(0, 1, new OneByOne(), .15d);
         
         for (var layer = 0; layer < layers.Count; layer++) 
             Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetData()}\n");
@@ -90,7 +91,7 @@ public class RecurrentTests {
         for (var layer = 0; layer < layers.Count; layer++) 
             Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetData()}\n");
 
-        model.BackPropagation(0, 1, .15d);
+        model.BackPropagation(0, 1, new OneByOne(), .15d);
         
         for (var layer = 0; layer < layers.Count; layer++) 
             Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetData()}\n");
@@ -110,7 +111,7 @@ public class RecurrentTests {
         for (var layer = 0; layer < layers.Count; layer++) 
             Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetData()}\n");
 
-        model.BackPropagation(0, 1, .15d);
+        model.BackPropagation(0, 1, new OneByOne(), .15d);
         
         for (var layer = 0; layer < layers.Count; layer++) 
             Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetData()}\n");
