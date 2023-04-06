@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 namespace FotNET.SCRIPTS.REGION_CONVOLUTION.SCRIPTS;
 
 public static class RegionsMaker {
-    public static List<Rectangle> GetRegions(Bitmap bitmap, int defaultRectangleSize, int stepsCount) {
+    public static List<Rectangle> GetRegions(Bitmap bitmap, int defaultRectangleSize, int stepsCount, double similarityValue) {
         var regions = RectanglesFromBitmap(bitmap, defaultRectangleSize);
         
         for (var i = 0; i < stepsCount; i++) {
@@ -16,7 +16,7 @@ public static class RegionsMaker {
                 var region = similar[j][0].Item1;
                 
                 foreach (var neighbor in similar[j]) {
-                    if (neighbor.Item3 <= 50) continue;
+                    if (neighbor.Item3 <= similarityValue) continue;
                     region = MergeRegions(region, neighbor.Item2);
                 }
                 
@@ -24,10 +24,29 @@ public static class RegionsMaker {
             }
         }
 
-        for (var i = 0; i < regions.Count; i++) 
-            for (var j = i + 1; j < regions.Count; j++) 
-                if (regions[i] == regions[j]) regions.RemoveAt(j);
-        
+        for (var i = 0; i < regions.Count; i++)
+            for (var j = 0; j < regions.Count; j++) {
+                if (i == j) continue;
+                
+                if (regions[i] == regions[j]) {
+                    regions.RemoveAt(j);
+                    continue;
+                }
+                
+                if (regions[i].IntersectsWith(regions[j])) {
+                    var overlapped = Rectangle.Intersect(regions[i], regions[j]);
+                    
+                    var overlappedArea = overlapped.Height * overlapped.Width;
+                    var firstArea      = regions[i].Height * regions[i].Width;
+                    var secondArea     = regions[j].Height * regions[j].Width;
+
+                    if (overlappedArea > firstArea / 2 && overlappedArea > secondArea / 2) {
+                        regions[i] = MergeRegions(regions[i], regions[j]);
+                        regions.RemoveAt(j);
+                    }
+                }
+            }
+
         return regions; 
     } 
 
@@ -43,7 +62,7 @@ public static class RegionsMaker {
         return regions; 
     } 
 
-    private static List<List<Tuple<Rectangle, Rectangle, float>>> Similarities(IReadOnlyList<Rectangle> regions, Bitmap bitmap) {
+    private static List<List<Tuple<Rectangle, Rectangle, float>>> Similarities(IReadOnlyCollection<Rectangle> regions, Bitmap bitmap) {
         var similarities = new List<List<Tuple<Rectangle, Rectangle, float>>>();
         
         foreach (var region in regions) {
@@ -86,7 +105,7 @@ public static class RegionsMaker {
 
     private static float Similarity(Rectangle firstRectangle, Rectangle secondRectangle, Bitmap bitmap) =>
         ColorSimilarity(bitmap, firstRectangle, secondRectangle) *
-        Similarity(firstRectangle, secondRectangle) *
+        Similarity(firstRectangle, secondRectangle) * 
         FitSimilarity(firstRectangle, secondRectangle);
 
     private static float ColorSimilarity(Bitmap bitmap, Rectangle firstRectangle, Rectangle secondRectangle) =>
@@ -94,8 +113,8 @@ public static class RegionsMaker {
             AverageColor(bitmap.Clone(secondRectangle, bitmap.PixelFormat)));
     
     private static float ColorDistance(Color firstColor, Color secondColor) =>
-         (float)Math.Sqrt(Math.Pow(firstColor.R - secondColor.R, 2) + Math.Pow(firstColor.G - secondColor.G, 2) +
-                                Math.Pow(firstColor.B - secondColor.B, 2));
+         (float)Math.Sqrt(Math.Pow(firstColor.R / 255d - secondColor.R / 255d, 2) + Math.Pow(firstColor.G / 255d - secondColor.G / 255d, 2) +
+                                Math.Pow(firstColor.B / 255d - secondColor.B / 255d, 2));
     
     private static float Similarity(Rectangle firstRectangle, Rectangle secondRectangle) { 
         var firstArea = firstRectangle.Width * firstRectangle.Height; 
@@ -159,7 +178,8 @@ public static class RegionsMaker {
         }
 
         var count = width * height - dropped;
-        return Color.FromArgb((int)(totals[2] / (count == 0 ? 1 : count)), 
-            (int)(totals[1] / (count == 0 ? 1 : count)), (int)(totals[0] / (count == 0 ? 1 : count))); 
+        count = count == 0 ? 1 : count;
+        
+        return Color.FromArgb((int)(totals[2] / count), (int)(totals[1] / count), (int)(totals[0] / count)); 
     }
 }

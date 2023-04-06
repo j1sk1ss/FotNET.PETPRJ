@@ -11,7 +11,7 @@ public static class RegionConvolution {
         var graphics = Graphics.FromImage(bitmap);
         var pen      = new Pen(Color.FromKnownColor(KnownColor.Black), 1);
         
-        var objects = RegionsMaker.GetRegions(bitmap, cellSize, stepsCount);
+        var objects = RegionsMaker.GetRegions(bitmap, cellSize, stepsCount, .4);
 
         foreach (var rectangle in objects) {
             var tensor = Parser.ImageToTensor(new Bitmap(bitmap.Clone(rectangle, bitmap.PixelFormat), 
@@ -22,7 +22,7 @@ public static class RegionConvolution {
             if (predictionValue < minValue) continue;
 
             graphics.DrawRectangle(pen, rectangle);
-            graphics.DrawString($"class: {prediction}\n{Math.Round(predictionValue, 3)}", 
+            graphics.DrawString($"class: {prediction}\nValue: {Math.Round(predictionValue, 3)}", 
                 new Font("Tahoma", 8), Brushes.Black, rectangle.Location);
         }
         
@@ -30,11 +30,11 @@ public static class RegionConvolution {
     }
     
     public static Bitmap ForwardFeed(Bitmap bitmap, int cellSize, int stepsCount, Network model, 
-        double minValue, int expectedClass, int convolutionX, int convolutionY) {
+        double minValue, double similarityValue, int expectedClass, int convolutionX, int convolutionY) {
         var graphics = Graphics.FromImage(bitmap);
         var pen      = new Pen(Color.FromKnownColor(KnownColor.Black), 1);
         
-        var objects = RegionsMaker.GetRegions(bitmap, cellSize, stepsCount);
+        var objects = RegionsMaker.GetRegions(bitmap, cellSize, stepsCount, similarityValue);
 
         foreach (var rectangle in objects) {
             var tensor = Parser.ImageToTensor(new Bitmap(bitmap.Clone(rectangle, bitmap.PixelFormat), 
@@ -47,7 +47,7 @@ public static class RegionConvolution {
             if (Math.Abs(expectedClass - prediction) > .2d) continue;
 
             graphics.DrawRectangle(pen, rectangle);
-            graphics.DrawString($"class: {prediction}\n{Math.Round(predictionValue, 3)}", 
+            graphics.DrawString($"class: {prediction}\nValue: {Math.Round(predictionValue, 3)}", 
                 new Font("Tahoma", 8), Brushes.Black, rectangle.Location);
         }
         
