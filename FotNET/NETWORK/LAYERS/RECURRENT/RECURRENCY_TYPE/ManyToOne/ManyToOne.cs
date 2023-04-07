@@ -26,33 +26,29 @@ public class ManyToOne : IRecurrentType {
 
     public Tensor BackPropagate(RecurrentLayer layer, Tensor error, double learningRate) {
         var currentError = error.Flatten()[0];
-        var nextHidden = (layer.OutputWeights.Transpose() * currentError).GetAsList().ToArray();
+        var nextHidden = new Matrix(0,0);
         
         for (var step = layer.HiddenNeurons.Count - 1; step >= 0; step--) {
-            var inputGradient = (new Vector(nextHidden) * currentError).Body;
-            layer.InputWeights -= new Matrix(inputGradient).Transpose() * learningRate;
+            var outputWeightsGradient = (new Vector(layer.HiddenNeurons[step]) * currentError).Body;
+            layer.OutputWeights -= new Matrix(outputWeightsGradient) * learningRate;
+            layer.OutputBias -= currentError * learningRate;
             
-            if (nextHidden.Length == 0)
-                nextHidden = (layer.OutputWeights.Transpose() * currentError).GetAsList().ToArray();
-            else {
-                var position = 0;
-                nextHidden = (layer.OutputWeights.Transpose() * currentError
-                              + new Vector(nextHidden * layer.HiddenWeights.Transpose())
-                                  .AsMatrix(1, layer.OutputWeights.Rows, ref position)).GetAsList().ToArray();
-            }
+            var outputGradient = layer.OutputWeights.Transpose() * currentError;
+            if (step != layer.HiddenNeurons.Count - 1) 
+                nextHidden = outputGradient + nextHidden * layer.HiddenWeights.Transpose();
+            else nextHidden = outputGradient;
+            
 
-            nextHidden = layer.Function.Derivation(nextHidden);
-
+            nextHidden = Matrix.Multiply(new Matrix(layer.Function.Derivation(layer.HiddenNeurons[step])).Transpose(), nextHidden);
             if (step > 0) {
-                var hiddenWeightGradient = Matrix.Multiply(new Matrix(layer.HiddenNeurons[step - 1]), new Matrix(nextHidden).Transpose());
+                var hiddenWeightGradient = Matrix.Multiply(new Matrix(layer.HiddenNeurons[step - 1]), nextHidden);
                 layer.HiddenWeights -= hiddenWeightGradient * learningRate;
                 for (var bias = 0; bias < layer.HiddenBias.Length; bias++)
                     layer.HiddenBias[bias] -= hiddenWeightGradient.GetAsList().Average() * learningRate;                
             }
             
-            var outputWeightsGradient = (new Vector(layer.HiddenNeurons[step]) * currentError).Body;
-            layer.OutputWeights -= new Matrix(outputWeightsGradient) * learningRate;
-            layer.OutputBias -= currentError * learningRate;
+            var inputGradient = nextHidden * layer.InputWeights;
+            layer.InputWeights -= inputGradient * learningRate;
         }
 
         return error;
