@@ -31,9 +31,8 @@ public class ManyToMany : IRecurrentType {
         learningRate /= sequence.Count;
         
         for (var step = layer.HiddenNeurons.Count - 1; step >= 0; step--) {
-            var outputWeightsGradient = Matrix.Multiply(new Matrix(layer.HiddenNeurons[step]),
-                new Matrix(new[] { sequence[step] }));
-            layer.OutputWeights -= outputWeightsGradient * learningRate;
+            layer.OutputWeights -= Matrix.Multiply(new Matrix(layer.HiddenNeurons[step]),
+                new Matrix(new[] { sequence[step] })) * learningRate;
             layer.OutputBias -= sequence[step] * learningRate;
             
             var outputGradient = Matrix.Multiply(new Matrix(new[] { sequence[step] }), layer.OutputWeights.Transpose());

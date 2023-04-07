@@ -29,9 +29,8 @@ public class ManyToOne : IRecurrentType {
         var nextHidden = new Matrix(0,0);
         
         for (var step = layer.HiddenNeurons.Count - 1; step >= 0; step--) {
-            var outputWeightsGradient = Matrix.Multiply(new Matrix(layer.HiddenNeurons[step]),
-                new Matrix(new[] { currentError }));
-            layer.OutputWeights -= outputWeightsGradient * learningRate;
+            layer.OutputWeights -= Matrix.Multiply(new Matrix(layer.HiddenNeurons[step]),
+                new Matrix(new[] { currentError })) * learningRate;
             layer.OutputBias -= currentError * learningRate;
             
             var outputGradient = Matrix.Multiply(new Matrix(new[] { currentError }), layer.OutputWeights.Transpose());

@@ -43,7 +43,7 @@ public class RecurrentLayer : ILayer {
     public List<double> OutputNeurons { get; }
 
 
-    public Tensor InputData { get; set; }
+    public Tensor InputData { get; private set; }
     
     public Tensor GetNextLayer(Tensor tensor) {
         HiddenNeurons.Clear();

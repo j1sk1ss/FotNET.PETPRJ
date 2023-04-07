@@ -11,10 +11,8 @@ using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.OneToMany;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.Initialization.Xavier;
-using FotNET.NETWORK.MATH.LOSS_FUNCTION.ONE_BY_ONE;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.VALUE_BY_VALUE;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
-using NUnit.Framework;
 
 namespace UnitTests;
 
@@ -63,27 +61,27 @@ public class RecurrentTests {
     
     [Test]
     public void BackPropagation_MTM() {
-        var testTensorData = new Tensor(new Matrix(new double[] { 0, 0, 0, 1, 1, 1 }));
+        var testTensorData = new Tensor(new Matrix(new double[] { 70, 10, 30, 21, 14, 77 }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new DoubleLeakyReLu(), new ManyToMany(), 10, new HeInitialization()),
+            new RecurrentLayer(new Tangensoid(), new ManyToMany(), 10, new XavierInitialization()),
             new SoftMaxLayer()
         });
-        model.ForwardFeed(testTensorData, AnswerType.Class);
-
-        var layers = model.GetLayers();
-        for (var layer = 0; layer < layers.Count; layer++) 
-            Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetData()}\n");
-
-        model.BackPropagation(0, 1, new OneByOne(), .15d);
         
-        for (var layer = 0; layer < layers.Count; layer++) 
-            Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetData()}\n");
+        Console.WriteLine();
+        Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
+        Console.WriteLine(model.GetWeights());
+        
+        for (var i = 0; i < 10; i++) model.BackPropagation(0, 30000, new ValueByValue(), .015d);
+        
+        Console.WriteLine();
+        Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
+        Console.WriteLine(model.GetWeights());
     }
     
     [Test]
     public void BackPropagation_MTO() {
-        var testTensorData = new Tensor(new Matrix(new double[] { 0, 0, 0, 1, 1, 1 }));
+        var testTensorData = new Tensor(new Matrix(new double[] { 70, 10, 30, 21, 14, 77 }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
             new RecurrentLayer(new DoubleLeakyReLu(), new ManyToOne(), 10, new XavierInitialization()),
@@ -94,7 +92,7 @@ public class RecurrentTests {
         Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
         Console.WriteLine(model.GetWeights());
         
-        for (var i = 0; i < 100; i++) model.BackPropagation(0, 30000, new ValueByValue(), .15d);
+        for (var i = 0; i < 1; i++) model.BackPropagation(0, 30000, new ValueByValue(), .00015d);
         
         Console.WriteLine();
         Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
@@ -109,15 +107,15 @@ public class RecurrentTests {
             new RecurrentLayer(new DoubleLeakyReLu(), new OneToMany(), 10, new HeInitialization()),
             new SoftMaxLayer()
         });
-        model.ForwardFeed(testTensorData, AnswerType.Class);
-
-        var layers = model.GetLayers();
-        for (var layer = 0; layer < layers.Count; layer++) 
-            Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetData()}\n");
-
-        model.BackPropagation(0, 1, new OneByOne(), .15d);
         
-        for (var layer = 0; layer < layers.Count; layer++) 
-            Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nInput Tensor on layer:\n{layers[layer].GetData()}\n");
+        Console.WriteLine();
+        Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
+        Console.WriteLine(model.GetWeights());
+        
+        for (var i = 0; i < 10; i++) model.BackPropagation(0, 30000, new ValueByValue(), .015d);
+        
+        Console.WriteLine();
+        Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
+        Console.WriteLine(model.GetWeights());
     }
 }
