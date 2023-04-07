@@ -13,8 +13,8 @@ public class RecurrentLayer : ILayer {
         HiddenWeights = weightsInitialization.Initialize(new Matrix(size, size));
         OutputWeights = weightsInitialization.Initialize(new Matrix(size, 1));
 
-        HiddenNeurons = new List<double[]>();
-        OutputNeurons = new List<double>();
+        HiddenNeurons = new List<Matrix>();
+        OutputNeurons = new List<Matrix>();
         
         HiddenBias    = new double[size];
         HiddenBias[0] = .01d;
@@ -39,8 +39,8 @@ public class RecurrentLayer : ILayer {
     private IRecurrentType RecurrentType { get; }
 
 
-    public List<double[]> HiddenNeurons { get; }
-    public List<double> OutputNeurons { get; }
+    public List<Matrix> HiddenNeurons { get; }
+    public List<Matrix> OutputNeurons { get; }
 
 
     public Tensor InputData { get; private set; }

@@ -1,6 +1,7 @@
 using FotNET.NETWORK;
 using FotNET.NETWORK.LAYERS;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.DOUBLE_LEAKY_RELU;
+using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.LEAKY_RELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.TANGENSOID;
 using FotNET.NETWORK.LAYERS.FLATTEN;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
@@ -11,6 +12,7 @@ using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.OneToMany;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.Initialization.Xavier;
+using FotNET.NETWORK.MATH.LOSS_FUNCTION.ONE_BY_ONE;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.VALUE_BY_VALUE;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
@@ -81,10 +83,10 @@ public class RecurrentTests {
     
     [Test]
     public void BackPropagation_MTO() {
-        var testTensorData = new Tensor(new Matrix(new double[] { 70, 10, 30, 21, 14, 77 }));
+        var testTensorData = new Tensor(new Matrix(new[] { .60, .35, .110 }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new DoubleLeakyReLu(), new ManyToOne(), 10, new XavierInitialization()),
+            new RecurrentLayer(new LeakyReLu(), new ManyToOne(), 10, new HeInitialization()),
             new PerceptronLayer(1)
         });
 
@@ -92,7 +94,7 @@ public class RecurrentTests {
         Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
         Console.WriteLine(model.GetWeights());
         
-        for (var i = 0; i < 1; i++) model.BackPropagation(0, 30000, new ValueByValue(), .00015d);
+        for (var i = 0; i < 1000; i++) model.BackPropagation(0, 52, new OneByOne(), .15d);
         
         Console.WriteLine();
         Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));

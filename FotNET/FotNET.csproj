@@ -12,10 +12,10 @@
     <Version>1.0.3</Version>
     <RepositoryUrl>https://github.com/j1sk1ss/FotNET.MPRJ</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>RNN, CNN, FNN, Classification, Tensors</PackageTags>
+    <PackageTags>RNN, CNN, R-CNN, FNN, Classification, Tensors</PackageTags>
     <PackageIcon>packageIcon.png</PackageIcon>
-    <PackageVersion>2.2.1</PackageVersion>
-    <PackageReleaseNotes>fixed bugs with RNN (MTO method)</PackageReleaseNotes>
+    <PackageVersion>2.2.2</PackageVersion>
+    <PackageReleaseNotes>added R-CNN model</PackageReleaseNotes>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
