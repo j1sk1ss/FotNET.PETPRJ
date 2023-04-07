@@ -43,17 +43,20 @@ public class RecurrentLayer : ILayer {
     public List<double> OutputNeurons { get; }
 
 
+    public Tensor InputData { get; set; }
+    
     public Tensor GetNextLayer(Tensor tensor) {
         HiddenNeurons.Clear();
         OutputNeurons.Clear();
 
+        InputData = tensor;
         return RecurrentType.GetNextLayer(this, tensor);
     }
 
     public Tensor BackPropagate(Tensor error, double learningRate) =>
         RecurrentType.BackPropagate(this, error, learningRate);
 
-    public Tensor GetValues() => null!;
+    public Tensor GetValues() => InputData;
 
     public string GetData() => InputWeights.GetValues() + HiddenWeights.GetValues() + OutputWeights.GetValues() 
                                + new Vector(HiddenBias).Print() + " " + OutputBias;

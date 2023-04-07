@@ -29,17 +29,17 @@ public class ManyToOne : IRecurrentType {
         var nextHidden = new Matrix(0,0);
         
         for (var step = layer.HiddenNeurons.Count - 1; step >= 0; step--) {
-            var outputWeightsGradient = (new Vector(layer.HiddenNeurons[step]) * currentError).Body;
-            layer.OutputWeights -= new Matrix(outputWeightsGradient) * learningRate;
+            var outputWeightsGradient = Matrix.Multiply(new Matrix(layer.HiddenNeurons[step]),
+                new Matrix(new[] { currentError }));
+            layer.OutputWeights -= outputWeightsGradient * learningRate;
             layer.OutputBias -= currentError * learningRate;
             
-            var outputGradient = layer.OutputWeights.Transpose() * currentError;
+            var outputGradient = Matrix.Multiply(new Matrix(new[] { currentError }), layer.OutputWeights.Transpose());
             if (step != layer.HiddenNeurons.Count - 1) 
-                nextHidden = outputGradient + nextHidden * layer.HiddenWeights.Transpose();
+                nextHidden = outputGradient + Matrix.Multiply(nextHidden, layer.HiddenWeights.Transpose());
             else nextHidden = outputGradient;
             
-
-            nextHidden = Matrix.Multiply(new Matrix(layer.Function.Derivation(layer.HiddenNeurons[step])).Transpose(), nextHidden);
+            nextHidden = new Matrix(layer.Function.Derivation(layer.HiddenNeurons[step])).Transpose() * nextHidden;
             if (step > 0) {
                 var hiddenWeightGradient = Matrix.Multiply(new Matrix(layer.HiddenNeurons[step - 1]), nextHidden);
                 layer.HiddenWeights -= hiddenWeightGradient * learningRate;
@@ -47,8 +47,7 @@ public class ManyToOne : IRecurrentType {
                     layer.HiddenBias[bias] -= hiddenWeightGradient.GetAsList().Average() * learningRate;                
             }
             
-            var inputGradient = nextHidden * layer.InputWeights;
-            layer.InputWeights -= inputGradient * learningRate;
+            layer.InputWeights -= Matrix.Multiply(new Matrix(new[]{layer.InputData.Flatten()[step]}), nextHidden) * learningRate;
         }
 
         return error;
