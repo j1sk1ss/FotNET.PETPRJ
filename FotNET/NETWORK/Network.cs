@@ -21,10 +21,19 @@ namespace FotNET.NETWORK {
             };
         }
 
+        public Tensor ForwardFeed(Tensor data) =>
+            Layers.Aggregate(data, (current, layer) => layer.GetNextLayer(current));
+        
         public void BackPropagation(double expectedAnswer, double expectedValue, LossFunction lossFunction, double learningRate) {
             var errorTensor = lossFunction.GetErrorTensor(Layers[^1].GetValues(), (int)expectedAnswer, expectedValue);
-                for (var i = Layers.Count - 1; i >= 0; i--)
-                    errorTensor = Layers[i].BackPropagate(errorTensor, learningRate);
+            for (var i = Layers.Count - 1; i >= 0; i--)
+                errorTensor = Layers[i].BackPropagate(errorTensor, learningRate);
+        }
+
+        public void BackPropagation(Tensor expectedAnswer, LossFunction lossFunction, double learningRate) {
+            var errorTensor = lossFunction.GetErrorTensor(Layers[^1].GetValues(), expectedAnswer);
+            for (var i = Layers.Count - 1; i >= 0; i--)
+                errorTensor = Layers[i].BackPropagate(errorTensor, learningRate);
         }
         
         public string GetWeights() =>

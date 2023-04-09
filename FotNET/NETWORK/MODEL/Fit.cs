@@ -15,13 +15,13 @@ public static class Fit {
 
                 if (Math.Abs(predictedClass - expectedClass) > .01) {
                     network.BackPropagation(expectedClass, expectedValue,
-                        lossFunction, baseLearningRate * Math.Pow(.1, epoch));
+                        lossFunction, baseLearningRate * Math.Pow(.9, epoch));
                     continue;
                 }
                 
                 if (Math.Abs(predictedValue - expectedValue) > .1)
                     network.BackPropagation(expectedClass, expectedValue,
-                        lossFunction, baseLearningRate * Math.Pow(.1, epoch));
+                        lossFunction, baseLearningRate * Math.Pow(.9, epoch));
             }
 
         return network;

@@ -5,6 +5,7 @@ namespace FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.ManyToOne;
 public class ManyToOne : IRecurrentType {
     public Tensor GetNextLayer(RecurrentLayer layer, Tensor tensor) {
         var sequence = tensor.Flatten();
+        
         for (var step = 0; step < sequence.Count; step++) {
             var currentElement = sequence[step];
             var inputNeurons = Matrix.Multiply(new Matrix(new[] { currentElement }), layer.InputWeights);
@@ -25,14 +26,17 @@ public class ManyToOne : IRecurrentType {
         var currentError = error.Flatten()[0];
         var nextHidden = new Matrix(0,0);
         
+        var transposedOutputWeights = layer.OutputWeights.Transpose();
+        var transposedHiddenWeights = layer.HiddenWeights.Transpose();
+        
         for (var step = layer.HiddenNeurons.Count - 1; step >= 0; step--) {
             layer.OutputWeights -= Matrix.Multiply(layer.HiddenNeurons[step].Transpose(),
                 new Matrix(new[] { currentError })) * learningRate;
             layer.OutputBias -= currentError * learningRate;
             
-            var outputGradient = Matrix.Multiply(new Matrix(new[] { currentError }), layer.OutputWeights.Transpose());
+            var outputGradient = Matrix.Multiply(new Matrix(new[] { currentError }), transposedOutputWeights);
             if (step != layer.HiddenNeurons.Count - 1) 
-                nextHidden = outputGradient + Matrix.Multiply(nextHidden, layer.HiddenWeights.Transpose());
+                nextHidden = outputGradient + Matrix.Multiply(nextHidden, transposedHiddenWeights);
             else nextHidden = outputGradient;
             
             nextHidden = layer.Function.Derivation(layer.HiddenNeurons[step]) * nextHidden;

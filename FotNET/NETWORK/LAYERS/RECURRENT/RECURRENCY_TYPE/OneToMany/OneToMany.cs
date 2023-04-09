@@ -5,16 +5,17 @@ namespace FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.OneToMany;
 public class OneToMany : IRecurrentType {
     public Tensor GetNextLayer(RecurrentLayer layer, Tensor tensor) {
         var currentElement = tensor.Flatten()[0];
-        for (var step = 0; step < layer.HiddenBias.Length; step++) {
+
+        for (var step = 0; step < layer.HiddenNeurons.Count; step++) {
             var inputNeurons = Matrix.Multiply(new Matrix(new[] { currentElement }), layer.InputWeights);
             
             if (step > 0)
-                layer.HiddenNeurons.Add(Matrix.Multiply(layer.HiddenNeurons[step - 1], layer.HiddenWeights) + inputNeurons);
+                layer.HiddenNeurons.Add(inputNeurons + Matrix.Multiply(layer.HiddenNeurons[step - 1], layer.HiddenWeights) + new Matrix(layer.HiddenBias).Transpose());
             else
                 layer.HiddenNeurons.Add(inputNeurons);
 
             layer.HiddenNeurons[^1] = layer.Function.Activate(layer.HiddenNeurons[^1]);
-            layer.OutputNeurons.Add(Matrix.Multiply(layer.HiddenNeurons[^1], layer.OutputWeights));
+            layer.OutputNeurons.Add(Matrix.Multiply(layer.HiddenNeurons[^1], layer.OutputWeights) + layer.OutputBias);
         }
 
         return new Tensor(layer.OutputNeurons);
@@ -26,14 +27,17 @@ public class OneToMany : IRecurrentType {
 
         learningRate /= sequence.Count;
         
+        var transposedOutputWeights = layer.OutputWeights.Transpose();
+        var transposedHiddenWeights = layer.HiddenWeights.Transpose();
+        
         for (var step = layer.HiddenNeurons.Count - 1; step >= 0; step--) {
             layer.OutputWeights -= Matrix.Multiply(layer.HiddenNeurons[step].Transpose(),
                 new Matrix(new[] { sequence[step] })) * learningRate;
             layer.OutputBias -= sequence[step] * learningRate;
             
-            var outputGradient = Matrix.Multiply(new Matrix(new[] { sequence[step] }), layer.OutputWeights.Transpose());
+            var outputGradient = Matrix.Multiply(new Matrix(new[] { sequence[step] }), transposedOutputWeights);
             if (step != layer.HiddenNeurons.Count - 1) 
-                nextHidden = outputGradient + Matrix.Multiply(nextHidden, layer.HiddenWeights.Transpose());
+                nextHidden = outputGradient + Matrix.Multiply(nextHidden, transposedHiddenWeights);
             else nextHidden = outputGradient;
             
             nextHidden = layer.Function.Derivation(layer.HiddenNeurons[step]) * nextHidden;

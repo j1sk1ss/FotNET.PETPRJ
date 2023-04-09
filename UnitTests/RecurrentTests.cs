@@ -64,22 +64,25 @@ public class RecurrentTests {
     
     [Test]
     public void BackPropagation_MTM() {
-        var testTensorData = new Tensor(new Matrix(new double[] { 70, 10, 30, 21, 14, 77 }));
+        var testTensorData = new Tensor(new Matrix(new[] { .7d, .1d, .3d, .21d, .14d, .77d }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
             new RecurrentLayer(new Tangensoid(), new ManyToMany(), 10, new XavierInitialization()),
-            new SoftMaxLayer()
+            new PerceptronLayer(6)
         });
         
-        Console.WriteLine();
-        Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
-        Console.WriteLine(model.GetWeights());
-        
-        for (var i = 0; i < 10; i++) model.BackPropagation(0, 30000, new ValueByValue(), .015d);
+        var expected = new Tensor(new Matrix(new[] { .12d, .44d, .76d, .11d, .4d, .13d }));
         
         Console.WriteLine();
-        Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
-        Console.WriteLine(model.GetWeights());
+        //Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
+        model.ForwardFeed(testTensorData);
+        for (var i = 0; i < 200; i++) {
+            model.BackPropagation(expected, new ValueByValue(), -.0015d);
+            model.ForwardFeed(testTensorData);
+        }
+        
+        Console.WriteLine();
+        //Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
     }
     
     [Test]
@@ -87,7 +90,7 @@ public class RecurrentTests {
         var testTensorData = new Tensor(new Matrix(new[] { .60, .35, .11 }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new Tangensoid(), new ManyToOne(), 10, new HeInitialization()),
+            new RecurrentLayer(new Tangensoid(), new ManyToOne(), 10, new XavierInitialization()),
             new PerceptronLayer(1)
         });
 
@@ -95,10 +98,10 @@ public class RecurrentTests {
         Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
         Console.WriteLine(model.GetWeights());
 
-        var answer = 0d;
-        while (Math.Abs(answer - .52d) > .01d) {
-            model.BackPropagation(0, .52, new OneByOne(), .0015d);
-            answer = model.ForwardFeed(testTensorData, AnswerType.Value);
+        for (var i = 0; i < 200; i++) {
+            model.BackPropagation(0, .52, new ValueByValue(), -.015d);
+            model.ForwardFeed(testTensorData, AnswerType.Value);
+            //Console.WriteLine(answer);
         }
         
         Console.WriteLine();
@@ -107,21 +110,24 @@ public class RecurrentTests {
     
     [Test]
     public void BackPropagation_OTM() {
-        var testTensorData = new Tensor(new Matrix(new double[] { .12d }));
+        var testTensorData = new Tensor(new Matrix(new[] { .12d }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new DoubleLeakyReLu(), new OneToMany(), 10, new HeInitialization()),
+            new RecurrentLayer(new Tangensoid(), new OneToMany(), 5, new HeInitialization()),
             new SoftMaxLayer()
         });
+
+        var expected = new Tensor(new Matrix(new[] { .12d, .44d, .76d, .11d, .4d }));
         
         Console.WriteLine();
-        Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
-        Console.WriteLine(model.GetWeights());
+        Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
         
-        for (var i = 0; i < 10; i++) model.BackPropagation(0, 30000, new ValueByValue(), .015d);
+        for (var i = 0; i < 500; i++) {
+            model.ForwardFeed(testTensorData);
+            model.BackPropagation(expected, new ValueByValue(), .5d);
+        }
         
         Console.WriteLine();
-        Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Value));
-        Console.WriteLine(model.GetWeights());
+        Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
     }
 }
