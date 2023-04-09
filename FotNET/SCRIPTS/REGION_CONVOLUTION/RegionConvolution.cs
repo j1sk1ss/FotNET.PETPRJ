@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+
 using FotNET.DATA.IMAGE;
 using FotNET.NETWORK;
 using FotNET.SCRIPTS.REGION_CONVOLUTION.SCRIPTS;

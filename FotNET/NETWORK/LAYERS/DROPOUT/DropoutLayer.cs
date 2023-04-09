@@ -3,10 +3,7 @@ using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 namespace FotNET.NETWORK.LAYERS.DROPOUT;
 
 public class DropoutLayer : ILayer {
-
-    public DropoutLayer(double percent) {
-        Percent = percent;
-    }
+    public DropoutLayer(double percent) => Percent = percent;
     
     private double Percent { get; }
     

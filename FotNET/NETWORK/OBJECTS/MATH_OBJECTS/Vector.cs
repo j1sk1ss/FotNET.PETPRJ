@@ -5,7 +5,7 @@
             Size = array.Length;
         }
 
-        public double[] Body { get; }
+        private double[] Body { get; }
         private int Size { get; }
 
         private double this[int key] {

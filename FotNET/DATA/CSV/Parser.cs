@@ -1,6 +1,6 @@
-using FotNET.NETWORK.OBJECTS.DATA_OBJECTS;
+using FotNET.DATA.DATA_OBJECTS;
 using Microsoft.VisualBasic.FileIO;
-using Array = FotNET.NETWORK.OBJECTS.DATA_OBJECTS.ARRAY.Array;
+using Array = FotNET.DATA.DATA_OBJECTS.ARRAY.Array;
 
 namespace FotNET.DATA.CSV;
 

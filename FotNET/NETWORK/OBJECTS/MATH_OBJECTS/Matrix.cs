@@ -33,7 +33,6 @@
                 for (var y = 0; y < Columns; y++)
                     if (double.TryParse(elements[y], out var db)) Body[x, y] = db;
                     else Body[x, y] = 0;
-
             }
         }
         

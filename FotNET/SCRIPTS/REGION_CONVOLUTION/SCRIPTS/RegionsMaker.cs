@@ -9,19 +9,13 @@ public static class RegionsMaker {
         
         for (var i = 0; i < stepsCount; i++) {
             var similar = Similarities(regions, bitmap);
-                regions.Clear();
-                
-            for (var j = 0; j < similar.Count; j++) {
-                if (similar[j].Count <= 0) continue;
-                var region = similar[j][0].Item1;
-                
-                foreach (var neighbor in similar[j]) {
-                    if (neighbor.Item3 <= similarityValue) continue;
-                    region = MergeRegions(region, neighbor.Item2);
-                }
-                
-                regions.Add(region);
-            }
+            regions.Clear();
+
+            regions.AddRange(from t in similar
+                where t.Count > 0
+                let region = t[0].Item1
+                select t.Where(neighbor => !(neighbor.Item3 <= similarityValue))
+                    .Aggregate(region, (current, neighbor) => MergeRegions(current, neighbor.Item2)));
         }
 
         for (var i = 0; i < regions.Count; i++)
@@ -32,19 +26,17 @@ public static class RegionsMaker {
                     regions.RemoveAt(j);
                     continue;
                 }
-                
-                if (regions[i].IntersectsWith(regions[j])) {
-                    var overlapped = Rectangle.Intersect(regions[i], regions[j]);
-                    
-                    var overlappedArea = overlapped.Height * overlapped.Width;
-                    var firstArea      = regions[i].Height * regions[i].Width;
-                    var secondArea     = regions[j].Height * regions[j].Width;
 
-                    if (overlappedArea > firstArea / 2 && overlappedArea > secondArea / 2) {
-                        regions[i] = MergeRegions(regions[i], regions[j]);
-                        regions.RemoveAt(j);
-                    }
-                }
+                if (!regions[i].IntersectsWith(regions[j])) continue;
+                var overlapped = Rectangle.Intersect(regions[i], regions[j]);
+                
+                var overlappedArea = overlapped.Height * overlapped.Width;
+                var firstArea      = regions[i].Height * regions[i].Width;
+                var secondArea     = regions[j].Height * regions[j].Width;
+
+                if (overlappedArea <= firstArea / 2 || overlappedArea <= secondArea / 2) continue;
+                regions[i] = MergeRegions(regions[i], regions[j]);
+                regions.RemoveAt(j);
             }
 
         return regions; 
@@ -62,28 +54,14 @@ public static class RegionsMaker {
         return regions; 
     } 
 
-    private static List<List<Tuple<Rectangle, Rectangle, float>>> Similarities(IReadOnlyCollection<Rectangle> regions, Bitmap bitmap) {
-        var similarities = new List<List<Tuple<Rectangle, Rectangle, float>>>();
-        
-        foreach (var region in regions) {
-            var neighbors = GetNeighbors(region, regions);
-            var regionsList = new List<Tuple<Rectangle, Rectangle, float>>();
-            
-            if (!IsRectangleInsideImage(bitmap, region)) continue;
-
-            foreach (var neighbor in neighbors) {
-                if (!IsRectangleInsideImage(bitmap, neighbor)) continue;
-                regionsList.Add(new Tuple<Rectangle, Rectangle, float>(region, neighbor,
-                    Similarity(region, neighbor, bitmap)));
-            }
-
-            similarities.Add(regionsList);
-        }
-
-        return similarities;
-    }
+    private static IEnumerable<List<Tuple<Rectangle, Rectangle, float>>> Similarities(IReadOnlyCollection<Rectangle> regions, Bitmap bitmap) =>
+        (from region in regions let neighbors = GetNeighbors(region, regions) where IsRectangleInsideImage(bitmap, region) 
+            select (from neighbor in neighbors where IsRectangleInsideImage(bitmap, neighbor) 
+                select new Tuple<Rectangle, Rectangle, float>(region, neighbor, 
+                    Similarity(region, neighbor, bitmap))).ToList()).ToList();
     
-    private static bool IsRectangleInsideImage(Bitmap image, Rectangle rect) =>
+    
+    private static bool IsRectangleInsideImage(Image image, Rectangle rect) =>
          rect is { Left: >= 0, Top: >= 0 } &&
          rect.Right <= image.Width && rect.Bottom <= image.Height;
     
@@ -93,14 +71,8 @@ public static class RegionsMaker {
             for (var j = -1; j <= 1; j++)
                 offsets.Add(new Point(i, j));
 
-        var neighbors = new List<Rectangle>();
-        foreach (var offset in offsets) {
-            var neighbor = rect with { X = rect.X + offset.X * rect.Width, Y = rect.Y + offset.Y * rect.Height };
-            if (neighbor != rect && rects.Any(rectangle => rectangle != rect && rectangle.IntersectsWith(neighbor)))
-                neighbors.Add(neighbor);
-        }
-
-        return neighbors;
+        return offsets.Select(offset => rect with { X = rect.X + offset.X * rect.Width, Y = rect.Y + offset.Y * rect.Height })
+            .Where(neighbor => neighbor != rect && rects.Any(rectangle => rectangle != rect && rectangle.IntersectsWith(neighbor))).ToList();
     }
 
     private static float Similarity(Rectangle firstRectangle, Rectangle secondRectangle, Bitmap bitmap) =>

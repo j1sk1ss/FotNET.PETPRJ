@@ -1,6 +1,6 @@
 ﻿namespace FotNET.SCRIPTS.TEXT_CLASSIFICATION.SCRIPTS;
 
-public class Tokenizer {
+public static class Tokenizer {
     public static List<string> Tokenize(string text) {
         var whiteSpaces = text.Split(new []{' ', '\n'}, StringSplitOptions.RemoveEmptyEntries);
         var punctuation = new List<string> { ".", ",", "/", "'", "!", "?", "`", "-", ":"};

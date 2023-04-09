@@ -1,8 +1,6 @@
-using FotNET.DATA;
-using FotNET.DATA.CSV;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
-namespace FotNET.NETWORK.OBJECTS.DATA_OBJECTS.ARRAY;
+namespace FotNET.DATA.DATA_OBJECTS.ARRAY;
 
 public class Array : IData {
     public Array(string[] data, Config config) {

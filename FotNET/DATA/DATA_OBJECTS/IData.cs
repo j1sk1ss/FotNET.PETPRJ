@@ -1,6 +1,6 @@
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
-namespace FotNET.NETWORK.OBJECTS.DATA_OBJECTS;
+namespace FotNET.DATA.DATA_OBJECTS;
 
 public interface IData {
     public Tensor GetRight();
