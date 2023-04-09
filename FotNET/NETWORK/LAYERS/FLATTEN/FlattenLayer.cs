@@ -1,6 +1,7 @@
 ﻿using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.FLATTEN {
+    /// <summary> Layer that convert multi-dimension data tensor to 1D vector-data tensor. </summary>
     public class FlattenLayer : ILayer {
         private Tensor _inputTensor = new Tensor(new Matrix(0,0));
 

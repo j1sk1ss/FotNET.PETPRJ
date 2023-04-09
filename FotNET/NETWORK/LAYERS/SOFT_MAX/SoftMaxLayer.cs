@@ -4,6 +4,7 @@ using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 namespace FotNET.NETWORK.LAYERS.SOFT_MAX;
 
 public class SoftMaxLayer : ILayer {
+    /// <summary> Layer that convert data tensor to soft-maxed-data tensor. </summary>
     public SoftMaxLayer() => InputTensor = new Tensor(new List<Matrix>());
     
     private Tensor InputTensor { get; set; }

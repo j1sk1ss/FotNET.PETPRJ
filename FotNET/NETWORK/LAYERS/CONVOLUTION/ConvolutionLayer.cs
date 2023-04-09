@@ -4,6 +4,13 @@ using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
     public class ConvolutionLayer : ILayer {
+        /// <summary> Layer that perform tensor convolution by filters and biases. </summary>
+        /// <param name="filters"> Count of filters on layer. </param>
+        /// <param name="filterWeight"> Weight of filters on layer. </param>
+        /// <param name="filterHeight"> Height of filters on layer. </param>
+        /// <param name="filterDepth"> Depth of filters on layer. </param>
+        /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
+        /// <param name="stride"> Stride of convolution. </param>
         public ConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth, 
             IWeightsInitialization weightsInitialization, int stride) {
             _backPropagate = true;
@@ -27,6 +34,10 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
             Input   = new Tensor(new Matrix(0, 0));
         }
 
+        /// <summary> Layer that perform tensor convolution by filters and biases. </summary>
+        /// <param name="filtersPath"> Path to .txt file of filters. </param>
+        /// <param name="filterDepth"> Depth of filters on layer. </param>
+        /// <param name="stride"> Stride of convolution. </param>
         public ConvolutionLayer(string filtersPath, int filterDepth, int stride) {
             var filters = File.ReadAllText(filtersPath).Split("/", StringSplitOptions.RemoveEmptyEntries);
             

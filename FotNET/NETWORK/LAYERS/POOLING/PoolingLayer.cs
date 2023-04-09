@@ -3,6 +3,9 @@ using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.POOLING {
     public class PoolingLayer : ILayer {
+        /// <summary> Layer that perform pooling of tensor. </summary>
+        /// <param name="pooling"> Type of pooling. </param>
+        /// <param name="poolSize"> Pool size. </param>
         public PoolingLayer(Pooling pooling, int poolSize) {
             Pooling      = pooling;
             _poolSize    = poolSize;

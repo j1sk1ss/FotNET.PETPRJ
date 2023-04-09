@@ -3,7 +3,10 @@ using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
     public class PerceptronLayer : ILayer {
-
+        /// <summary> Perceptron or Fully-Connected layer. </summary>
+        /// <param name="size"> Size of neurons on this layer. </param>
+        /// <param name="nextSize"> Size of neurons on second layer. </param>
+        /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
         public PerceptronLayer(int size, int nextSize, IWeightsInitialization weightsInitialization) {
             Neurons = new double[size];
             Bias    = new double[nextSize];
@@ -15,6 +18,8 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             _isEndLayer = false;
         }
 
+        /// <summary> Last layer of perceptron. </summary>
+        /// <param name="size"> Size of neurons on this layer. </param>
         public PerceptronLayer(int size) {
             Neurons = new double[size];
             Bias    = new double[size];

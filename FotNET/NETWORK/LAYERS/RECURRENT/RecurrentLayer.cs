@@ -6,7 +6,11 @@ using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 namespace FotNET.NETWORK.LAYERS.RECURRENT;
 
 public class RecurrentLayer : ILayer {
-
+    /// <summary> Recurrent neural network. </summary>
+    /// <param name="function"> Type of activation function. </param>
+    /// <param name="recurrentType"> Type of recurrent neural network. </param>
+    /// <param name="size"> Hidden neurons size. </param>
+    /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
     public RecurrentLayer(Function function, IRecurrentType recurrentType, int size, 
         IWeightsInitialization weightsInitialization) {
         InputWeights  = weightsInitialization.Initialize(new Matrix(1, size));
@@ -22,6 +26,8 @@ public class RecurrentLayer : ILayer {
         
         Function      = function;
         RecurrentType = recurrentType;
+        
+        InputData = new Tensor(new List<Matrix>());
     }
 
     public Matrix InputWeights { get; set; }

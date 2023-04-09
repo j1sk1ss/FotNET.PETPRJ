@@ -3,6 +3,8 @@ using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 namespace FotNET.NETWORK.LAYERS.DROPOUT;
 
 public class DropoutLayer : ILayer {
+    /// <summary> Layer that perform dropout of neurons. </summary>
+    /// <param name="percent"> Percent of elements in data tensor of neurons that will be "killed". </param>
     public DropoutLayer(double percent) => Percent = percent;
     
     private double Percent { get; }
