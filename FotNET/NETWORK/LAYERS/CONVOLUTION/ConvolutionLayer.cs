@@ -94,15 +94,15 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
             
             for (var i = 0; i < originalFilters.Length; i++)
                 originalFilters[i] = originalFilters[i].GetSameChannels(error).AsFilter();
-            
+
             if (_backPropagate)
-                for (var f = 0; f < Filters.Length; f++) {
-                    for (var channel = 0; channel < Filters[f].Channels.Count; channel++) 
-                        Filters[f].Channels[channel] -= Convolution.GetConvolution(extendedInput.Channels[f],
-                            error.Channels[f], _stride, Filters[f].Bias) * learningRate;
+                Parallel.For(0, Filters.Length, filter => {
+                    for (var channel = 0; channel < Filters[filter].Channels.Count; channel++) 
+                        Filters[filter].Channels[channel] -= Convolution.GetConvolution(extendedInput.Channels[filter],
+                            error.Channels[filter], _stride, Filters[filter].Bias) * learningRate;
                     
-                    Filters[f].Bias -= error.Channels[f].Sum() * learningRate;
-                }
+                    Filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;
+                });
             
             return Convolution.GetExtendedConvolution(error, 
                 FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);

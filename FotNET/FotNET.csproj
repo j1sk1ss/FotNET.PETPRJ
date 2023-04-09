@@ -14,7 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>RNN, CNN, R-CNN, FNN, Classification, Tensors</PackageTags>
     <PackageIcon>packageIcon.png</PackageIcon>
-    <PackageVersion>2.2.2</PackageVersion>
+    <PackageVersion>2.3.0</PackageVersion>
     <PackageReleaseNotes>added R-CNN model</PackageReleaseNotes>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
