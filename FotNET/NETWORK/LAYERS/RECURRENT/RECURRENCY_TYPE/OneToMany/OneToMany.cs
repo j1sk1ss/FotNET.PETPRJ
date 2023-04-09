@@ -6,7 +6,7 @@ public class OneToMany : IRecurrentType {
     public Tensor GetNextLayer(RecurrentLayer layer, Tensor tensor) {
         var currentElement = tensor.Flatten()[0];
 
-        for (var step = 0; step < layer.HiddenNeurons.Count; step++) {
+        for (var step = 0; step < layer.HiddenWeights.Columns; step++) {
             var inputNeurons = Matrix.Multiply(new Matrix(new[] { currentElement }), layer.InputWeights);
             
             if (step > 0)
@@ -30,7 +30,7 @@ public class OneToMany : IRecurrentType {
         var transposedOutputWeights = layer.OutputWeights.Transpose();
         var transposedHiddenWeights = layer.HiddenWeights.Transpose();
         
-        for (var step = layer.HiddenNeurons.Count - 1; step >= 0; step--) {
+        for (var step = layer.HiddenWeights.Columns - 1; step >= 0; step--) {
             layer.OutputWeights -= Matrix.Multiply(layer.HiddenNeurons[step].Transpose(),
                 new Matrix(new[] { sequence[step] })) * learningRate;
             layer.OutputBias -= sequence[step] * learningRate;

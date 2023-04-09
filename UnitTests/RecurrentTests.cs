@@ -112,9 +112,9 @@ public class RecurrentTests {
     public void BackPropagation_OTM() {
         var testTensorData = new Tensor(new Matrix(new[] { .12d }));
         var model = new Network(new List<ILayer> {
-            new FlattenLayer(),
             new RecurrentLayer(new Tangensoid(), new OneToMany(), 5, new HeInitialization()),
-            new SoftMaxLayer()
+            new FlattenLayer(),
+            new PerceptronLayer(5)
         });
 
         var expected = new Tensor(new Matrix(new[] { .12d, .44d, .76d, .11d, .4d }));
@@ -122,9 +122,9 @@ public class RecurrentTests {
         Console.WriteLine();
         Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
         
-        for (var i = 0; i < 500; i++) {
+        for (var i = 0; i < 50; i++) {
             model.ForwardFeed(testTensorData);
-            model.BackPropagation(expected, new ValueByValue(), .5d);
+            model.BackPropagation(expected, new ValueByValue(), -.5d);
         }
         
         Console.WriteLine();

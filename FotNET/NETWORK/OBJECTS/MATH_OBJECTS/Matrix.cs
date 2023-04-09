@@ -42,6 +42,7 @@
 
         public Matrix Transpose() {
             var temp = new double[Columns, Rows];
+            
             for (var i = 0; i < Rows; i++) 
                 for (var j = 0; j < Columns; j++) 
                     temp[j, i] = Body[i, j];
@@ -64,13 +65,13 @@
         public static double[] operator *(double[] vector, Matrix matrix) {
             var endVector = new double[matrix.Rows];
 
-            for (var x = 0; x < matrix.Rows; ++x) {
+            Parallel.For(0, matrix.Rows, i => {
                 double tmp = 0;
                 for (var y = 0; y < matrix.Columns; ++y)
-                    tmp += matrix.Body[x, y] * vector[y];
+                    tmp += matrix.Body[i, y] * vector[y];
 
-                endVector[x] = tmp;
-            }
+                endVector[i] = tmp;
+            });
 
             return endVector;
         }
@@ -98,10 +99,11 @@
         public static Matrix Multiply(Matrix firstMatrix, Matrix secondMatrix) {
             var endMatrix = new Matrix(firstMatrix.Rows, secondMatrix.Columns);
 
-            for (var i = 0; i < endMatrix.Rows; i++) 
+            Parallel.For(0, endMatrix.Rows, i => {
                 for (var j = 0; j < endMatrix.Columns; j++) 
                     for (var k = 0; k < secondMatrix.Rows; k++) 
                         endMatrix.Body[i, j] += firstMatrix.Body[i, k] * secondMatrix.Body[k, j];
+            });
             
             return endMatrix;
         }

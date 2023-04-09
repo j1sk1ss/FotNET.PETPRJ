@@ -60,7 +60,6 @@ public static class RegionsMaker {
                 select new Tuple<Rectangle, Rectangle, float>(region, neighbor, 
                     Similarity(region, neighbor, bitmap))).ToList()).ToList();
     
-    
     private static bool IsRectangleInsideImage(Image image, Rectangle rect) =>
          rect is { Left: >= 0, Top: >= 0 } &&
          rect.Right <= image.Width && rect.Bottom <= image.Height;

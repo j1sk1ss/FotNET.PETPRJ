@@ -5,6 +5,17 @@ using NUnit.Framework;
 namespace UnitTests;
 
 public class MathTests {
+    private Matrix _matrix = new Matrix(3, 3);
+    private Matrix _matrix1 = new Matrix(3, 3);
+    
+    private Matrix Initialize(int maxValue, Matrix matrix) {
+        for (var i = 0; i < matrix.Rows; i++)
+        for (var j = 0; j < matrix.Columns; j++)
+            matrix.Body[i, j] = new Random().Next() % maxValue;
+
+        return matrix;
+    }
+    
     [Test]
     public void MatrixAddMatrix() {
         var firstMatrix = new HeInitialization().Initialize(new Matrix(5, 5));
@@ -36,6 +47,15 @@ public class MathTests {
     }
 
     [Test]
+    public void FullMatrixMultiplication() {
+        var firstMatrix = new HeInitialization().Initialize(new Matrix(500, 250));
+        var secondMatrix = new HeInitialization().Initialize(new Matrix(250,1000));
+        //Console.WriteLine(firstMatrix.Print() + "* \n" + secondMatrix.Print() + "=>\n");
+        //Console.WriteLine(Matrix.Multiply(firstMatrix, secondMatrix).Print());
+        Matrix.Multiply(firstMatrix, secondMatrix);
+    }
+    
+    [Test]
     public void FullMatrixMultiplyMatrix() {
         var firstMatrix = new HeInitialization().Initialize(new Matrix(5, 5));
         var secondMatrix = new HeInitialization().Initialize(new Matrix(5,5));
@@ -51,6 +71,13 @@ public class MathTests {
         
         Console.WriteLine(firstMatrix.Print() + "=>\n");
         Console.WriteLine(firstMatrix.Flip().Print());
+    }
+
+    [Test]
+    public void FlipTensor() {
+        var firstMatrix = Initialize(10, _matrix);
+        var firstTensor = new Tensor(new List<Matrix> { firstMatrix, firstMatrix, firstMatrix, firstMatrix });
+        firstTensor.Flip();
     }
     
     [Test]

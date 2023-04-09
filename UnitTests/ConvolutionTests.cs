@@ -1,11 +1,11 @@
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
-using NUnit.Framework;
 
 namespace UnitTests;
 
-public class ConvolutionTests
-{
+public class ConvolutionTests {
     private Matrix _matrix = new Matrix(3, 3);
+    private Matrix _matrix1 = new Matrix(3, 3);
     private Matrix _filter = new Matrix(2, 2);
 
     private Matrix Initialize(int maxValue, Matrix matrix) {
@@ -17,17 +17,34 @@ public class ConvolutionTests
     }
 
     [Test]
-    public void Convolution() {
+    public void MatrixConvolution() {
         var firstMatrix = Initialize(10, _matrix);
         var firstFilter = Initialize(5, _filter);
         
         Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
         Console.WriteLine("Filter is:\n" + firstFilter.Print());
 
-        var convolved =
-            FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.Convolution.GetConvolution(firstMatrix, firstFilter, 1, 0);
+        var convolved = Convolution.GetConvolution(firstMatrix, firstFilter, 1, 0);
         
         Console.WriteLine("Convolved matrix:\n" + convolved.Print());
+    }
+
+    [Test]
+    public void TensorConvolution() {
+        var firstMatrix = Initialize(10, _matrix);
+        var second = Initialize(10, _matrix1);
+        var firstFilter = Initialize(5, _filter);
+
+        var firstTensor = new Tensor(new List<Matrix> { second, firstMatrix, firstMatrix, firstMatrix });
+        var secondTensor = new Filter(new List<Matrix> { firstFilter, firstFilter, firstFilter, firstFilter });
+
+        Console.WriteLine("Matrix is:\n" + second.Print());
+        Console.WriteLine("Matrix is:\n" + firstFilter.Print());
+        Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
+        
+        var convolved = Convolution.GetConvolution(firstTensor, new[] { secondTensor }, 1);
+        
+        Console.WriteLine(convolved.GetInfo());
     }
 
     [Test]
@@ -50,8 +67,7 @@ public class ConvolutionTests
         Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
         Console.WriteLine("Filter is:\n" + firstFilter.Print());
         
-        var backConvolved =
-            FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.Convolution.GetExtendedConvolution(new Tensor(firstMatrix),
+        var backConvolved = Convolution.GetExtendedConvolution(new Tensor(firstMatrix),
                 new[] { new Filter(new List<Matrix>{firstFilter}) }, 1);
         
         Console.WriteLine("BackConvolved matrix:\n" + backConvolved.Channels[0].Print());

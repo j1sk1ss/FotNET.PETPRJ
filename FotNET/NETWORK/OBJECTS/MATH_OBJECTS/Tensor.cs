@@ -13,9 +13,10 @@
         }
 
         public Tensor Flip() {
-            foreach (var matrix in Channels)
-                matrix.Flip();
-
+            Parallel.For(0, Channels.Count, channel => {
+                Channels[channel].Flip();
+            });
+            
             return new Tensor(Channels);
         }
 
