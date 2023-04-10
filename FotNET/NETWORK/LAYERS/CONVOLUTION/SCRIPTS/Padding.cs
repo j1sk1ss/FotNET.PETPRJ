@@ -14,11 +14,10 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
 
         public static Tensor GetPadding(Tensor tensor, int paddingSize) {
             var newTensor = new Tensor(new List<Matrix>());
-
-            Parallel.For(0, tensor.Channels.Count, i => {
+            
+            for (var i = 0; i < tensor.Channels.Count; i++) 
                 newTensor.Channels.Add(GetPadding(tensor.Channels[i],  Math.Abs(paddingSize)));
-            });
-
+            
             return newTensor;
         }
     }
