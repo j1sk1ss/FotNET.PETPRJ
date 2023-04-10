@@ -9,7 +9,7 @@ public class MinPooling : Pooling {
 
         var pooledMatrix = new Matrix(new double[outputWidth, outputHeight]);
 
-        for (var x = 0; x < outputWidth; x++) 
+        Parallel.For(0, outputWidth, x => {
             for (var y = 0; y < outputHeight; y++) {
                 var minValue = double.MaxValue;
 
@@ -21,14 +21,15 @@ public class MinPooling : Pooling {
                             
                 pooledMatrix.Body[x, y] = minValue;
             }
-            
+        });
+
         return pooledMatrix;
     }
 
     protected override Matrix BackPool(Matrix matrix, Matrix referenceMatrix, int poolSize) {
         var backPooledMatrix = new Matrix(referenceMatrix.Rows, referenceMatrix.Columns);
 
-        for (var x = 0; x < matrix.Rows; x++) 
+        Parallel.For(0, matrix.Rows, x => {
             for (var y = 0; y < matrix.Rows; y++) {
                 var minValue = double.MaxValue;
 
@@ -46,7 +47,8 @@ public class MinPooling : Pooling {
                             
                 backPooledMatrix.Body[minX, minY] += matrix.Body[x, y];
             }
-            
+        });
+         
         return backPooledMatrix;
     }
 }

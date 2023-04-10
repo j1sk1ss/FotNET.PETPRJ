@@ -1,4 +1,5 @@
-﻿using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+﻿using System.Collections.Concurrent;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
     public static class Padding {
@@ -13,10 +14,14 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
         }
 
         public static Tensor GetPadding(Tensor tensor, int paddingSize) {
+            var tempMatrices = new ConcurrentBag<Matrix>();
+            Parallel.For(0, tensor.Channels.Count, i => {
+                tempMatrices.Add(GetPadding(tensor.Channels[i],  Math.Abs(paddingSize)));
+            });
+                
             var newTensor = new Tensor(new List<Matrix>());
-            
-            for (var i = 0; i < tensor.Channels.Count; i++) 
-                newTensor.Channels.Add(GetPadding(tensor.Channels[i],  Math.Abs(paddingSize)));
+            for (var i = 0; i < tensor.Channels.Count; i++)
+                newTensor.Channels.Add(tempMatrices.ElementAt(i));
             
             return newTensor;
         }

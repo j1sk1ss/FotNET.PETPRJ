@@ -13,7 +13,7 @@ public static class RegionConvolution {
         var pen      = new Pen(Color.FromKnownColor(KnownColor.Black), 1);
         
         var objects = RegionsMaker.GetRegions(bitmap, cellSize, stepsCount, .4);
-
+        
         foreach (var rectangle in objects) {
             var tensor = Parser.ImageToTensor(new Bitmap(bitmap.Clone(rectangle, bitmap.PixelFormat), 
                 new Size(convolutionX, convolutionY)));

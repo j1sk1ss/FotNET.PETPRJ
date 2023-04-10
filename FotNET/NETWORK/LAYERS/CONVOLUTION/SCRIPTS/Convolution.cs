@@ -12,13 +12,12 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
             
             var conMat = new Matrix(xMatrixSize - xFilterSize + 1, yMatrixSize - yFilterSize + 1);
 
-            Parallel.For(0, conMat.Rows,
-                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },i => {
+            Parallel.For(0, conMat.Rows, i => {
                     for (var j = 0; j < conMat.Columns; j += stride) {
                         var subMatrix = matrix.GetSubMatrix(i, j, i + xFilterSize, j + yFilterSize);
                         conMat.Body[i, j] += (filter * subMatrix).Sum() + bias;
                     }
-                });
+            });
 
             return conMat;
         }
@@ -28,8 +27,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
             var ySize = tensor.Channels[0].Columns - filters[0].Channels[0].Rows + 1;
 
             var tempMatrices = new ConcurrentBag<Matrix>();
-            Parallel.For(0, filters.Length, 
-                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, filter => {
+            Parallel.For(0, filters.Length, filter => {
                     var tempMatrix = new Matrix(xSize, ySize);
 
                     for (var j = 0; j < tensor.Channels.Count; j++) {
@@ -38,7 +36,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
                     }
 
                     tempMatrices.Add(tempMatrix);
-                });
+            });
             
             var newTensor = new Tensor(new List<Matrix>());
             for (var i = 0; i < filters.Length; i++)

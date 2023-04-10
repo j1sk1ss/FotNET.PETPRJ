@@ -52,19 +52,34 @@ public static class RegionsMaker {
                 regions.Add(new Rectangle(x, y, Math.Min(minSize, width - x), Math.Min(minSize, height - y))); 
         
         return regions; 
-    } 
+    }
 
-    private static IEnumerable<List<Tuple<Rectangle, Rectangle, float>>> Similarities(IReadOnlyCollection<Rectangle> regions, Bitmap bitmap) =>
-        (from region in regions let neighbors = GetNeighbors(region, regions) where IsRectangleInsideImage(bitmap, region) 
-            select (from neighbor in neighbors where IsRectangleInsideImage(bitmap, neighbor) 
-                select new Tuple<Rectangle, Rectangle, float>(region, neighbor, 
-                    Similarity(region, neighbor, bitmap))).ToList()).ToList();
-    
+    private static IEnumerable<List<Tuple<Rectangle, Rectangle, float>>> Similarities(
+        IReadOnlyList<Rectangle> regions, Image bitmap) {
+        var similarities = new List<List<Tuple<Rectangle, Rectangle, float>>>();
+
+        var safeBitmaps = new List<Bitmap>();
+        for (var i = 0; i < regions.Count; i++) safeBitmaps.Add(new Bitmap(bitmap));
+
+        Parallel.For(0, regions.Count, i => {
+            var neighbors = GetNeighbors(regions[i], regions);
+
+            if (!IsRectangleInsideImage(safeBitmaps[i], regions[i])) return;
+
+            var regionsList = (from neighbor in neighbors where IsRectangleInsideImage(safeBitmaps[i], neighbor) 
+                select new Tuple<Rectangle, Rectangle, float>(regions[i], neighbor, 
+                    Similarity(regions[i], neighbor, safeBitmaps[i]))).ToList();
+
+            similarities.Add(regionsList);
+        });
+
+        return similarities;
+    }
     private static bool IsRectangleInsideImage(Image image, Rectangle rect) =>
          rect is { Left: >= 0, Top: >= 0 } &&
          rect.Right <= image.Width && rect.Bottom <= image.Height;
     
-    private static List<Rectangle> GetNeighbors(Rectangle rect, IReadOnlyCollection<Rectangle> rects) {
+    private static IEnumerable<Rectangle> GetNeighbors(Rectangle rect, IReadOnlyCollection<Rectangle> rects) {
         var offsets = new List<Point>();
         for (var i = -1; i <= 1; i++)
             for (var j = -1; j <= 1; j++)
@@ -100,6 +115,7 @@ public static class RegionsMaker {
             firstRectangle.Right <= secondRectangle.Right &&
             firstRectangle.Top >= secondRectangle.Top &&
             firstRectangle.Bottom <= secondRectangle.Bottom) return 1000f;
+        
         return 1f;
     }
     

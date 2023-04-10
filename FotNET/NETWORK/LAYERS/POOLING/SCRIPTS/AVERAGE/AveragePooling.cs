@@ -9,27 +9,29 @@ public class AveragePooling : Pooling {
 
         var output = new double[outputHeight, outputWidth];
 
-        for (var i = 0; i < outputHeight; i++) 
+        Parallel.For(0, outputHeight, i => {
             for (var j = 0; j < outputWidth; j++) {
                 var sum = 0.0;
                 for (var k = i * poolSize; k < i * poolSize + poolSize; k++)
-                    for (var l = j * poolSize; l < j * poolSize + poolSize; l++)
-                        sum += matrix.Body[k, l];
+                for (var l = j * poolSize; l < j * poolSize + poolSize; l++)
+                    sum += matrix.Body[k, l];
 
                 output[i, j] = sum / (poolSize * poolSize);
             }
-            
+        });
+        
         return new Matrix(output);
     }
 
     protected override Matrix BackPool(Matrix matrix, Matrix referenceMatrix, int poolSize) {
         var backPooledMatrix = new Matrix(referenceMatrix.Rows, referenceMatrix.Columns);
 
-        for (var x = 0; x < matrix.Rows; x++) 
+        Parallel.For(0, matrix.Rows, x => {
             for (var y = 0; y < matrix.Columns; y++) 
                 for (var i = 0; i < referenceMatrix.Rows; i++) 
                     for (var j = 0; j < referenceMatrix.Columns; j++) 
                         backPooledMatrix.Body[i, j] += matrix.Body[x, y] / poolSize * 2;   
+        });
         
         return backPooledMatrix;
     }
