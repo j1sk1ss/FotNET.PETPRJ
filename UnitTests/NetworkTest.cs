@@ -5,7 +5,9 @@ using FotNET.NETWORK;
 using FotNET.NETWORK.LAYERS;
 using FotNET.NETWORK.LAYERS.ACTIVATION;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.DOUBLE_LEAKY_RELU;
+using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.RELU;
 using FotNET.NETWORK.LAYERS.CONVOLUTION;
+using FotNET.NETWORK.LAYERS.DECONVOLUTION;
 using FotNET.NETWORK.LAYERS.FLATTEN;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
 using FotNET.NETWORK.LAYERS.POOLING;
@@ -14,6 +16,7 @@ using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.ONE_BY_ONE;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+using FotNET.NETWORK.ROUGHEN;
 using FotNET.SCRIPTS.REGION_CONVOLUTION;
 
 namespace UnitTests;
@@ -49,5 +52,18 @@ public class NetworkTest {
         
         for (var i = 0; i < 100; i++)
             model.BackPropagation(1,1,new OneByOne(), 1);
+    }
+
+    [Test]
+    public void GeneratorTest() {
+        var model = new Network(new List<ILayer> {
+            new RoughenLayer(3,3,3),
+            new DeconvolutionLayer(16, 2,2,3, new HeInitialization(), 2),
+            new ActivationLayer(new ReLu()),
+            new DeconvolutionLayer(8, 6, 6, 16, new HeInitialization(), 2),
+            new ActivationLayer(new ReLu())
+        });
+        
+        Console.WriteLine(model.ForwardFeed(new Vector(27).FillRandom().AsTensor(3,3,3)).Channels[0].Print());
     }
 }

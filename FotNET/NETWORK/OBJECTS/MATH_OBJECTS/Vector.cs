@@ -5,6 +5,11 @@
             Size = array.Length;
         }
 
+        public Vector(int size) {
+            Body = new double[size];
+            Size = size;
+        }
+        
         private double[] Body { get; }
         private int Size { get; }
 
@@ -50,6 +55,13 @@
             return vector1;
         }
 
+        public Vector FillRandom() {
+            for (var i = 0; i < Size; i++)
+                Body[i] = new Random().Next() % 100;
+
+            return this;
+        }
+        
         public Matrix AsMatrix(int x, int y, ref int pos) {
             var matrix = new Matrix(x, y);
             
