@@ -44,9 +44,5 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
             
             return newTensor;
         }
-
-        public static Tensor GetExtendedConvolution(Tensor tensor, Filter[] filters, int stride) =>
-             GetConvolution(Padding.GetPadding(tensor,
-                filters[0].Channels[0].Rows - 1), filters, stride);
     }
 }

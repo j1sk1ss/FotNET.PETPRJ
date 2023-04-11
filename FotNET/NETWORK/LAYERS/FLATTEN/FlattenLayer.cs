@@ -12,7 +12,7 @@ namespace FotNET.NETWORK.LAYERS.FLATTEN {
             return new Vector(tensor.Flatten().ToArray()).AsTensor(1, tensor.Flatten().Count, 1);
         }
 
-        public Tensor BackPropagate(Tensor error, double learningRate) =>
+        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) =>
              new Vector(error.Flatten().ToArray()).AsTensor(_inputTensor.Channels[0].Rows,
                 _inputTensor.Channels[0].Columns, _inputTensor.Channels.Count);
 

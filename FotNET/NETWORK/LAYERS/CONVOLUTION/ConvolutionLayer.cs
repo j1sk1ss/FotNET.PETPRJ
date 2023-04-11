@@ -1,4 +1,5 @@
 ﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
+using FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.MATH.Initialization;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
@@ -84,9 +85,8 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
             return Convolution.GetConvolution(layer, Filters, _stride);
         }
 
-        public Tensor BackPropagate(Tensor error, double learningRate) {
-            var inputTensor = Input;
-            var extendedInput = inputTensor.GetSameChannels(error);
+        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
+            var extendedInput = Input.GetSameChannels(error);
             
             var originalFilters = new Filter[Filters.Length];
             for (var i = 0; i < Filters.Length; i++)
@@ -95,7 +95,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
             for (var i = 0; i < originalFilters.Length; i++)
                 originalFilters[i] = originalFilters[i].GetSameChannels(error).AsFilter();
 
-            if (_backPropagate)
+            if (_backPropagate && backPropagate)
                 Parallel.For(0, Filters.Length, filter => {
                     for (var channel = 0; channel < Filters[filter].Channels.Count; channel++) 
                         Filters[filter].Channels[channel] -= Convolution.GetConvolution(extendedInput.Channels[filter],
@@ -104,8 +104,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                     Filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;
                 });
             
-            return Convolution.GetExtendedConvolution(error, 
-                FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
+            return Deconvolution.GetDeconvolution(error, FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
         }
 
         public string GetData() {

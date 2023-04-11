@@ -24,7 +24,7 @@ namespace FotNET.NETWORK.LAYERS.POOLING {
             return Pooling.Pool(tensor, _poolSize);
         }
         
-        public Tensor BackPropagate(Tensor error, double learningRate) =>
+        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) =>
             Pooling.BackPool(error.GetSameChannels(_inputTensor), _inputTensor, _poolSize);
 
         public string GetData() => "";

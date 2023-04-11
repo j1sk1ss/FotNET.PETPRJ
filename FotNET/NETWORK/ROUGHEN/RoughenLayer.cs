@@ -18,7 +18,7 @@ public class RoughenLayer : ILayer {
     public Tensor GetNextLayer(Tensor tensor) =>
          new Vector(tensor.Flatten().ToArray()).AsTensor(XSize, YSize, Depth);
 
-    public Tensor BackPropagate(Tensor error, double learningRate) => new (new Matrix(error.Flatten().ToArray()));
+    public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) => new (new Matrix(error.Flatten().ToArray()));
 
     public Tensor GetValues() => null!;
 

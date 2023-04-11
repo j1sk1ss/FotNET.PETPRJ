@@ -82,10 +82,10 @@ public static class Parser {
         for (var i = 0; i < bitmap.Height; i++)
             for (var j = 0; j < bitmap.Width; j++) 
                 bitmap.SetPixel(i,j, 
-                    Color.FromArgb(1,
-                        (int)(tensor.Channels[0].Body[i,j] * 255),
-                        (int)(tensor.Channels[1].Body[i,j] * 255),
-                        (int)(tensor.Channels[2].Body[i,j] * 255)));
+                    Color.FromArgb(255,
+                        Math.Abs((int)(tensor.Channels[0].Body[i,j] > 255 ? 255 : tensor.Channels[0].Body[i,j])), 
+                        Math.Abs((int)(tensor.Channels[1].Body[i,j] > 255 ? 255 : tensor.Channels[1].Body[i,j])),
+                        Math.Abs((int)(tensor.Channels[2].Body[i,j] > 255 ? 255 : tensor.Channels[2].Body[i,j]))));
 
         return bitmap;
     }

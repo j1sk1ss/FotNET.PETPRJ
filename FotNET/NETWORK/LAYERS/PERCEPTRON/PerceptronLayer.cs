@@ -44,17 +44,19 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             return new Vector(nextLayer).AsTensor(1, nextLayer.Length, 1);
         }
 
-        public Tensor BackPropagate(Tensor error, double learningRate) {
+        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
             var previousError = error.Flatten().ToArray();
             if (_isEndLayer) return new Vector(previousError).AsTensor(1, previousError.Length, 1);
+
+            if (backPropagate) {
+                for (var j = 0; j < Weights.Rows; ++j)
+                    for (var k = 0; k < Weights.Columns; ++k)
+                        Weights.Body[j, k] -= Neurons[k] * previousError[j] * learningRate;
+    
+                for (var j = 0; j < Weights.Rows; j++)
+                    Bias[j] -= previousError[j] * learningRate;
+            }
             
-            for (var j = 0; j < Weights.Rows; ++j)
-                for (var k = 0; k < Weights.Columns; ++k)
-                    Weights.Body[j, k] -= Neurons[k] * previousError[j] * learningRate;
-
-            for (var j = 0; j < Weights.Rows; j++)
-                Bias[j] -= previousError[j] * learningRate;
-
             var neuronsError = previousError * Weights.Transpose();
             return new Vector(neuronsError).AsTensor(1, neuronsError.Length, 1);
         }

@@ -48,7 +48,7 @@ public class PerceptronTests {
             Console.WriteLine($"(BEFORE) Layer {layer + 1}:\nWeights:\n{layers[layer].GetData()}\n");
 
         model.ForwardFeed(testTensorData, AnswerType.Class);
-        model.BackPropagation(0, 1, new OneByOne(), .015d);
+        model.BackPropagation(0, 1, new OneByOne(), .015d, true);
         
         for (var layer = 0; layer < layers.Count; layer++) 
             Console.WriteLine($"(AFTER) Layer {layer + 1}:\nWeights:\n{layers[layer].GetData()}\n");

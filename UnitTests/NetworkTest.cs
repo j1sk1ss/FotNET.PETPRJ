@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-
+using FotNET.DATA.IMAGE;
 using FotNET.MODELS.IMAGE_CLASSIFICATION;
 using FotNET.NETWORK;
 using FotNET.NETWORK.LAYERS;
@@ -8,6 +8,7 @@ using FotNET.NETWORK.LAYERS.ACTIVATION;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.DOUBLE_LEAKY_RELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.RELU;
 using FotNET.NETWORK.LAYERS.CONVOLUTION;
+using FotNET.NETWORK.LAYERS.DATA;
 using FotNET.NETWORK.LAYERS.DECONVOLUTION;
 using FotNET.NETWORK.LAYERS.FLATTEN;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
@@ -52,23 +53,38 @@ public class NetworkTest {
             model.ForwardFeed(new Tensor(new Matrix(64, 64)), AnswerType.Class);
         
         for (var i = 0; i < 100; i++)
-            model.BackPropagation(1,1,new OneByOne(), 1);
+            model.BackPropagation(1,1,new OneByOne(), 1, true);
     }
 
     [Test]
     public void GeneratorTest() {
         var model = new Network(new List<ILayer> {
-            new RoughenLayer(3,3,3),
-            new DeconvolutionLayer(16, 2,2,3, new HeInitialization(), 2),
+            new RoughenLayer(3,3,32),
+            new DeconvolutionLayer(16, 2,2,32, new HeInitialization(), 2),
             new ActivationLayer(new ReLu()),
             new DeconvolutionLayer(8, 6, 6, 16, new HeInitialization(), 2),
             new ActivationLayer(new ReLu()),
             new DeconvolutionLayer(4, 6, 6, 8, new HeInitialization(), 2),
             new ActivationLayer(new ReLu()),
             new DeconvolutionLayer(3, 6, 6, 4, new HeInitialization(), 2),
-            new ActivationLayer(new ReLu())
+            new ActivationLayer(new ReLu()),
+            new DataLayer(DataType.InputTensor)
         });
         
-        Console.WriteLine(model.ForwardFeed(new Vector(27).FillRandom(-1d, 1d).AsTensor(3,3,3)).GetInfo());
+        Console.WriteLine(model.ForwardFeed(Vector.GenerateGaussianNoise(288).AsTensor(3,3,32)).GetInfo());
+        var errorTensor = new Tensor(new List<Matrix> { new (76, 76), new (76, 76), new (76, 76) });
+        model.BackPropagation(errorTensor, new OneByOne(), .1, true);
+    }
+
+    [Test]
+    public void GanTest() {
+        string Path = @"C://Users//j1sk1ss//Desktop//RCNN_TEST//";
+
+        var network = new FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK.Network();
+        network.DiscriminatorFitting(network.LoadReal(Path + "test_faces"), network.GenerateFake(50), .0015d);
+        network.GeneratorFitting(1000, .15d);
+
+        network.GenerateTensor().Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
+        //Parser.TensorToImage(network.GenerateFake(1)[0]).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
     }
 }

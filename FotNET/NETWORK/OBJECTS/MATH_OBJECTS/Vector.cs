@@ -55,13 +55,25 @@
             return vector1;
         }
 
-        public Vector FillRandom(double min, double max) {
-            for (var i = 0; i < Size; i++)
-                Body[i] = new Random().Next() % max - min;
+        public static Vector GenerateGaussianNoise(int size, double mean = 0, double stdDev = 1) {
+            var noise = new double[size];
 
-            return this;
+            for (var i = 0; i < size; i += 2) {
+                var u1 = new Random().NextDouble();
+                var u2 = new Random().NextDouble();
+
+                var z1 = Math.Sqrt(-2 * Math.Log(u1)) * Math.Cos(2 * Math.PI * u2);
+                var z2 = Math.Sqrt(-2 * Math.Log(u1)) * Math.Sin(2 * Math.PI * u2);
+
+                noise[i] = mean + stdDev * z1;
+                if (i + 1 < size) {
+                    noise[i + 1] = mean + stdDev * z2;
+                }
+            }
+
+            return new Vector(noise);
         }
-        
+
         public Matrix AsMatrix(int x, int y, ref int pos) {
             var matrix = new Matrix(x, y);
             

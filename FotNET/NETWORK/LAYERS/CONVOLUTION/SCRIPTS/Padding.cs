@@ -16,7 +16,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
         public static Tensor GetPadding(Tensor tensor, int paddingSize) {
             var tempMatrices = new ConcurrentBag<Matrix>();
             Parallel.For(0, tensor.Channels.Count, i => {
-                tempMatrices.Add(GetPadding(tensor.Channels[i],  Math.Abs(paddingSize)));
+                tempMatrices.Add(GetPadding(tensor.Channels[i],  paddingSize));
             });
                 
             var newTensor = new Tensor(new List<Matrix>());

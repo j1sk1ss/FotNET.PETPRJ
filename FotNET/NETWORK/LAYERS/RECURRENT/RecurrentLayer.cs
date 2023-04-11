@@ -59,7 +59,7 @@ public class RecurrentLayer : ILayer {
         return RecurrentType.GetNextLayer(this, tensor);
     }
 
-    public Tensor BackPropagate(Tensor error, double learningRate) =>
+    public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) =>
         RecurrentType.BackPropagate(this, error, learningRate);
 
     public Tensor GetValues() => InputData;

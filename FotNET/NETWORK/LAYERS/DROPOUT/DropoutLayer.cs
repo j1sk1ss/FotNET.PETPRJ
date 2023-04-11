@@ -21,7 +21,7 @@ public class DropoutLayer : ILayer {
         return tensor;
     }
 
-    public Tensor BackPropagate(Tensor error, double learningRate) => error;
+    public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) => error;
 
     public Tensor GetValues() => null!;
     public string GetData() => "";

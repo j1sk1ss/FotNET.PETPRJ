@@ -15,7 +15,7 @@ public class SoftMaxLayer : ILayer {
             .AsTensor(InputTensor.Channels[0].Rows, InputTensor.Channels[0].Columns, InputTensor.Channels.Count);
     }
 
-    public Tensor BackPropagate(Tensor error, double learningRate) => InputTensor;
+    public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) => InputTensor;
 
     public Tensor GetValues() => InputTensor;
     

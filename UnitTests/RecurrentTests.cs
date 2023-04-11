@@ -77,7 +77,7 @@ public class RecurrentTests {
         //Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
         model.ForwardFeed(testTensorData);
         for (var i = 0; i < 200; i++) {
-            model.BackPropagation(expected, new ValueByValue(), -.0015d);
+            model.BackPropagation(expected, new ValueByValue(), -.0015d, true);
             model.ForwardFeed(testTensorData);
         }
         
@@ -99,7 +99,7 @@ public class RecurrentTests {
         Console.WriteLine(model.GetWeights());
 
         for (var i = 0; i < 200; i++) {
-            model.BackPropagation(0, .52, new ValueByValue(), -.015d);
+            model.BackPropagation(0, .52, new ValueByValue(), -.015d, true);
             model.ForwardFeed(testTensorData, AnswerType.Value);
             //Console.WriteLine(answer);
         }
@@ -124,7 +124,7 @@ public class RecurrentTests {
         
         for (var i = 0; i < 50; i++) {
             model.ForwardFeed(testTensorData);
-            model.BackPropagation(expected, new ValueByValue(), -.5d);
+            model.BackPropagation(expected, new ValueByValue(), -.5d, true);
         }
         
         Console.WriteLine();

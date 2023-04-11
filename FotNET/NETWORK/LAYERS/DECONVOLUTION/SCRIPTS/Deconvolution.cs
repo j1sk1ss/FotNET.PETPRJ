@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS;
@@ -10,24 +11,15 @@ public static class Deconvolution {
         
         var output = new double[outputHeight, outputWidth]; 
         
-        for (var i = 0; i < outputHeight; i += stride) { 
-            for (var j = 0; j < outputWidth; j += stride) { 
-                
-                var sum = 0d; 
-                for (var k = 0; k < filter.Rows; k++) { 
-                    for (var l = 0; l < filter.Columns; l++) { 
-                        var ii = i / stride + k; 
-                        var jj = j / stride + l; 
-                        
-                        if (ii < matrix.Rows && jj < matrix.Columns) 
-                            sum += matrix.Body[ii, jj] * filter.Body[k, l];
-                    } 
-                }
-                
-                output[i, j] = sum + bias; 
-            } 
-        }
-
+        for (var i = 0; i < matrix.Rows; i++) 
+            for (var j = 0; j < matrix.Columns; j++) 
+                for (var k = 0; k < filter.Rows; k++) 
+                    for (var l = 0; l < filter.Columns; l++) {
+                        var row = i * stride + k;
+                        var col = j * stride + l;
+                        output[row, col] += matrix.Body[i, j] * filter.Body[k, l] + bias;
+                    }
+        
         return new Matrix(output);
     }
     
