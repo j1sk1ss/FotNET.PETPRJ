@@ -55,9 +55,9 @@
             return vector1;
         }
 
-        public Vector FillRandom() {
+        public Vector FillRandom(double min, double max) {
             for (var i = 0; i < Size; i++)
-                Body[i] = new Random().Next() % 100;
+                Body[i] = new Random().Next() % max - min;
 
             return this;
         }

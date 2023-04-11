@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
+
 using FotNET.MODELS.IMAGE_CLASSIFICATION;
 using FotNET.NETWORK;
 using FotNET.NETWORK.LAYERS;
@@ -24,7 +25,7 @@ namespace UnitTests;
 public class NetworkTest {
     [Test]
     public void RCnnTest() {
-        var bitmap = (Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//test.jpg");
+        var bitmap = (Bitmap)Image.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//test.jpg");
         RegionConvolution.ForwardFeed(bitmap, 50, 3, CnnClassification.DeepConvolutionNetwork, .2, 28, 28)
             .Save(@$"D:\загрузки\{Guid.NewGuid()}.png", ImageFormat.Png);
     }
@@ -61,9 +62,13 @@ public class NetworkTest {
             new DeconvolutionLayer(16, 2,2,3, new HeInitialization(), 2),
             new ActivationLayer(new ReLu()),
             new DeconvolutionLayer(8, 6, 6, 16, new HeInitialization(), 2),
+            new ActivationLayer(new ReLu()),
+            new DeconvolutionLayer(4, 6, 6, 8, new HeInitialization(), 2),
+            new ActivationLayer(new ReLu()),
+            new DeconvolutionLayer(3, 6, 6, 4, new HeInitialization(), 2),
             new ActivationLayer(new ReLu())
         });
         
-        Console.WriteLine(model.ForwardFeed(new Vector(27).FillRandom().AsTensor(3,3,3)).Channels[0].Print());
+        Console.WriteLine(model.ForwardFeed(new Vector(27).FillRandom(-1d, 1d).AsTensor(3,3,3)).GetInfo());
     }
 }
