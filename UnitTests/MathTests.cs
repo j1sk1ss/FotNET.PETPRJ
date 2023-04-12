@@ -48,23 +48,29 @@ public class MathTests {
 
     [Test]
     public void FullMatrixMultiplication() {
-        var firstMatrix = new HeInitialization().Initialize(new Matrix(500, 250));
-        var secondMatrix = new HeInitialization().Initialize(new Matrix(250,1000));
-        //Console.WriteLine(firstMatrix.Print() + "* \n" + secondMatrix.Print() + "=>\n");
-        //Console.WriteLine(Matrix.Multiply(firstMatrix, secondMatrix).Print());
-        Matrix.Multiply(firstMatrix, secondMatrix);
-    }
-    
-    [Test]
-    public void FullMatrixMultiplyMatrix() {
-        var firstMatrix = new HeInitialization().Initialize(new Matrix(5, 5));
-        var secondMatrix = new HeInitialization().Initialize(new Matrix(5,5));
+        var firstMatrix = new Matrix(2, 2);
+        var secondMatrix = new Matrix(2,5);
+
+        firstMatrix.Body[0, 0] = 1;
+        firstMatrix.Body[0, 1] = 2;
+        firstMatrix.Body[1, 0] = 3;
+        firstMatrix.Body[1, 1] = 1;
+
+        secondMatrix.Body[0, 0] = 1;
+        secondMatrix.Body[0, 1] = 2;
+        secondMatrix.Body[0, 2] = 3;
+        secondMatrix.Body[0, 3] = 1;
+        secondMatrix.Body[0, 4] = 4;
+        secondMatrix.Body[1, 0] = 5;
+        secondMatrix.Body[1, 1] = 1;
+        secondMatrix.Body[1, 2] = 2;
+        secondMatrix.Body[1, 3] = 1;
+        secondMatrix.Body[1, 4] = 3;
         
         Console.WriteLine(firstMatrix.Print() + "* \n" + secondMatrix.Print() + "=>\n");
-        firstMatrix = Matrix.Multiply(firstMatrix, secondMatrix);
-        Console.WriteLine(firstMatrix.Print());
+        Console.WriteLine(Matrix.Multiply(firstMatrix, secondMatrix).Print());
     }
-
+    
     [Test]
     public void FlipMatrix() {
         var firstMatrix = new HeInitialization().Initialize(new Matrix(5, 5));

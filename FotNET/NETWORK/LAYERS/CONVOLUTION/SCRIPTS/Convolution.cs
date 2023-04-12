@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+﻿using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
     public static class Convolution {
@@ -26,7 +25,10 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
             var xSize = tensor.Channels[0].Rows - filters[0].Channels[0].Columns + 1;
             var ySize = tensor.Channels[0].Columns - filters[0].Channels[0].Rows + 1;
 
-            var tempMatrices = new ConcurrentBag<Matrix>();
+            var newTensor = new Tensor(new List<Matrix>());
+            for (var i = 0; i < filters.Length; i++)
+                newTensor.Channels.Add(new Matrix(0,0));
+            
             Parallel.For(0, filters.Length, filter => {
                     var tempMatrix = new Matrix(xSize, ySize);
 
@@ -35,14 +37,13 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
                             filters[filter].Bias);
                     }
 
-                    tempMatrices.Add(tempMatrix);
+                    newTensor.Channels[filter] = tempMatrix;
             });
-            
-            var newTensor = new Tensor(new List<Matrix>());
-            for (var i = 0; i < filters.Length; i++)
-                newTensor.Channels.Add(tempMatrices.ElementAt(i));
             
             return newTensor;
         }
+        
+        public static Tensor BackConvolution(Tensor tensor, Filter[] filters, int stride) =>
+            GetConvolution(Padding.GetPadding(tensor, filters[0].Channels[0].Rows - 1), filters, stride);
     }
 }

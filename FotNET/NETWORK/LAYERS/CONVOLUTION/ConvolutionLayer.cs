@@ -1,5 +1,4 @@
 ﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
-using FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.MATH.Initialization;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
@@ -86,7 +85,8 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         }
 
         public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
-            var extendedInput = Input.GetSameChannels(error);
+            var inputTensor = Input;
+            var extendedInput = inputTensor.GetSameChannels(error);
             
             var originalFilters = new Filter[Filters.Length];
             for (var i = 0; i < Filters.Length; i++)
@@ -104,7 +104,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                     Filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;
                 });
             
-            return Deconvolution.GetDeconvolution(error, FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
+            return Convolution.BackConvolution(error, FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
         }
 
         public string GetData() {

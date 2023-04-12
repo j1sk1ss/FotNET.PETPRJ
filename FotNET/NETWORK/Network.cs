@@ -38,28 +38,37 @@ namespace FotNET.NETWORK {
         /// <param name="expectedValue"> Value of class, that was expected. </param>
         /// <param name="lossFunction"> Type of loss function calculation. </param>
         /// <param name="learningRate"> Value of learning rate. </param>
-        public void BackPropagation(double expectedAnswer, double expectedValue, LossFunction lossFunction, double learningRate, bool backPropagate) {
+        /// <param name="backPropagate"> Type of back propagation (without or with grad). </param>
+        /// <returns> Returns error after all layers of model. </returns>
+        public Tensor BackPropagation(double expectedAnswer, double expectedValue, LossFunction lossFunction, double learningRate, bool backPropagate) {
             var errorTensor = lossFunction.GetErrorTensor(Layers[^1].GetValues(), (int)expectedAnswer, expectedValue);
             for (var i = Layers.Count - 1; i >= 0; i--)
                 errorTensor = Layers[i].BackPropagate(errorTensor, learningRate, backPropagate);
+            return errorTensor;
         }
 
         /// <summary> Back propagation method. </summary>
         /// <param name="expectedAnswer"> Tensor of classes, that was expected. </param>
         /// <param name="lossFunction"> Type of loss function calculation. </param>
         /// <param name="learningRate"> Value of learning rate. </param>
-        public void BackPropagation(Tensor expectedAnswer, LossFunction lossFunction, double learningRate, bool backPropagate) {
+        /// <param name="backPropagate"> Type of back propagation (without or with grad). </param>
+        /// <returns> Returns error after all layers of model. </returns>
+        public Tensor BackPropagation(Tensor expectedAnswer, LossFunction lossFunction, double learningRate, bool backPropagate) {
             var errorTensor = lossFunction.GetErrorTensor(Layers[^1].GetValues(), expectedAnswer);
             for (var i = Layers.Count - 1; i >= 0; i--)
                 errorTensor = Layers[i].BackPropagate(errorTensor, learningRate, backPropagate);
+            return errorTensor;
         }
         
         /// <summary> Back propagation method. </summary>
         /// <param name="errorTensor"> Tensor of error from another neural networks. </param>
         /// <param name="learningRate"> Value of learning rate. </param>
-        public void BackPropagation(Tensor errorTensor, double learningRate, bool backPropagate) {
+        /// <param name="backPropagate"> Type of back propagation (without or with grad). </param>
+        /// <returns> Returns error after all layers of model. </returns>
+        public Tensor BackPropagation(Tensor errorTensor, double learningRate, bool backPropagate) {
             for (var i = Layers.Count - 1; i >= 0; i--)
                 errorTensor = Layers[i].BackPropagate(errorTensor, learningRate, backPropagate);
+            return errorTensor;
         }
         
         /// <returns> Returns all weights of model like string with whitespace delimiter. </returns>

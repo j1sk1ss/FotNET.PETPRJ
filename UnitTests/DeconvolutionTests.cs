@@ -1,3 +1,4 @@
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace UnitTests;
@@ -42,4 +43,5 @@ public class DeconvolutionTests {
         
         Console.WriteLine(answer.Channels[0].Print());
     }
+    
 }

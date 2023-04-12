@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using FotNET.DATA.IMAGE;
 using FotNET.MODELS.IMAGE_CLASSIFICATION;
 using FotNET.NETWORK;
 using FotNET.NETWORK.LAYERS;
@@ -14,11 +13,12 @@ using FotNET.NETWORK.LAYERS.FLATTEN;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
 using FotNET.NETWORK.LAYERS.POOLING;
 using FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.MAX;
+using FotNET.NETWORK.LAYERS.ROUGHEN;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.ONE_BY_ONE;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
-using FotNET.NETWORK.ROUGHEN;
+using FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK;
 using FotNET.SCRIPTS.REGION_CONVOLUTION;
 
 namespace UnitTests;
@@ -49,11 +49,12 @@ public class NetworkTest {
             new SoftMaxLayer()
         });
 
-        for (var i = 0; i < 100; i++)
+        for (var i = 0; i < 1; i++) {
             model.ForwardFeed(new Tensor(new Matrix(64, 64)), AnswerType.Class);
-        
-        for (var i = 0; i < 100; i++)
             model.BackPropagation(1,1,new OneByOne(), 1, true);
+        }
+        
+        Console.WriteLine(model.ForwardFeed(new Tensor(new Matrix(64, 64)), AnswerType.Class));
     }
 
     [Test]
@@ -80,8 +81,8 @@ public class NetworkTest {
     public void GanTest() {
         string Path = @"C://Users//j1sk1ss//Desktop//RCNN_TEST//";
 
-        var network = new FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK.Network();
-        network.DiscriminatorFitting(network.LoadReal(Path + "test_faces"), network.GenerateFake(50), .0015d);
+        var network = new FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK.GaNetwork(null, null);
+        network.DiscriminatorFitting(GaNetwork.LoadReal(Path + "test_faces"), network.GenerateFake(50), .0015d);
         network.GeneratorFitting(1000, .15d);
 
         network.GenerateTensor().Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);

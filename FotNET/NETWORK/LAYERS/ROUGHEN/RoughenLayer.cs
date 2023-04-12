@@ -1,7 +1,6 @@
-using FotNET.NETWORK.LAYERS;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
-namespace FotNET.NETWORK.ROUGHEN;
+namespace FotNET.NETWORK.LAYERS.ROUGHEN;
 
 public class RoughenLayer : ILayer {
     /// <summary> Layer that convert 1D vector-data tensor to multi-dimension data tensor. </summary>
