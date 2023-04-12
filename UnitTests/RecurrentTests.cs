@@ -72,11 +72,10 @@ public class RecurrentTests {
             new DataLayer(DataType.InputTensor)
         });
         
-        var expected = new Tensor(new Matrix(new[] { .12d, .44d, .76d, .11d, .4d, .13d }).Transpose()); // Error cuz output is 1x1x10 instean 1x10x1 like we pass
+        var expected = new Tensor(new Matrix(new[] { .12d, .44d, .76d, .11d, .4d, .13d })); // Error cuz output is 1x1x10 instean 1x10x1 like we pass
         
         Console.WriteLine();
         //Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
-        model.ForwardFeed(testTensorData);
         for (var i = 0; i < 200; i++) {
             model.BackPropagation(expected, new ValueByValue(), -.0015d, true);
             model.ForwardFeed(testTensorData);

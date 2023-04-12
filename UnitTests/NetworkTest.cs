@@ -49,7 +49,7 @@ public class NetworkTest {
             new SoftMaxLayer()
         });
 
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < 100; i++) {
             model.ForwardFeed(new Tensor(new Matrix(64, 64)), AnswerType.Class);
             model.BackPropagation(1,1,new OneByOne(), 1, true);
         }
@@ -81,8 +81,9 @@ public class NetworkTest {
     public void GanTest() {
         string Path = @"C://Users//j1sk1ss//Desktop//RCNN_TEST//";
 
-        var network = new FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK.GaNetwork(null, null);
-        network.DiscriminatorFitting(GaNetwork.LoadReal(Path + "test_faces"), network.GenerateFake(50), .0015d);
+        var network = new GaNetwork(null, null);
+        network.DiscriminatorFitting(GaNetwork.LoadReal(Path + "test_faces", 28, 28),
+            network.GenerateFake(50, 144, 4, 4, 9), .0015d);
         network.GeneratorFitting(1000, .15d);
 
         network.GenerateTensor().Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);

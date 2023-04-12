@@ -16,18 +16,19 @@ public class GaNetwork {
     private Network Generator { get; }
     private Network Discriminator { get; }
 
-    public List<Tensor> GenerateFake(int count) {
+    public List<Tensor> GenerateFake(int count, int noiseSize, int inputTensorXSize, int inputTensorYSize, int inputTensorDepth) {
         var fake = new List<Tensor>();
         for (var i = 0; i < count; i++) 
-            fake.Add(Generator.ForwardFeed(Vector.GenerateGaussianNoise(144).AsTensor(4,4,9)));
+            fake.Add(Generator.ForwardFeed(Vector.GenerateGaussianNoise(noiseSize)
+                .AsTensor(inputTensorXSize,inputTensorYSize,inputTensorDepth)));
         
         return fake;
     }
 
-    public static List<Tensor> LoadReal(string directoryPath) {
+    public static List<Tensor> LoadReal(string directoryPath, int resizeX, int resizeY) {
         var files = Directory.GetFiles(directoryPath);
         return files.Select(file => Parser.ImageToTensor
-            (new Bitmap((Bitmap)Image.FromFile(file), new Size(28, 28)))).ToList();
+            (new Bitmap((Bitmap)Image.FromFile(file), new Size(resizeX, resizeY)))).ToList();
     }
     
     public void DiscriminatorFitting(List<Tensor> realDataSet, List<Tensor> fakeDataSet, double learningRate) {
@@ -47,10 +48,8 @@ public class GaNetwork {
     public void GeneratorFitting(int epochs, double learningRate) {
         for (var i = 0; i < epochs; i++) {
             Discriminator.ForwardFeed(Generator.ForwardFeed(Vector.GenerateGaussianNoise(256).AsTensor(4, 4, 16)));
-            Discriminator.BackPropagation(1,1, new OneByOne(), learningRate, false);
-            var error = Discriminator.GetLayers()[0].GetValues();
-            
-            Generator.BackPropagation(error, learningRate, true);
+            Generator.BackPropagation(Discriminator.BackPropagation(1,1, 
+                new OneByOne(), learningRate, false), learningRate, true);
         }
     }
 
