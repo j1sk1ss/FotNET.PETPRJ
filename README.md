@@ -213,12 +213,10 @@ If u want add few filters, add other constructions and separate them by '//n\':
 
 	1 0 1
 	1 0 1
-	1 0 1
-	/
+	1 0 1/
 	0 0 0
 	1 1 1
-	0 0 0
-	/
+	0 0 0/
 	1 0 0
 	0 1 0
 	0 0 1
