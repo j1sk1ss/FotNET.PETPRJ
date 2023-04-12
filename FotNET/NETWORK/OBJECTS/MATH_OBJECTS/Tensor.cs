@@ -66,6 +66,10 @@
 
             return index;
         }
+
+        public double Min() => Flatten().Min();
+        
+        public double Max() => Flatten().Max();
         
         public static Tensor operator +(Tensor tensor1, Tensor tensor2) {
             var endTensor = new Tensor(tensor1.Channels);

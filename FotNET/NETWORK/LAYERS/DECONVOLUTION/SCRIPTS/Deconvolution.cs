@@ -30,10 +30,9 @@ public static class Deconvolution {
         Parallel.For(0, filters.Length, filter => {
             var tempMatrix = new Matrix(xSize, ySize);
             
-            for (var j = 0; j < tensor.Channels.Count; j++) {
+            for (var j = 0; j < tensor.Channels.Count; j++) 
                 tempMatrix += GetDeconvolution(tensor.Channels[j], filters[filter].Channels[j], stride,
                     filters[filter].Bias);
-            }
             
             tempMatrices.Add(tempMatrix);
         });

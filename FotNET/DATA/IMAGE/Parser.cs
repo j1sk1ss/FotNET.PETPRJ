@@ -77,16 +77,22 @@ public static class Parser {
     }
     
     public static Bitmap TensorToImage(Tensor tensor) {
-        var bitmap = new Bitmap(tensor.Channels[0].Rows, tensor.Channels[0].Columns);
+        var height = tensor.Channels[0].Rows;
+        var width = tensor.Channels[0].Columns;
         
-        for (var i = 0; i < bitmap.Height; i++)
-            for (var j = 0; j < bitmap.Width; j++) 
-                bitmap.SetPixel(i,j, 
-                    Color.FromArgb(255,
-                        Math.Abs((int)(tensor.Channels[0].Body[i,j] > 255 ? 255 : tensor.Channels[0].Body[i,j])), 
-                        Math.Abs((int)(tensor.Channels[1].Body[i,j] > 255 ? 255 : tensor.Channels[1].Body[i,j])),
-                        Math.Abs((int)(tensor.Channels[2].Body[i,j] > 255 ? 255 : tensor.Channels[2].Body[i,j]))));
-
-        return bitmap;
+        var image = new Bitmap(width, height);
+        
+        for (var y = 0; y < height; y++) {
+            for (var x = 0; x < width; x++) {
+                var pixelColor = Color.FromArgb(
+                    (int)tensor.Channels[0].Body[y, x],
+                    (int)tensor.Channels[1].Body[y, x],
+                    (int)tensor.Channels[2].Body[y, x] 
+                );
+                image.SetPixel(x, y, pixelColor);
+            }
+        }
+        
+        return image;
     }
 }

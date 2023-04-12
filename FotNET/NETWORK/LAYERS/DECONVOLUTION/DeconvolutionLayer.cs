@@ -53,19 +53,20 @@ public class DeconvolutionLayer : ILayer {
     }
 
     public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
-        var extendedError = error.GetSameChannels(Input);
+        var inputTensor = Input;
+        var extendedError = error.GetSameChannels(inputTensor);
         
         var originalFilters = new Filter[Filters.Length];
         for (var i = 0; i < Filters.Length; i++)
             originalFilters[i] = new Filter(new List<Matrix>(Filters[i].Channels));
             
         for (var i = 0; i < originalFilters.Length; i++)
-            originalFilters[i] = originalFilters[i].GetSameChannels(Input).AsFilter();
+            originalFilters[i] = originalFilters[i].GetSameChannels(inputTensor).AsFilter();
         
         if (backPropagate)
             Parallel.For(0, Filters.Length, filter => {
                 for (var channel = 0; channel < Filters[filter].Channels.Count; channel++) 
-                    Filters[filter].Channels[channel] -= Deconvolution.GetDeconvolution(Input.Channels[filter],
+                    Filters[filter].Channels[channel] -= Deconvolution.GetDeconvolution(inputTensor.Channels[filter],
                         extendedError.Channels[filter], _stride, Filters[filter].Bias) * learningRate;
                 
                 Filters[filter].Bias -= extendedError.Channels[filter].Sum() * learningRate;
