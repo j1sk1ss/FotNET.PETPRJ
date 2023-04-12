@@ -1,8 +1,8 @@
 ![Alt Text](https://github.com/j1sk1ss/FotNET.MPRJ/blob/master/Cover.png)
 # FotNET
-FotNET is a simple library for working with **RECURRENT NEURAL NETWORKS**, **CONVOLUTION NEURAL NETWORKS** and **CLASSIC NEURAL NETWORKS** like **PERCEPTRON**.
-The main part is that u can create ur own neural network without libraries that takes all work. This project is open source and u can see a code, download him and change every part what u need cuz it very simple to understand this prokject.
-
+FotNET is a simple library for working with **REGIONAL-CONVOLUTION**, **RECURRENT**, **GENERATIVE-ADVERSARIAL**, **CONVOLUTION** and **CLASSIC** **NEURAL NETWORKS** like **PERCEPTRON**.
+The main part is that u can create ur own neural network without libraries that takes all work. This project is open source and u can see a code, download him and change every part what u need cuz it very simple to understand this project with xml documentation.
+![Alt Text](https://github.com/j1sk1ss/FotNET.MPRJ/blob/master/firstSlide.png)
 ### Introduction:
 
 ------------
@@ -44,12 +44,24 @@ For creating neural network class u need do **SIMPLE** steps:
 			new SoftMaxLayer(); 
 		}
 		
-		>> **OR**
+		>> OR
 		
 		List<ILayer> layers = new List<ILayer> {
 			new FlattenLayer();
 			new RecurrentLayer();
 			new SoftMaxLayer(); 
+		}
+		
+		>> OR
+		
+		List<ILayer> layers = new List<ILayer> {
+			new RoughenLayer(); // converts 1D tensor to multi-dimensional tensor
+			new DeconvolutionLayer(); // Input tensor get convolved by filters
+			new ActivationLayer(); // Input tensor get activated
+			new DeconvolutionLayer();
+			new ActivationLayer();
+			new NormalizationLayer();
+			new DataLayer();
 		}
 
 1.1.1. Every layer needs a parametrs, that u should choose by ur self:
@@ -64,6 +76,8 @@ For creating neural network class u need do **SIMPLE** steps:
 		new PerceptronLayer(size);
 		new DropoutLayer(percentOfDropped);
 		new RecurrentLayer(activationFunction, recurrencyType, hiddenLayerSize, weightInitialization);
+		new DeconvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, weightInitialization, convolutionStride);
+		new NormalizationLayer(normalizationType);
 		
 1.1.1.1. Types of pooling u can find here:
 
@@ -76,6 +90,11 @@ For creating neural network class u need do **SIMPLE** steps:
 		new HeInitialization(); // Usualy uses with ReLU, Leaky ReLU and Double Leaky ReLU
 		new XavierInitialization(); // Also uses with Tanghensoid and Sighmoid
 		new NormalizedXavierInitialization(); // Same with upper activation function, but normalized
+
+1.1.1.3. Types of normalization:
+
+		new Abs(); // Normalize tensor with Abs
+		new MinMax(); // Normalize tensor between min and max value
 
 1.2. After it u should choose one of **ACTIVATION FUNCTIONS** or create ur own, but dont forget add IFunction interface:
 
@@ -93,9 +112,14 @@ For creating neural network class u need do **SIMPLE** steps:
 
 #### ForwardFeed:
 
-		network.ForwardFeed(image); // Put image or any tensor. 
+		network.ForwardFeed(tensor); // Put image or any tensor. 
+		
+		>> OR
+		
+		network.ForwardFeed(tensor, answerType); // Answer type - class or value of class
 
-Neural network after **FORWARD FEED** return a **INDEX** of a predicted class from classes that u add on last **PERCEPTRON LAYER**. 
+Neural network after **FORWARD FEED** depending of ur chose return a **INDEX** of a predicted class from classes that u add on last **PERCEPTRON LAYER** or **VALUE**.
+Or, if u don`t add answer type option, returns tensor of answers.
 
 If predicted class is wrong, we going to Back Propagation.
 
@@ -103,7 +127,20 @@ If predicted class is wrong, we going to Back Propagation.
 
 #### BackPropagation:
 
-		network.BackPropagation(expectedClass, expectedValue, learningRate); // Index of expected class and a value (usualy is 1)
+		network.BackPropagation(expectedClass, expectedValue, lossFunction, learningRate, backPropagateStatus); // Index of expected class and a value (usualy is 1)
+		
+		>> OR
+		
+		network.BackPropagation(expectedTensor, lossFunction, learningRate, backPropagateStatus);
+		
+		>> OR
+		
+		network.BackPropagation(error, learningRate, backPropagateStatus);
+		
+U can see lossFunction option:
+
+		new OneByOne();
+		new ValueByValue();
 
 If expected class is different that was predicted, we should use **BACKPROPAGATION** method.
 
