@@ -8,9 +8,8 @@ public class NormalizationLayer : ILayer {
     /// Layer that perform tensor normalization
     /// </summary>
     /// <param name="normalization"> Type of normalization </param>
-    public NormalizationLayer(INormalization normalization) {
+    public NormalizationLayer(INormalization normalization) =>
         Normalization = normalization;
-    }
     
     private INormalization Normalization { get; }
 

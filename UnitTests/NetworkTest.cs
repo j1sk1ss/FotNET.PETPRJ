@@ -9,6 +9,7 @@ using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.DOUBLE_LEAKY_RELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.LEAKY_RELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.RELU;
 using FotNET.NETWORK.LAYERS.CONVOLUTION;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.VALID;
 using FotNET.NETWORK.LAYERS.DATA;
 using FotNET.NETWORK.LAYERS.DECONVOLUTION;
 using FotNET.NETWORK.LAYERS.FLATTEN;
@@ -40,10 +41,10 @@ public class NetworkTest {
     [Test]
     public void CnnTest() {
         var model = new Network(new List<ILayer> {
-            new ConvolutionLayer(8, 9,9,3, new HeInitialization(), 1),
+            new ConvolutionLayer(8, 9,9,3, new HeInitialization(), 1, new ValidPadding()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PoolingLayer(new MaxPooling(), 4),
-            new ConvolutionLayer(16, 9, 9, 8, new HeInitialization(), 1),
+            new ConvolutionLayer(16, 9, 9, 8, new HeInitialization(), 1, new ValidPadding()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PoolingLayer(new MaxPooling(), 2),
             new FlattenLayer(),
@@ -97,10 +98,10 @@ public class NetworkTest {
         });
         
         var discriminator = new Network(new List<ILayer> {
-            new ConvolutionLayer(3, 9,9,3, new HeInitialization(), 1),
+            new ConvolutionLayer(3, 9,9,3, new HeInitialization(), 1, new ValidPadding()),
             new ActivationLayer(new LeakyReLu()),
             new PoolingLayer(new MaxPooling(), 4),
-            new ConvolutionLayer(16, 9, 9, 3, new HeInitialization(), 1),
+            new ConvolutionLayer(16, 9, 9, 3, new HeInitialization(), 1, new ValidPadding()),
             new ActivationLayer(new LeakyReLu()),
             new PoolingLayer(new MaxPooling(), 2),
             new FlattenLayer(),

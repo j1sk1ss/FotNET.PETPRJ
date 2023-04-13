@@ -5,9 +5,8 @@ namespace UnitTests;
 public class TokenizerTests {
     [Test]
     public void TokenTest() {
-        var text = "Hello, i`m from Netherlands!" +
-                   "\nWhere are u living, dude?";
-        var tokens = Tokenizer.Tokenize(text);
+        var text = "hello .How are u?";
+        var tokens = Tokenizer.Tokenize(text, new List<string>());
         foreach (var word in tokens) {
             Console.WriteLine(word);
         }

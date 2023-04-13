@@ -1,7 +1,8 @@
 ﻿namespace FotNET.SCRIPTS.TEXT_CLASSIFICATION.SCRIPTS;
 
 public static class Tokenizer {
-    public static List<string> Tokenize(string text) {
+    
+    public static List<string> Tokenize(string text, List<string> stopWords) {
         var whiteSpaces = text.Split(new []{' ', '\n'}, StringSplitOptions.RemoveEmptyEntries);
         var punctuation = new List<string> { ".", ",", "/", "'", "!", "?", "`", "-", ":"};
 
@@ -18,16 +19,19 @@ public static class Tokenizer {
                             tokens.Add(element[i] + "");
                             break;
                         default:
-                            tokens.Add(word);
+                            if (!stopWords.Contains(word)) tokens.Add(word);
                             word = "";
                             tokens.Add(element[i] + "");
                             break;
                     }
             
             if (word == "") continue;
-            tokens.Add(word);
+            if (!stopWords.Contains(word)) tokens.Add(word);
         }
         
         return tokens;
     }
+
+    public static List<int> Tokenize(IEnumerable<string> tokens, List<string> dictionary) =>
+         tokens.Select(token => dictionary.Contains(token) ? dictionary.IndexOf(token) : 0).ToList();
 }

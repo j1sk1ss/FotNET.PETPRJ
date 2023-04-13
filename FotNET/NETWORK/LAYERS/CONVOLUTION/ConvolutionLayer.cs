@@ -1,4 +1,5 @@
 ﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING;
 using FotNET.NETWORK.MATH.Initialization;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
@@ -11,9 +12,11 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         /// <param name="filterDepth"> Depth of filters on layer. </param>
         /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
         /// <param name="stride"> Stride of convolution. </param>
+        /// <param name="padding"> Padding type. </param>
         public ConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth, 
-            IWeightsInitialization weightsInitialization, int stride) {
+            IWeightsInitialization weightsInitialization, int stride, Padding padding) {
             _backPropagate = true;
+            _padding       = padding;
             Filters        = new Filter[filters];
             
             for (var j = 0; j < filters; j++) {
@@ -38,11 +41,13 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         /// <param name="filtersPath"> Path to .txt file of filters. </param>
         /// <param name="filterDepth"> Depth of filters on layer. </param>
         /// <param name="stride"> Stride of convolution. </param>
-        public ConvolutionLayer(string filtersPath, int filterDepth, int stride) {
+        /// <param name="padding"> Padding type. </param>
+        public ConvolutionLayer(string filtersPath, int filterDepth, int stride, Padding padding) {
             var filters = File.ReadAllText(filtersPath).Split("/", StringSplitOptions.RemoveEmptyEntries);
             
             _backPropagate = false;
-            Filters = new Filter[filters.Length];
+            _padding       = padding;
+            Filters        = new Filter[filters.Length];
             
             for (var j = 0; j < filters.Length; j++) {
                 Filters[j] = new Filter(new List<Matrix>()) {
@@ -59,6 +64,8 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         
         private readonly int _stride;
         private readonly bool _backPropagate;
+        
+        private readonly Padding _padding;
 
         private Filter[] Filters { get; }
         private Tensor Input { get; set; }
@@ -81,7 +88,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
         public Tensor GetNextLayer(Tensor layer) {
             Input = new Tensor(new List<Matrix>(layer.Channels));
-            return Convolution.GetConvolution(layer, Filters, _stride);
+            return Convolution.GetConvolution(_padding.GetPadding(layer, Filters[0].Channels[0].Rows - 1), Filters, _stride);
         }
 
         public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {

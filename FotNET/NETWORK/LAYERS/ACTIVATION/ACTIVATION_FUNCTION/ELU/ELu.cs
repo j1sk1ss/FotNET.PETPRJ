@@ -1,7 +1,6 @@
 namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.ELU;
 
 public class ELu : Function {
-
     public ELu(double alpha) => Alpha = alpha;
     
     private double Alpha { get; }
@@ -15,7 +14,9 @@ public class ELu : Function {
 
     protected override double Derivation(double value) {
         if (value >= 0) 
-            return 1.0; 
+            return 1.0d;
+
+        if (value == 0 && Alpha == 0) return 1.0d;
         
         return value * Alpha * Math.Exp(value);
     }

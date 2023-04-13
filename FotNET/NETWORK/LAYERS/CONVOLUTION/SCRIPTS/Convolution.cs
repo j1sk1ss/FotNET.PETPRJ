@@ -1,4 +1,5 @@
-﻿using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
+using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
     public static class Convolution {
@@ -44,6 +45,6 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
         }
         
         public static Tensor BackConvolution(Tensor tensor, Filter[] filters, int stride) =>
-            GetConvolution(Padding.GetPadding(tensor, filters[0].Channels[0].Rows - 1), filters, stride);
+            GetConvolution(new SamePadding().GetPadding(tensor, filters[0].Channels[0].Rows - 1), filters, stride);
     }
 }

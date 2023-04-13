@@ -3,6 +3,7 @@ using FotNET.NETWORK.LAYERS;
 using FotNET.NETWORK.LAYERS.ACTIVATION;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.DOUBLE_LEAKY_RELU;
 using FotNET.NETWORK.LAYERS.CONVOLUTION;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.VALID;
 using FotNET.NETWORK.LAYERS.FLATTEN;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
 using FotNET.NETWORK.LAYERS.POOLING;
@@ -13,10 +14,10 @@ namespace FotNET.MODELS.IMAGE_CLASSIFICATION;
 
 public static class CnnClassification {
     public static Network SimpleConvolutionNetwork = new Network(new List<ILayer> {
-        new ConvolutionLayer(6, 5,5,3, new HeInitialization(), 1),
+        new ConvolutionLayer(6, 5,5,3, new HeInitialization(), 1, new ValidPadding()),
         new ActivationLayer(new DoubleLeakyReLu()),
         new PoolingLayer(new MaxPooling(), 2),
-        new ConvolutionLayer(16, 5, 5, 6, new HeInitialization(), 1),
+        new ConvolutionLayer(16, 5, 5, 6, new HeInitialization(), 1, new ValidPadding()),
         new ActivationLayer(new DoubleLeakyReLu()),
         new PoolingLayer(new MaxPooling(), 2),
         new FlattenLayer(),
@@ -28,9 +29,9 @@ public static class CnnClassification {
     });
     
     public static Network DeepConvolutionNetwork = new Network(new List<ILayer> {
-        new ConvolutionLayer(16, 5,5,3, new HeInitialization(), 1),
+        new ConvolutionLayer(16, 5,5,3, new HeInitialization(), 1, new ValidPadding()),
         new ActivationLayer(new DoubleLeakyReLu()),
-        new ConvolutionLayer(32, 5, 5, 16, new HeInitialization(), 1),
+        new ConvolutionLayer(32, 5, 5, 16, new HeInitialization(), 1, new ValidPadding()),
         new ActivationLayer(new DoubleLeakyReLu()),
         new FlattenLayer(),
         new PerceptronLayer(512, 256, new HeInitialization()),

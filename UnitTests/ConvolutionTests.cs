@@ -1,4 +1,6 @@
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.VALID;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 
 namespace UnitTests;
@@ -50,12 +52,14 @@ public class ConvolutionTests {
     [Test]
     public void Padding() {
         var firstMatrix = Initialize(10, _matrix);
-        
+        var firstFilter = Initialize(5, _filter);
         Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
 
-        firstMatrix = FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.Padding
-            .GetPadding(new Tensor(firstMatrix), 2).Channels[0];
+        var thirdMatrix = new SamePadding().GetPadding(new Tensor(firstMatrix), firstFilter.Rows - 1).Channels[0];
+        var ans = Convolution.GetConvolution(firstMatrix, firstFilter, 1, 0);
+        var ans1 = Convolution.GetConvolution(thirdMatrix, firstFilter, 1, 0);
         
-        Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
+        Console.WriteLine("Matrix is:\n" + ans.Print());
+        Console.WriteLine("Matrix is:\n" + ans1.Print());
     }
 }
