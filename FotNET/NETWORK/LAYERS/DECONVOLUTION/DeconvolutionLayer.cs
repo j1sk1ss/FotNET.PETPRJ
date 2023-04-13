@@ -6,6 +6,13 @@ using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 namespace FotNET.NETWORK.LAYERS.DECONVOLUTION;
 
 public class DeconvolutionLayer : ILayer {
+    /// <summary> Layer that perform tensor deconvolution by filters and biases. </summary>
+    /// <param name="filters"> Count of filters on layer. </param>
+    /// <param name="filterWeight"> Weight of filters on layer. </param>
+    /// <param name="filterHeight"> Height of filters on layer. </param>
+    /// <param name="filterDepth"> Depth of filters on layer. </param>
+    /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
+    /// <param name="stride"> Stride of deconvolution. </param>
     public DeconvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth,
         IWeightsInitialization weightsInitialization, int stride) {
         Filters = new Filter[filters];

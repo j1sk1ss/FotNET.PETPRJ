@@ -21,7 +21,6 @@ using FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.MAX;
 using FotNET.NETWORK.LAYERS.ROUGHEN;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.MATH.Initialization.HE;
-using FotNET.NETWORK.MATH.Initialization.Xavier;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.ONE_BY_ONE;
 using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
 using FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK;
@@ -94,7 +93,7 @@ public class NetworkTest {
             new ActivationLayer(new LeakyReLu()),
             new DeconvolutionLayer(3,6,6,6, new HeInitialization(), 2),
             new NormalizationLayer(new Abs()),
-            new NormalizationLayer(new MinMax())
+            new NormalizationLayer(new MinMax(255d))
         });
         
         var discriminator = new Network(new List<ILayer> {
