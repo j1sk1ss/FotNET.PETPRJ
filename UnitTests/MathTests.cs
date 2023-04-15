@@ -1,5 +1,5 @@
 using FotNET.NETWORK.MATH.Initialization.HE;
-using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+using FotNET.NETWORK.MATH.OBJECTS;
 using NUnit.Framework;
 
 namespace UnitTests;
@@ -94,7 +94,7 @@ public class MathTests {
         Console.WriteLine("First vector is: " + firstVector.Print());
         Console.WriteLine("Second vector is: " + secondVector.Print());
 
-        firstVector = new Vector(firstVector + secondVector);
+        firstVector += secondVector;
         
         Console.WriteLine("Addition is: " + firstVector.Print());
     }

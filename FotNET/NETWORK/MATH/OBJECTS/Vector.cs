@@ -1,4 +1,7 @@
-﻿namespace FotNET.NETWORK.OBJECTS.MATH_OBJECTS {
+﻿namespace FotNET.NETWORK.MATH.OBJECTS {
+    /// <summary>
+    /// Vector object for working with arrays
+    /// </summary>
     public class Vector {
         public Vector(double[] array) {
             Body = array;
@@ -11,48 +14,48 @@
         }
         
         private double[] Body { get; }
-        private int Size { get; }
+        public int Size { get; }
 
-        private double this[int key] {
+        public double this[int key] {
             get => Body[key];
             set => SetElement(key, value);
         }
 
         private void SetElement(int index, double value) => Body[index] = value;
 
-        public static double[] operator +(Vector vector1, Vector vector2) {
-            for (var i = 0; i < vector1.Size; i++) 
-                vector1[i] += vector2[i];
+        public static Vector operator +(Vector firstVector, Vector secondVector) {
+            for (var i = 0; i < firstVector.Size; i++) 
+                firstVector[i] += secondVector[i];
         
-            return vector1.Body;
+            return firstVector;
         }
 
-        public static Vector operator -(Vector vector1, double value) {
-            for (var i = 0; i < vector1.Size; i++) 
-                vector1[i] -= value;
+        public static Vector operator -(Vector firstVector, double value) {
+            for (var i = 0; i < firstVector.Size; i++) 
+                firstVector[i] -= value;
         
-            return vector1;
+            return firstVector;
         }
         
-        public static Vector operator +(Vector vector1, double value) {
-            for (var i = 0; i < vector1.Size; i++) 
-                vector1[i] += value;
+        public static Vector operator +(Vector firstVector, double value) {
+            for (var i = 0; i < firstVector.Size; i++) 
+                firstVector[i] += value;
         
-            return vector1;
-        }
-
-        public static Vector operator *(Vector vector1, Vector vector2) {
-            for (var i = 0; i < vector1.Size; i++) 
-                vector1[i] *= vector2[i];
-        
-            return vector1;
+            return firstVector;
         }
 
-        public static Vector operator *(Vector vector1, double value) {
-            for (var i = 0; i < vector1.Size; i++) 
-                vector1[i] *= value;
+        public static Vector operator *(Vector firstVector, Vector secondVector) {
+            for (var i = 0; i < firstVector.Size; i++) 
+                firstVector[i] *= secondVector[i];
+        
+            return firstVector;
+        }
+
+        public static Vector operator *(Vector firstVector, double value) {
+            for (var i = 0; i < firstVector.Size; i++) 
+                firstVector[i] *= value;
             
-            return vector1;
+            return firstVector;
         }
 
         public static Vector GenerateGaussianNoise(int size, double mean = 0, double stdDev = 1) {
@@ -66,32 +69,31 @@
                 var z2 = Math.Sqrt(-2 * Math.Log(u1)) * Math.Sin(2 * Math.PI * u2);
 
                 noise[i] = mean + stdDev * z1;
-                if (i + 1 < size) {
+                
+                if (i + 1 < size) 
                     noise[i + 1] = mean + stdDev * z2;
-                }
             }
 
             return new Vector(noise);
         }
 
-        public Matrix AsMatrix(int x, int y, ref int pos) {
+        private Matrix AsMatrix(int x, int y, int pos) {
             var matrix = new Matrix(x, y);
             
             for (var i = 0; i < x; i++)
                 for (var j = 0; j < y; j++) {
                     if (Size <= pos) return null!;
                     matrix.Body[i, j] = Body[pos++];
-            }
+                }
 
             return matrix;
         }
         
         public Tensor AsTensor(int x, int y, int channels) {
             var tensor = new Tensor(new List<Matrix>());
-            var position = 0;
 
             for (var k = 0; k < channels; k++) 
-                tensor.Channels.Add(AsMatrix(x,y, ref position));
+                tensor.Channels.Add(AsMatrix(x, y, x * y * k));
             
             return tensor;
         }

@@ -1,4 +1,4 @@
-using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.CUSTOM;
 
@@ -7,7 +7,7 @@ public class CustomPadding : Padding {
     
     private int PaddingSize { get; }
     
-    protected override Matrix GetPadding(Matrix matrix, int paddingSize) {
+    public override Matrix GetPadding(Matrix matrix) {
         var newMatrix = new Matrix(matrix.Rows + PaddingSize, matrix.Columns + PaddingSize);
 
         for (var i = PaddingSize; i < newMatrix.Rows - PaddingSize; i++)

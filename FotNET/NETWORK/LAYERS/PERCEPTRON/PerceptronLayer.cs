@@ -1,5 +1,5 @@
 ﻿using FotNET.NETWORK.MATH.Initialization;
-using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
     public class PerceptronLayer : ILayer {
@@ -8,7 +8,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
         /// <param name="nextSize"> Size of neurons on second layer. </param>
         /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
         public PerceptronLayer(int size, int nextSize, IWeightsInitialization weightsInitialization) {
-            Neurons = new double[size];
+            Neurons = new Vector(size);
             Bias    = new double[nextSize];
             Weights = weightsInitialization.Initialize(new Matrix(nextSize, size));
 
@@ -21,7 +21,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
         /// <summary> Last layer of perceptron. </summary>
         /// <param name="size"> Size of neurons on this layer. </param>
         public PerceptronLayer(int size) {
-            Neurons = new double[size];
+            Neurons = new Vector(size);
             Bias    = new double[size];
 
             Weights = new Matrix(size, size);
@@ -32,21 +32,21 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
         }
 
         private readonly bool _isEndLayer;
-        private double[] Neurons { get; set; }
+        private Vector Neurons { get; set; }
         private double[] Bias { get; }
         private Matrix Weights { get; }
 
-        public Tensor GetValues() => new Vector(Neurons).AsTensor(1, Neurons.Length, 1);
+        public Tensor GetValues() => Neurons.AsTensor(1, Neurons.Size, 1);
 
         public Tensor GetNextLayer(Tensor tensor) {
-            Neurons = tensor.Flatten().ToArray();
-            var nextLayer = new Vector(Neurons * Weights) + new Vector(Bias);
-            return new Vector(nextLayer).AsTensor(1, nextLayer.Length, 1);
+            Neurons = new Vector(tensor.Flatten().ToArray());
+            var nextLayer = Neurons * Weights + new Vector(Bias);
+            return nextLayer.AsTensor(1, nextLayer.Size, 1);
         }
 
         public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
-            var previousError = error.Flatten().ToArray();
-            if (_isEndLayer) return new Vector(previousError).AsTensor(1, previousError.Length, 1);
+            var previousError = new Vector(error.Flatten().ToArray());
+            if (_isEndLayer) return previousError.AsTensor(1, previousError.Size, 1);
 
             if (backPropagate) {
                 for (var j = 0; j < Weights.Rows; ++j)
@@ -58,7 +58,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             }
             
             var neuronsError = previousError * Weights.Transpose();
-            return new Vector(neuronsError).AsTensor(1, neuronsError.Length, 1);
+            return neuronsError.AsTensor(1, neuronsError.Size, 1);
         }
 
         public string GetData() {

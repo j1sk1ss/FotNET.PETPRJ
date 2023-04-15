@@ -1,7 +1,8 @@
 ﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
 using FotNET.NETWORK.MATH.Initialization;
-using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
     public class ConvolutionLayer : ILayer {
@@ -88,7 +89,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
         public Tensor GetNextLayer(Tensor layer) {
             Input = new Tensor(new List<Matrix>(layer.Channels));
-            return Convolution.GetConvolution(_padding.GetPadding(layer, Filters[0].Channels[0].Rows - 1), Filters, _stride);
+            return Convolution.GetConvolution(_padding.GetPadding(layer), Filters, _stride);
         }
 
         public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
@@ -105,13 +106,15 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
             if (_backPropagate && backPropagate)
                 Parallel.For(0, Filters.Length, filter => {
                     for (var channel = 0; channel < Filters[filter].Channels.Count; channel++) 
-                        Filters[filter].Channels[channel] -= Convolution.GetConvolution(extendedInput.Channels[filter],
-                            error.Channels[filter], _stride, Filters[filter].Bias) * learningRate;
+                        Filters[filter].Channels[channel] -= Convolution.GetConvolution(
+                            _padding.GetPadding(extendedInput.Channels[filter]), error.Channels[filter], 
+                            _stride, Filters[filter].Bias) * learningRate;
                     
                     Filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;
                 });
             
-            return Convolution.BackConvolution(error, FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
+            return Convolution.GetConvolution(new SamePadding(originalFilters[0]).GetPadding(error), 
+                FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
         }
 
         public string GetData() {

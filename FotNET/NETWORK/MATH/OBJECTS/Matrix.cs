@@ -1,4 +1,7 @@
-﻿namespace FotNET.NETWORK.OBJECTS.MATH_OBJECTS {
+﻿namespace FotNET.NETWORK.MATH.OBJECTS {
+    /// <summary>
+    /// Matrix object for working with 2D arrays
+    /// </summary>
     public class Matrix {
         public Matrix(double[,] body) {
             Rows    = body.GetLength(0);
@@ -62,8 +65,8 @@
 
         public double Average() => GetAsList().Average();
 
-        public static double[] operator *(double[] vector, Matrix matrix) {
-            var endVector = new double[matrix.Rows];
+        public static Vector operator *(Vector vector, Matrix matrix) {
+            var endVector = new Vector(matrix.Rows);
 
             Parallel.For(0, matrix.Rows, i => {
                 double tmp = 0;

@@ -1,6 +1,6 @@
 using System.Drawing;
 using FotNET.DATA.DATA_OBJECTS;
-using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.DATA.IMAGE;
 

@@ -1,4 +1,7 @@
-﻿namespace FotNET.NETWORK.OBJECTS.MATH_OBJECTS {
+﻿namespace FotNET.NETWORK.MATH.OBJECTS {
+    /// <summary>
+    /// Tensor object for working with list of matrices
+    /// </summary>
     public class Tensor {
         public Tensor(Matrix matrix) => Channels = new List<Matrix> { matrix };
 

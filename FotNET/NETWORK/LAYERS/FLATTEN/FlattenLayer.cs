@@ -1,4 +1,4 @@
-﻿using FotNET.NETWORK.OBJECTS.MATH_OBJECTS;
+﻿using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.FLATTEN {
     /// <summary> Layer that convert multi-dimension data tensor to 1D vector-data tensor. </summary>
