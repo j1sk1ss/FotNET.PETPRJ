@@ -1,6 +1,9 @@
 ﻿using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.MATH.LOSS_FUNCTION {
+    /// <summary>
+    /// LossFunction used for getting error of output error
+    /// </summary>
     public abstract class LossFunction {
         public Tensor GetErrorTensor(Tensor outputTensor, int expectedClass, double expectedValue) {
             var prediction = outputTensor.Channels[0].GetAsList().ToArray();

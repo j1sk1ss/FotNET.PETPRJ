@@ -1,7 +1,10 @@
 using FotNET.NETWORK.MATH.OBJECTS;
 
-namespace FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.ManyToOne;
+namespace FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.MANY_TO_ONE;
 
+/// <summary>
+/// Type on RNN where model takes sequence and return one element
+/// </summary>
 public class ManyToOne : IRecurrentType {
     public Tensor GetNextLayer(RecurrentLayer layer, Tensor tensor) {
         var sequence = tensor.Flatten();

@@ -8,9 +8,10 @@ using FotNET.NETWORK.LAYERS.DATA;
 using FotNET.NETWORK.LAYERS.FLATTEN;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
 using FotNET.NETWORK.LAYERS.RECURRENT;
-using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.ManyToMany;
-using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.ManyToOne;
-using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.OneToMany;
+using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.EXTENDED_MANY_TO_MANY;
+using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.MANY_TO_ONE;
+using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.ONE_TO_MANY;
+using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.VALID_MANY_TO_MANY;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.Initialization.Xavier;
@@ -22,11 +23,25 @@ namespace UnitTests;
 
 public class RecurrentTests {
     [Test]
-    public void ForwardFeed_MTM() {
+    public void ForwardFeed_MTM_V() {
         var testTensorData = new Tensor(new Matrix(new double[] { 0, 0, 0, 1, 1, 1 }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new DoubleLeakyReLu(), new ManyToMany(), 10, new HeInitialization()),
+            new RecurrentLayer(new DoubleLeakyReLu(), new ValidManyToMany(), 10, new HeInitialization()),
+            new SoftMaxLayer()
+        });
+        model.ForwardFeed(testTensorData, AnswerType.Class);
+
+        var layers = model.GetLayers();
+        Console.WriteLine($"Layer {layers.Count}:\nInput Tensor on layer:\n{layers[^1].GetValues().Channels[0].Print()}\n");
+    }
+
+    [Test]
+    public void ForwardFeed_MTM_E() {
+        var testTensorData = new Tensor(new Matrix(new double[] { 0, 0, 0, 1, 1, 1 }));
+        var model = new Network(new List<ILayer> {
+            new FlattenLayer(),
+            new RecurrentLayer(new DoubleLeakyReLu(), new ExtendedManyToMany(), 10, new HeInitialization()),
             new SoftMaxLayer()
         });
         model.ForwardFeed(testTensorData, AnswerType.Class);
@@ -57,6 +72,7 @@ public class RecurrentTests {
             new RecurrentLayer(new DoubleLeakyReLu(), new OneToMany(), 10, new HeInitialization()),
             new SoftMaxLayer()
         });
+        model.ForwardFeed(testTensorData);
         model.ForwardFeed(testTensorData, AnswerType.Class);
 
         var layers = model.GetLayers();
@@ -64,15 +80,35 @@ public class RecurrentTests {
     }
     
     [Test]
-    public void BackPropagation_MTM() {
+    public void BackPropagation_MTM_V() {
         var testTensorData = new Tensor(new Matrix(new[] { .7d, .1d, .3d, .21d, .14d, .77d }));
         var model = new Network(new List<ILayer> {
-            new FlattenLayer(),
-            new RecurrentLayer(new Tangensoid(), new ManyToMany(), 10, new XavierInitialization()),
+            new RecurrentLayer(new Tangensoid(), new ValidManyToMany(), 10, new XavierInitialization()),
             new DataLayer(DataType.InputTensor)
         });
+        model.ForwardFeed(testTensorData);
+        var expected = new Vector(new[] { .12d, .44d, .76d, .11d, .4d, .13d }).AsTensor(1, 6, 1); // Error cuz output is 1x1x10 instean 1x10x1 like we pass
         
-        var expected = new Tensor(new Matrix(new[] { .12d, .44d, .76d, .11d, .4d, .13d })); // Error cuz output is 1x1x10 instean 1x10x1 like we pass
+        Console.WriteLine();
+        //Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
+        for (var i = 0; i < 200; i++) {
+            model.BackPropagation(expected, new ValueByValue(), -.0015d, true);
+            model.ForwardFeed(testTensorData);
+        }
+        
+        Console.WriteLine();
+        //Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
+    }
+    
+    [Test]
+    public void BackPropagation_MTM_E() {
+        var testTensorData = new Tensor(new Matrix(new[] { .7d, .1d, .3d, .21d, .14d, .77d }));
+        var model = new Network(new List<ILayer> {
+            new RecurrentLayer(new Tangensoid(), new ExtendedManyToMany(), 10, new XavierInitialization()),
+            new DataLayer(DataType.InputTensor)
+        });
+        model.ForwardFeed(testTensorData);
+        var expected = new Vector(new[] { .12d, .44d, .76d, .11d, .4d, .13d }).AsTensor(1, 6, 1); // Error cuz output is 1x1x10 instean 1x10x1 like we pass
         
         Console.WriteLine();
         //Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());

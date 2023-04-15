@@ -22,8 +22,8 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION {
            return matrix;
        }
 
-       public double[] Activate(double[] array) {
-           for (var i = 0; i < array.Length; i++)
+       public Vector Activate(Vector array) {
+           for (var i = 0; i < array.Size; i++)
                array[i] = Activate(array[i]);
 
            return array;
@@ -49,8 +49,8 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION {
            return matrix;
        }
        
-       public double[] Derivation(double[] array) {
-           for (var i = 0; i < array.Length; i++)
+       public Vector Derivation(Vector array) {
+           for (var i = 0; i < array.Size; i++)
                array[i] = Derivation(array[i]);
 
            return array;

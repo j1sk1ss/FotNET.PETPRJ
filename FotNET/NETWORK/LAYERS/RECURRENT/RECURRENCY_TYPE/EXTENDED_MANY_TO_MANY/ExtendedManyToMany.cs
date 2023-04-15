@@ -1,13 +1,19 @@
 using FotNET.NETWORK.MATH.OBJECTS;
 
-namespace FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.OneToMany;
+namespace FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.EXTENDED_MANY_TO_MANY;
 
-public class OneToMany : IRecurrentType {
+/// <summary>
+/// Type on RNN where model takes sequence and return another sequence with same size with duration during calculation
+/// </summary>
+public class ExtendedManyToMany : IRecurrentType {
     public Tensor GetNextLayer(RecurrentLayer layer, Tensor tensor) {
-        var currentElement = tensor.Flatten()[0];
-
-        for (var step = 0; step < layer.HiddenWeights.Columns; step++) {
+        var sequence = tensor.Flatten();
+        
+        for (var step = 0; step < sequence.Count * 2; step++) {
+            var currentElement = sequence[step >= sequence.Count ? 0 : step];
             var inputNeurons = Matrix.Multiply(new Matrix(new[] { currentElement }), layer.InputWeights);
+
+            if (step >= sequence.Count) inputNeurons *= 0;
             
             if (step > 0)
                 layer.HiddenNeurons.Add(inputNeurons + Matrix.Multiply(layer.HiddenNeurons[step - 1], layer.HiddenWeights) + new Matrix(layer.HiddenBias).Transpose());
@@ -15,10 +21,11 @@ public class OneToMany : IRecurrentType {
                 layer.HiddenNeurons.Add(inputNeurons);
 
             layer.HiddenNeurons[^1] = layer.Function.Activate(layer.HiddenNeurons[^1]);
-            layer.OutputNeurons.Add(Matrix.Multiply(layer.HiddenNeurons[^1], layer.OutputWeights) + layer.OutputBias);
+            if (step >= sequence.Count) layer.OutputNeurons.Add(Matrix.Multiply(layer.HiddenNeurons[^1], layer.OutputWeights) + layer.OutputBias);
         }
 
-        return new Tensor(layer.OutputNeurons);
+        return new Vector(new Tensor(layer.OutputNeurons).Flatten().ToArray())
+            .AsTensor(1, new Tensor(layer.OutputNeurons).Flatten().Count, 1);
     }
 
     public Tensor BackPropagate(RecurrentLayer layer, Tensor error, double learningRate) {
@@ -26,16 +33,20 @@ public class OneToMany : IRecurrentType {
         var nextHidden = new Matrix(0,0);
 
         learningRate /= sequence.Count;
-        
+
         var transposedOutputWeights = layer.OutputWeights.Transpose();
         var transposedHiddenWeights = layer.HiddenWeights.Transpose();
         
-        for (var step = layer.HiddenWeights.Columns - 1; step >= 0; step--) {
-            layer.OutputWeights -= Matrix.Multiply(layer.HiddenNeurons[step].Transpose(),
-                new Matrix(new[] { sequence[step] })) * learningRate;
-            layer.OutputBias -= sequence[step] * learningRate;
+        for (var step = sequence.Count - 1; step >= 0; step--) {
+            var currentError = sequence[step - layer.HiddenNeurons.Count < 0 ? 0 : step - layer.HiddenNeurons.Count];
+
+            if (step < layer.InputData.Flatten().Count) currentError = 0;
             
-            var outputGradient = Matrix.Multiply(new Matrix(new[] { sequence[step] }), transposedOutputWeights);
+            layer.OutputWeights -= Matrix.Multiply(layer.HiddenNeurons[step].Transpose(),
+                new Matrix(new[] { currentError })) * learningRate;
+            layer.OutputBias -= currentError * learningRate;
+            
+            var outputGradient = Matrix.Multiply(new Matrix(new[] { currentError }), transposedOutputWeights);
             if (step != layer.HiddenNeurons.Count - 1) 
                 nextHidden = outputGradient + Matrix.Multiply(nextHidden, transposedHiddenWeights);
             else nextHidden = outputGradient;
@@ -48,7 +59,8 @@ public class OneToMany : IRecurrentType {
                     layer.HiddenBias[bias] -= hiddenWeightGradient.GetAsList().Average() * learningRate;                
             }
             
-            layer.InputWeights -= Matrix.Multiply(new Matrix(new[]{layer.InputData.Flatten()[0]}), nextHidden) * learningRate;
+            if (step < layer.InputData.Flatten().Count)
+                layer.InputWeights -= Matrix.Multiply(new Matrix(new[]{layer.InputData.Flatten()[step]}), nextHidden) * learningRate;
         }
 
         return error;
