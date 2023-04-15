@@ -48,6 +48,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             var previousError = new Vector(error.Flatten().ToArray());
             if (_isEndLayer) return previousError.AsTensor(1, previousError.Size, 1);
 
+            var neuronsError = previousError * Weights.Transpose();
             if (backPropagate) {
                 for (var j = 0; j < Weights.Rows; ++j)
                     for (var k = 0; k < Weights.Columns; ++k)
@@ -57,7 +58,6 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
                     Bias[j] -= previousError[j] * learningRate;
             }
             
-            var neuronsError = previousError * Weights.Transpose();
             return neuronsError.AsTensor(1, neuronsError.Size, 1);
         }
 
