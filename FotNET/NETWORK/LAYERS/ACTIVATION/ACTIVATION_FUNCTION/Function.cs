@@ -6,9 +6,7 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION {
        
        public Tensor Activate(Tensor tensor) {
            Parallel.For(0, tensor.Channels.Count, channel => {
-               for (var x = 0; x < tensor.Channels[channel].Rows; x++)
-                   for (var y = 0; y < tensor.Channels[channel].Columns; y++)
-                       tensor.Channels[channel].Body[x, y] = Activate(tensor.Channels[channel].Body[x, y]);
+                tensor.Channels[channel] = Activate(tensor.Channels[channel]);
            });
    
            return tensor;
@@ -33,10 +31,8 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION {
        
        public Tensor Derivation(Tensor tensor, Tensor referenceTensor) {
            Parallel.For(0, tensor.Channels.Count, channel => {
-               for (var x = 0; x < tensor.Channels[channel].Rows; x++)
-                   for (var y = 0; y < tensor.Channels[channel].Columns; y++)
-                       tensor.Channels[channel].Body[x, y] = Derivation(tensor.Channels[channel].Body[x, y], 
-                           referenceTensor.Channels[channel].Body[x,y]);
+               tensor.Channels[channel] = Derivation(tensor.Channels[channel], 
+                   referenceTensor.Channels[channel]);
            });
 
            return tensor;
