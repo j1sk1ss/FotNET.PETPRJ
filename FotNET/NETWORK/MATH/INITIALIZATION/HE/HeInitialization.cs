@@ -2,6 +2,9 @@ using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.MATH.Initialization.HE;
 
+/// <summary>
+/// HE Initialization usually uses with ReLU functions
+/// </summary>
 public class HeInitialization : IWeightsInitialization {
     public Matrix Initialize(Matrix matrix) {
         var scale = Math.Sqrt(2.0 / matrix.Columns);

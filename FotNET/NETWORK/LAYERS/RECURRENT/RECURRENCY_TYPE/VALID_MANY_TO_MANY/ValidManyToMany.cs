@@ -1,8 +1,11 @@
 using FotNET.NETWORK.MATH.OBJECTS;
 
-namespace FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.ManyToMany;
+namespace FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.VALID_MANY_TO_MANY;
 
-public class ManyToMany : IRecurrentType {
+/// <summary>
+/// Type on RNN where model takes sequence and return another sequence with same size without duration during calculation
+/// </summary>
+public class ValidManyToMany : IRecurrentType {
     public Tensor GetNextLayer(RecurrentLayer layer, Tensor tensor) {
         var sequence = tensor.Flatten();
         
@@ -19,7 +22,8 @@ public class ManyToMany : IRecurrentType {
             layer.OutputNeurons.Add(Matrix.Multiply(layer.HiddenNeurons[^1], layer.OutputWeights) + layer.OutputBias);
         }
 
-        return new Tensor(layer.OutputNeurons);
+        return new Vector(new Tensor(layer.OutputNeurons).Flatten().ToArray())
+            .AsTensor(1, new Tensor(layer.OutputNeurons).Flatten().Count, 1);
     }
 
     public Tensor BackPropagate(RecurrentLayer layer, Tensor error, double learningRate) {

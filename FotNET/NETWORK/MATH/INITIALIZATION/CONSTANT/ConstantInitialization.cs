@@ -3,6 +3,10 @@ using FotNET.NETWORK.MATH.OBJECTS;
 namespace FotNET.NETWORK.MATH.Initialization.CONSTANT;
 
 public class ConstantInitialization : IWeightsInitialization {
+    /// <summary>
+    /// Constant initialization is initialization where all weights sets by one value
+    /// </summary>
+    /// <param name="value"> Start value for all weights </param>
     public ConstantInitialization(double value) => Value = value;
         
     private double Value { get; }

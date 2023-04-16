@@ -3,9 +3,13 @@
 namespace FotNET.NETWORK.LAYERS.DATA;
 
 public class DataLayer : ILayer {
-
+    /// <summary>
+    /// Layer for collecting data from model
+    /// </summary>
+    /// <param name="dataType"> Type for collected data </param>
     public DataLayer(DataType dataType) {
         DataType = dataType;
+        Data     = null!;
     }
     
     private DataType DataType { get; }
