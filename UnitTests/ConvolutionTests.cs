@@ -1,4 +1,5 @@
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.CUSTOM;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
 using FotNET.NETWORK.MATH.OBJECTS;
 
@@ -7,7 +8,7 @@ namespace UnitTests;
 public class ConvolutionTests {
     private Matrix _matrix  = new (3, 3);
     private Matrix _matrix1 = new (2, 2);
-    private Matrix _filter  = new (3, 3);
+    private Matrix _filter  = new (2, 2);
 
     private Matrix Initialize(int maxValue, Matrix matrix) {
         for (var i = 0; i < matrix.Rows; i++)
@@ -26,7 +27,7 @@ public class ConvolutionTests {
         Console.WriteLine("Filter is:\n" + firstFilter.Print());
         
         var convolved1 = Convolution.GetConvolution(new SamePadding(new Tensor(firstFilter)).GetPadding(new Tensor(firstMatrix)),
-            new Filter[]{new Tensor(firstFilter).AsFilter()}, 1);
+            new []{new Tensor(firstFilter).AsFilter()}, 1);
         
         Console.WriteLine("Convolved matrix:\n" + convolved1.Channels[0].Print());
     }

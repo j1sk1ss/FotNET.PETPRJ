@@ -9,7 +9,8 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
             var xMatrixSize = matrix.Rows;
             var yMatrixSize = matrix.Columns;
             
-            var conMat = new Matrix(xMatrixSize - xFilterSize + 1, yMatrixSize - yFilterSize + 1);
+            var conMat = new Matrix((xMatrixSize - xFilterSize) / stride + 1, 
+                (yMatrixSize - yFilterSize) / stride + 1);
 
             Parallel.For(0, conMat.Rows, i => {
                     for (var j = 0; j < conMat.Columns; j += stride) {
@@ -22,8 +23,8 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
         }
 
         public static Tensor GetConvolution(Tensor tensor, Filter[] filters, int stride) {
-            var xSize = tensor.Channels[0].Rows - filters[0].Channels[0].Columns + 1;
-            var ySize = tensor.Channels[0].Columns - filters[0].Channels[0].Rows + 1;
+            var xSize = (tensor.Channels[0].Rows - filters[0].Channels[0].Columns) / stride + 1;
+            var ySize = (tensor.Channels[0].Columns - filters[0].Channels[0].Rows) / stride + 1;
 
             var newTensor = new Tensor(new List<Matrix>());
             for (var i = 0; i < filters.Length; i++)

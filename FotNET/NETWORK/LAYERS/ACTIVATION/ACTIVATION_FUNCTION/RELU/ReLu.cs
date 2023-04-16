@@ -1,10 +1,7 @@
 ﻿namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.RELU {
     public class ReLu : Function {
-        protected override double Activate(double value) => value switch {
-            < 0 => .01d,
-            _   => value
-        };
+        protected override double Activate(double value) => Math.Max(0, value);
 
-        protected override double Derivation(double value) => value * value < 0 ? .01d : 1;
+        protected override double Derivation(double value, double referenceValue) => value * referenceValue < 0 ? 0 : 1;
     }
 }

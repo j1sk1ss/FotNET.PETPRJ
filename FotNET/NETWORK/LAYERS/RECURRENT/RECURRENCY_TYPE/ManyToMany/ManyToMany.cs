@@ -43,7 +43,7 @@ public class ManyToMany : IRecurrentType {
                 nextHidden = outputGradient + Matrix.Multiply(nextHidden, transposedHiddenWeights);
             else nextHidden = outputGradient;
             
-            nextHidden = layer.Function.Derivation(layer.HiddenNeurons[step]) * nextHidden;
+            nextHidden = layer.Function.Derivation(layer.HiddenNeurons[step], layer.HiddenNeurons[step]) * nextHidden;
             if (step > 0) {
                 var hiddenWeightGradient = Matrix.Multiply(layer.HiddenNeurons[step - 1].Transpose(), nextHidden);
                 layer.HiddenWeights -= hiddenWeightGradient * learningRate;

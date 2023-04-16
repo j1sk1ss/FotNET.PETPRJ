@@ -46,9 +46,9 @@ public static class Parser {
             for (var i = 0; i < bitmap.Height; i++)
                 for (var j = 0; j < bitmap.Width; j++) {
                     tensor.Channels[^1].Body[i,j] = depth switch {
-                        0 => bitmap.GetPixel(i, j).R,
-                        1 => bitmap.GetPixel(i, j).G,
-                        2 => bitmap.GetPixel(i, j).B,
+                        0 => bitmap.GetPixel(j, i).R,
+                        1 => bitmap.GetPixel(j, i).G,
+                        2 => bitmap.GetPixel(j, i).B,
                         _ => 0
                     } / 255d;
                 }

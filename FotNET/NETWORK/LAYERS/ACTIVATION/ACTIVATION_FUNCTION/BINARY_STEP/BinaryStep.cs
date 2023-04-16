@@ -7,5 +7,5 @@ public class BinaryStep : Function {
         _   => 0
     };
 
-    protected override double Derivation(double value) => value * (1d / Math.Pow(Math.Cos(value), 2));
+    protected override double Derivation(double value, double referenceValue) => value * (1d / Math.Pow(Math.Cos(referenceValue), 2));
 }   

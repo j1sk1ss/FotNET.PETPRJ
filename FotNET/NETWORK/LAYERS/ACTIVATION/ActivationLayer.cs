@@ -5,15 +5,23 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION {
     public class ActivationLayer : ILayer {
         /// <summary> Layer that perform tensor activation. </summary>
         /// <param name="function"> Activation function. </param>
-        public ActivationLayer(Function function) => Function = function;
+        public ActivationLayer(Function function) {
+            Function = function;
+            Input    = new Tensor(new List<Matrix>());
+        }
 
         private Function Function { get; }
 
-        public Tensor GetNextLayer(Tensor tensor) => Function.Activate(tensor);
-        
-        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) => Function.Derivation(error);
+        private Tensor Input { get; set; }
 
-        public Tensor GetValues() => null!;
+        public Tensor GetNextLayer(Tensor tensor) {
+            Input = new Tensor(new List<Matrix>(Function.Activate(tensor).Channels));
+            return Function.Activate(tensor);
+        } 
+        
+        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) => Function.Derivation(error, Input);
+
+        public Tensor GetValues() => Input;
         
         public string GetData() => "";
         

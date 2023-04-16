@@ -10,5 +10,5 @@ public class PReLu : Function {
         _   => value
     };
 
-    protected override double Derivation(double value) => value * value < 0 ? Alpha : 1;
+    protected override double Derivation(double value, double referenceValue) => value * referenceValue < 0 ? Alpha : 1;
 }
