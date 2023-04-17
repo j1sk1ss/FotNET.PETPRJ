@@ -12,7 +12,7 @@ using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.VALID_MANY_TO_MANY;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.Initialization.Xavier;
-using FotNET.NETWORK.MATH.LOSS_FUNCTION.ERROR.VALUE_BY_VALUE;
+using FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING.MSE;
 using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace UnitTests;
@@ -74,7 +74,7 @@ public class RecurrentTests {
         Console.WriteLine();
         //Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
         for (var i = 0; i < 200; i++) {
-            model.BackPropagation(expected, new ValueByValue(), -.0015d, true);
+            model.BackPropagation(expected, new Mse(), -.0015d, true);
             model.ForwardFeed(testTensorData);
         }
         
@@ -96,7 +96,7 @@ public class RecurrentTests {
         Console.WriteLine(model.GetWeights());
 
         for (var i = 0; i < 200; i++) {
-            model.BackPropagation(0, .52, new ValueByValue(), -.015d, true);
+            model.BackPropagation(0, .52, new Mse(), -.015d, true);
             model.ForwardFeed(testTensorData, AnswerType.Value);
             //Console.WriteLine(answer);
         }
@@ -121,7 +121,7 @@ public class RecurrentTests {
         
         for (var i = 0; i < 50; i++) {
             model.ForwardFeed(testTensorData);
-            model.BackPropagation(expected, new ValueByValue(), -.5d, true);
+            model.BackPropagation(expected, new Mse(), -.5d, true);
         }
         
         Console.WriteLine();

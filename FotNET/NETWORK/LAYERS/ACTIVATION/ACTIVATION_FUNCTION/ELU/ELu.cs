@@ -12,12 +12,12 @@ public class ELu : Function {
         return Alpha * (Math.Exp(value) - 1);
     }
 
-    protected override double Derivation(double value, double referenceValue) {
-        if (referenceValue >= 0) 
+    protected override double Derivation(double value, double activatedValue) {
+        if (activatedValue >= 0) 
             return 1.0d;
 
-        if (referenceValue == 0 && Alpha == 0) return 1.0d;
+        if (activatedValue == 0 && Alpha == 0) return 1.0d;
         
-        return value * Alpha * Math.Exp(referenceValue);
+        return value * Alpha * Math.Exp(activatedValue);
     }
 }

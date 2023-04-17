@@ -3,6 +3,6 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.HYPERBOLIC_TANGEN
         protected override double Activate(double value) =>
             (Math.Exp(value) - Math.Exp(-value)) / (Math.Exp(value) + Math.Exp(-value));
 
-        protected override double Derivation(double value, double referenceValue) => value * (1 - Math.Pow(Activate(referenceValue), 2));
+        protected override double Derivation(double value, double activatedValue) => value * (1 - Math.Pow(Activate(activatedValue), 2));
     }    
 }

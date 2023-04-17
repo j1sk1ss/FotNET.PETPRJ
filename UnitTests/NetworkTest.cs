@@ -6,12 +6,8 @@ using FotNET.NETWORK;
 using FotNET.NETWORK.LAYERS;
 using FotNET.NETWORK.LAYERS.ACTIVATION;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.DOUBLE_LEAKY_RELU;
-using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.HYPERBOLIC_TANGENT;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.LEAKY_RELU;
-using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.PRELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.RELU;
-using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.SIGMOID;
-using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.TANGENSOID;
 using FotNET.NETWORK.LAYERS.CONVOLUTION;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.VALID;
 using FotNET.NETWORK.LAYERS.DATA;
@@ -26,14 +22,11 @@ using FotNET.NETWORK.LAYERS.POOLING;
 using FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.MAX;
 using FotNET.NETWORK.LAYERS.ROUGHEN;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
-using FotNET.NETWORK.MATH.Initialization.CONSTANT;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.Initialization.Xavier;
-using FotNET.NETWORK.MATH.LOSS_FUNCTION.ERROR.ONE_BY_ONE;
-using FotNET.NETWORK.MATH.LOSS_FUNCTION.ERROR.VALUE_BY_VALUE;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING.MAE;
+using FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING.MSE;
 using FotNET.NETWORK.MATH.OBJECTS;
-using FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK;
 
 using FotNET.SCRIPTS.REGION_CONVOLUTION;
 
@@ -67,7 +60,7 @@ public class NetworkTest {
 
         for (var i = 0; i < 1; i++) {
             model.ForwardFeed(new Tensor(new Matrix(64, 64)), AnswerType.Class);
-            model.BackPropagation(1,1,new OneByOne(), 1, true);
+            model.BackPropagation(1,1,new Mse(), 1, true);
         }
         
         Console.WriteLine(model.ForwardFeed(new Tensor(new Matrix(64, 64)), AnswerType.Class));
@@ -90,7 +83,7 @@ public class NetworkTest {
         
         Console.WriteLine(model.ForwardFeed(Vector.GenerateGaussianNoise(288).AsTensor(3,3,32)).GetInfo());
         var errorTensor = new Tensor(new List<Matrix> { new (76, 76), new (76, 76), new (76, 76) });
-        model.BackPropagation(errorTensor, new OneByOne(), .1, true);
+        model.BackPropagation(errorTensor, new Mse(), .1, true);
     }
 
     [Test]
@@ -174,7 +167,7 @@ public class NetworkTest {
                 Parser.TensorToImage(answer).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
             generator.BackPropagation(
                 Parser.ImageToTensor(new Bitmap((Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//faces//41d3e9385e34ebc0e3ba.jpeg"), new Size(40,40))), 
-                new OneByOne(), -.0005, true);
+                new Mse(), -.0005, true);
         }
     }
 }

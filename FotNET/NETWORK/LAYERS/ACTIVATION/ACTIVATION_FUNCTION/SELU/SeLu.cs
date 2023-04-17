@@ -10,8 +10,8 @@ public class SeLu : Function {
         _    => 0
     };
 
-    protected override double Derivation(double value, double referenceValue) => value * (Lambda * referenceValue switch {
-        < 0  => Alpha * Math.Exp(referenceValue),
+    protected override double Derivation(double value, double activatedValue) => value * (Lambda * activatedValue switch {
+        < 0  => Alpha * Math.Exp(activatedValue),
         >= 0 => 1,
         _    => 0
     });

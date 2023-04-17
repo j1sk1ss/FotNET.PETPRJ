@@ -24,7 +24,7 @@ public class ActivationTests {
 
     [Test]
     public void Sigmoid() {
-        Console.WriteLine($"{new Sigmoid().Activate(new Tensor(new Matrix(new []{-2d, -.5d, 0d, .1d, .6d, 1d, 2d}))).Channels[0].Print()}");
+        Console.WriteLine($"{new Sigmoid().Derivation(new Tensor(new Matrix(new []{1d,1d})), new Tensor(new Matrix(new []{0.4613, 1000.7}))).Channels[0].Print()}");
     }
 
     [Test]

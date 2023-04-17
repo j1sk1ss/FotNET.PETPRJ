@@ -6,7 +6,7 @@
             _   => value
         };
 
-        protected override double Derivation(double value, double referenceValue) => 
-            value * referenceValue is < 0 or > 1 ? .01d : referenceValue;
+        protected override double Derivation(double value, double activatedValue) => 
+            value * (activatedValue is < 0 or > 1 ? .01d : activatedValue);
     }
 }

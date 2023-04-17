@@ -13,4 +13,16 @@ public class Mae : LossFunction {
             
         return Loss(sum, outputTensor.Flatten().Count);
     }
+
+    public override Tensor GetErrorTensor(Tensor outputTensor, Tensor expectedTensor) {
+        var tensor = new Tensor(new List<Matrix>());
+        for (var channel = 0; channel < outputTensor.Channels.Count; channel++) {
+            tensor.Channels.Add(new Matrix(outputTensor.Channels[channel].Rows, outputTensor.Channels[channel].Columns));
+            for (var i = 0; i < outputTensor.Channels[channel].Rows; i++)
+                for (var j = 0; j < outputTensor.Channels[channel].Columns; j++)
+                    tensor.Channels[^1].Body[i,j] = outputTensor.Channels[channel].Body[i, j] - expectedTensor.Channels[channel].Body[i, j];
+        }
+
+        return tensor;
+    }
 }

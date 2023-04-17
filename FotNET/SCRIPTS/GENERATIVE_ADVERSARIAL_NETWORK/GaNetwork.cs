@@ -2,7 +2,7 @@
 using System.Drawing.Imaging;
 using FotNET.DATA.IMAGE;
 using FotNET.NETWORK;
-using FotNET.NETWORK.MATH.LOSS_FUNCTION.ERROR.ONE_BY_ONE;
+using FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING.MSE;
 using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK;
@@ -41,11 +41,11 @@ public class GaNetwork {
                 switch (new Random().Next() % 100 > 50) {
                     case true: // load real 1
                         if (Math.Abs(Discriminator.ForwardFeed(realDataSet[i], AnswerType.Class) - 1) > .1)
-                            Discriminator.BackPropagation(1, 1, new OneByOne(), learningRate, true);
+                            Discriminator.BackPropagation(1, 1, new Mse(), learningRate, true);
                         break;
                     case false: // load fake 0
                         if (Discriminator.ForwardFeed(fakeDataSet[i], AnswerType.Class) > 0.01d)
-                            Discriminator.BackPropagation(0, 1, new OneByOne(), learningRate, true);
+                            Discriminator.BackPropagation(0, 1, new Mse(), learningRate, true);
                         break;
                 }
         }
@@ -58,7 +58,7 @@ public class GaNetwork {
             var answer = Discriminator.ForwardFeed(generated, AnswerType.Class);
             if (Math.Abs(answer - 1) > .1) 
                 Generator.BackPropagation(Discriminator.BackPropagation(1,1, 
-                    new OneByOne(), learningRate, false), learningRate, true);
+                    new Mse(), learningRate, false), learningRate, true);
         }
     }
 

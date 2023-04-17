@@ -27,14 +27,15 @@ namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION {
            return array;
        }
        
-       protected abstract double Derivation(double value, double referenceValue);       
+       protected abstract double Derivation(double value, double activatedValue);       
        
        public Tensor Derivation(Tensor tensor, Tensor referenceTensor) {
+           referenceTensor = referenceTensor.GetSameChannels(tensor);
            Parallel.For(0, tensor.Channels.Count, channel => {
                tensor.Channels[channel] = Derivation(tensor.Channels[channel], 
                    referenceTensor.Channels[channel]);
            });
-
+           
            return tensor;
        }
        

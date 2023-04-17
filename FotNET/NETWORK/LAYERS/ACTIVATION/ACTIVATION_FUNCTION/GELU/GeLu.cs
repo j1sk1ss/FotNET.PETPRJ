@@ -7,6 +7,6 @@ public class GeLu : Function {
         return 0.5 * (1.0 + Math.Tanh(Math.Sqrt(2.0 / Math.PI) * (value + 0.044715d * Math.Pow(value, 3)))) + value * cdf * pdf; 
     }
 
-    protected override double Derivation(double value, double referenceValue) => value * (0.5 * referenceValue * 
-        (1.0 + Math.Tanh(Math.Sqrt(2.0 / Math.PI) * (referenceValue + 0.044715 * Math.Pow(referenceValue, 3)))));
+    protected override double Derivation(double value, double activatedValue) => value * (0.5 * activatedValue * 
+        (1.0 + Math.Tanh(Math.Sqrt(2.0 / Math.PI) * (activatedValue + 0.044715 * Math.Pow(activatedValue, 3)))));
 }

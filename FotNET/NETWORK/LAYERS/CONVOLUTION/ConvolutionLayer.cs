@@ -95,7 +95,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
             var inputTensor = Input;
             var extendedInput = inputTensor.GetSameChannels(error);
-            
+
             var originalFilters = new Filter[Filters.Length];
             for (var i = 0; i < Filters.Length; i++)
                 originalFilters[i] = new Filter(new List<Matrix>(Filters[i].Channels));

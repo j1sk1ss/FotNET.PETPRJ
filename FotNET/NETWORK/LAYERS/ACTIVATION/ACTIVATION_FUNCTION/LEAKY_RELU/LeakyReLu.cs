@@ -6,9 +6,9 @@ public class LeakyReLu : Function {
         _   => value
     };
 
-    protected override double Derivation(double value, double referenceValue) => value * referenceValue switch {
+    protected override double Derivation(double value, double activatedValue) => value * (activatedValue switch {
         < 0  => .01d,
         >= 0 => 1,
         _    => 0
-    };
+    });
 }

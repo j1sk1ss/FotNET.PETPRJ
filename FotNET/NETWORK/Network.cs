@@ -1,8 +1,7 @@
 ﻿using FotNET.DATA;
 using FotNET.DATA.DATA_OBJECTS;
 using FotNET.NETWORK.LAYERS;
-using FotNET.NETWORK.MATH.LOSS_FUNCTION;
-using FotNET.NETWORK.MATH.LOSS_FUNCTION.ERROR;
+using FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING;
 using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK {
@@ -41,8 +40,14 @@ namespace FotNET.NETWORK {
         /// <param name="learningRate"> Value of learning rate. </param>
         /// <param name="backPropagate"> Type of back propagation (without or with grad). </param>
         /// <returns> Returns error after all layers of model. </returns>
-        public Tensor BackPropagation(double expectedAnswer, double expectedValue, ErrorFunction errorFunction, double learningRate, bool backPropagate) {
-            var errorTensor = errorFunction.GetErrorTensor(Layers[^1].GetValues(), (int)expectedAnswer, expectedValue);
+        public Tensor BackPropagation(double expectedAnswer, double expectedValue, LossFunction errorFunction, double learningRate, bool backPropagate) {
+            var expectedTensor = new Tensor(new Matrix(1, Layers[^1].GetValues().Flatten().Count));
+            for (var i = 0; i < expectedTensor.Channels[0].Rows; i++)
+                 for (var j = 0; j < expectedTensor.Channels[0].Columns; j++)
+                     if (j == (int)expectedAnswer)
+                         expectedTensor.Channels[0].Body[i, j] = expectedValue;
+            
+            var errorTensor = errorFunction.GetErrorTensor(Layers[^1].GetValues(), expectedTensor);
             for (var i = Layers.Count - 1; i >= 0; i--)
                 errorTensor = Layers[i].BackPropagate(errorTensor, learningRate, backPropagate);
             return errorTensor;
@@ -54,7 +59,7 @@ namespace FotNET.NETWORK {
         /// <param name="learningRate"> Value of learning rate. </param>
         /// <param name="backPropagate"> Type of back propagation (without or with grad). </param>
         /// <returns> Returns error after all layers of model. </returns>
-        public Tensor BackPropagation(Tensor expectedAnswer, ErrorFunction errorFunction, double learningRate, bool backPropagate) {
+        public Tensor BackPropagation(Tensor expectedAnswer, LossFunction errorFunction, double learningRate, bool backPropagate) {
             var errorTensor = errorFunction.GetErrorTensor(Layers[^1].GetValues(), expectedAnswer);
             for (var i = Layers.Count - 1; i >= 0; i--)
                 errorTensor = Layers[i].BackPropagate(errorTensor, learningRate, backPropagate);
@@ -86,10 +91,10 @@ namespace FotNET.NETWORK {
         /// <param name="path"> Path to CSV file with data. </param>
         /// <param name="config"> Configuration of one piece of CSV data. </param>
         /// <param name="epochs"> Count of epochs. </param>
-        /// <param name="errorFunction"> Type of loss function calculation. </param>
+        /// <param name="lossFunction"> Type of loss function calculation. </param>
         /// <param name="baseLearningRate"> Base learning rate for back propagation. </param>
-        public void Fit(IData.Type type, string path, Config config, int epochs, ErrorFunction errorFunction, double baseLearningRate) =>
-             Layers = MODEL.Fit.FitModel(this, Parse(type, path, config), epochs, errorFunction, baseLearningRate).Layers;
+        public void Fit(IData.Type type, string path, Config config, int epochs, LossFunction lossFunction, double baseLearningRate) =>
+             Layers = MODEL.Fit.FitModel(this, Parse(type, path, config), epochs, lossFunction, baseLearningRate).Layers;
         
         /// <summary> Method for testing model. </summary>
         /// <param name="type"> Type of data for fitting. </param>
