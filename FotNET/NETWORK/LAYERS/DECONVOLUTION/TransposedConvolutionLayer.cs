@@ -5,7 +5,7 @@ using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.DECONVOLUTION;
 
-public class DeconvolutionLayer : ILayer {
+public class TransposedConvolutionLayer : ILayer {
     /// <summary> Layer that perform tensor deconvolution by filters and biases. </summary>
     /// <param name="filters"> Count of filters on layer. </param>
     /// <param name="filterWeight"> Weight of filters on layer. </param>
@@ -13,7 +13,7 @@ public class DeconvolutionLayer : ILayer {
     /// <param name="filterDepth"> Depth of filters on layer. </param>
     /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
     /// <param name="stride"> Stride of deconvolution. </param>
-    public DeconvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth,
+    public TransposedConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth,
         IWeightsInitialization weightsInitialization, int stride) {
         Filters = new Filter[filters];
             
@@ -56,27 +56,30 @@ public class DeconvolutionLayer : ILayer {
     
     public Tensor GetNextLayer(Tensor tensor) {
         Input = new Tensor(new List<Matrix>(tensor.Channels));
-        return Deconvolution.GetDeconvolution(tensor, Filters, _stride);
+        return TransposedConvolution.GetTransposedConvolution(tensor, Filters, _stride);
     }
 
     public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
         var inputTensor = Input;
         var extendedError = error.GetSameChannels(inputTensor);
-        
+        Console.WriteLine(extendedError.GetInfo());
         var originalFilters = new Filter[Filters.Length];
         for (var i = 0; i < Filters.Length; i++)
             originalFilters[i] = new Filter(new List<Matrix>(Filters[i].Channels));
         
         if (backPropagate)
             Parallel.For(0, Filters.Length, filter => {
-                for (var channel = 0; channel < Filters[filter].Channels.Count; channel++) 
-                    Filters[filter].Channels[channel] -= Deconvolution.GetDeconvolution(inputTensor.Channels[filter],
-                        error.Channels[filter], _stride, Filters[filter].Bias) * learningRate;
-                
+                for (var channel = 0; channel < Filters[filter].Channels.Count; channel++) {
+                    Filters[filter].Channels[channel] -= Convolution.GetConvolution(
+                        extendedError.Channels[filter], Input.Channels[filter],
+                        _stride, Filters[filter].Bias) * learningRate;
+                }
+
                 Filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;
             });
         
-        return Convolution.GetConvolution(extendedError, FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
+        return Convolution.GetConvolution(extendedError, 
+            FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
     }
 
     public Tensor GetValues() => Input;

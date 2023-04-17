@@ -23,10 +23,10 @@ namespace FotNET.NETWORK.LAYERS.POOLING {
             _inputTensor = new Tensor(new List<Matrix>(tensor.Channels));
             return Pooling.Pool(tensor, _poolSize);
         }
-        
-        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) =>
-            Pooling.BackPool(error.GetSameChannels(_inputTensor), _inputTensor, _poolSize);
 
+        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) =>
+             Pooling.BackPool(error.GetSameChannels(_inputTensor), _inputTensor, _poolSize);
+        
         public string GetData() => "";
         
         public string LoadData(string data) => data;

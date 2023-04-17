@@ -85,9 +85,9 @@ public static class Parser {
         for (var y = 0; y < height; y++) {
             for (var x = 0; x < width; x++) {
                 var pixelColor = Color.FromArgb(
-                    (int)tensor.Channels[0].Body[y, x],
-                    (int)tensor.Channels[1].Body[y, x],
-                    (int)tensor.Channels[2].Body[y, x] 
+                    (int)(tensor.Channels[0].Body[y, x] * 255d),
+                    (int)(tensor.Channels[1].Body[y, x] * 255d),
+                    (int)(tensor.Channels[2].Body[y, x] * 255d) 
                 );
                 image.SetPixel(x, y, pixelColor);
             }

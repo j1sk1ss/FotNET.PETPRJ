@@ -34,20 +34,19 @@ public class ConvolutionTests {
 
     [Test]
     public void TensorConvolution() {
-        var firstMatrix = Initialize(10, _matrix);
-        var second = Initialize(10, _matrix1);
-        var firstFilter = Initialize(5, _filter);
+        var firstMatrix = Initialize(3, _matrix);
+        var second = Initialize(3, _matrix1);
+        var firstFilter = Initialize(2, _filter);
 
-        var firstTensor = new Tensor(new List<Matrix> { second, firstMatrix, firstMatrix, firstMatrix });
-        var secondTensor = new Filter(new List<Matrix> { firstFilter, firstFilter, firstFilter, firstFilter });
+        var firstTensor = new Tensor(new List<Matrix> { firstMatrix});
+        var secondTensor = new Filter(new List<Matrix> { firstFilter});
 
-        Console.WriteLine("Matrix is:\n" + second.Print());
-        Console.WriteLine("Matrix is:\n" + firstFilter.Print());
         Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
+        Console.WriteLine("Matrix is:\n" + firstFilter.Print());
         
         var convolved = Convolution.GetConvolution(firstTensor, new[] { secondTensor }, 1);
         
-        Console.WriteLine(convolved.GetInfo());
+        Console.WriteLine(convolved.Channels[0].Print());
     }
 
     [Test]

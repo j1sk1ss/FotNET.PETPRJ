@@ -3,7 +3,7 @@ using FotNET.NETWORK.MATH.OBJECTS;
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
 
 public class SamePadding : Padding {
-    public SamePadding(Tensor tensor) => PaddingSize = tensor.Channels[0].Rows - 2;
+    public SamePadding(Tensor tensor) => PaddingSize = tensor.Channels[0].Rows - 1;
     
     private int PaddingSize { get; }
     

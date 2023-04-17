@@ -54,7 +54,8 @@ public class GaNetwork {
     public void GeneratorFitting(int epochs, double learningRate) {
         for (var i = 0; i < epochs; i++) {
             var generated = Generator.ForwardFeed(null);
-            Parser.TensorToImage(generated).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
+            if (i % 10 == 0)
+                Parser.TensorToImage(generated).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
             var answer = Discriminator.ForwardFeed(generated, AnswerType.Class);
             if (Math.Abs(answer - 1) > .1) 
                 Generator.BackPropagation(Discriminator.BackPropagation(1,1, 

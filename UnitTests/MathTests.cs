@@ -15,6 +15,11 @@ public class MathTests {
 
         return matrix;
     }
+
+    [Test]
+    public void NoiseGeneratorTest() {
+        Console.WriteLine(Vector.GenerateGaussianNoise(10).Print());
+    }
     
     [Test]
     public void MatrixAddMatrix() {

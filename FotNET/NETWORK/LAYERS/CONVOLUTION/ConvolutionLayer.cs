@@ -112,7 +112,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                     
                     Filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;
                 });
-            
+
             return Convolution.GetConvolution(new SamePadding(originalFilters[0]).GetPadding(error), 
                 FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
         }

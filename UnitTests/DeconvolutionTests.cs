@@ -18,13 +18,22 @@ public class DeconvolutionTests {
     
     [Test]
     public void Deconvolution() {
-        var firstMatrix = Initialize(10, _matrix);
-        var firstFilter = Initialize(5, _filter);
+        var firstMatrix = new Matrix(2,2);
+        firstMatrix.Body[0, 0] = 0;
+        firstMatrix.Body[0, 1] = 1;
+        firstMatrix.Body[1, 0] = 2;
+        firstMatrix.Body[1, 1] = 3;
+
+        var firstFilter = new Matrix(2, 2);
+        firstFilter.Body[0, 0] = 1;
+        firstFilter.Body[0, 1] = 4;
+        firstFilter.Body[1, 0] = 2;
+        firstFilter.Body[1, 1] = 3;
         
         Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
         Console.WriteLine("Filter is:\n" + firstFilter.Print());
 
-        var convolved = FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS.Deconvolution.GetDeconvolution(firstMatrix, firstFilter, 1, 2);
+        var convolved = FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS.TransposedConvolution.GetTransposedConvolution(firstMatrix, firstFilter, 2, 0);
         
         Console.WriteLine("Convolved matrix:\n" + convolved.Print());
     }
@@ -38,7 +47,7 @@ public class DeconvolutionTests {
         var firstTensor = new Tensor(new List<Matrix> { second, firstMatrix, firstMatrix, firstMatrix });
         var secondTensor = new Filter(new List<Matrix> { firstFilter, firstFilter, firstFilter, firstFilter });
         
-        var answer = FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS.Deconvolution.GetDeconvolution(firstTensor, 
+        var answer = FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS.TransposedConvolution.GetTransposedConvolution(firstTensor, 
             new[]{secondTensor}, 1);
         
         Console.WriteLine(answer.Channels[0].Print());
