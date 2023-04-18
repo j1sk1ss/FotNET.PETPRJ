@@ -88,7 +88,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         public Tensor GetValues() => Input;
 
         public Tensor GetNextLayer(Tensor layer) {
-            Input = new Tensor(new List<Matrix>(layer.Channels));
+            Input = new Tensor(new List<Matrix>(_padding.GetPadding(layer).Channels));
             return Convolution.GetConvolution(_padding.GetPadding(layer), Filters, _stride);
         }
 

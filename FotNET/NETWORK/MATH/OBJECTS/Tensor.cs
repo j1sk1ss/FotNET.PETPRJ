@@ -7,6 +7,12 @@
 
         public Tensor(List<Matrix> matrix) => Channels = matrix;
 
+        public Tensor(int x, int y, int depth) {
+            Channels = new List<Matrix>();
+            for (var i = 0; i < depth; i++)
+                Channels.Add(new Matrix(x, y));
+        }
+        
         public List<Matrix> Channels { get; protected init; }
 
         public List<double> Flatten() {

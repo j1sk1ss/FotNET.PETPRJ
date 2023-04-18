@@ -13,6 +13,7 @@ using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.RELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.SIGMOID;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.TANGENSOID;
 using FotNET.NETWORK.LAYERS.CONVOLUTION;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.VALID;
 using FotNET.NETWORK.LAYERS.DATA;
 using FotNET.NETWORK.LAYERS.DECONVOLUTION;
@@ -26,6 +27,8 @@ using FotNET.NETWORK.LAYERS.POOLING;
 using FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.MAX;
 using FotNET.NETWORK.LAYERS.ROUGHEN;
 using FotNET.NETWORK.LAYERS.SOFT_MAX;
+using FotNET.NETWORK.LAYERS.UP_SAMPLING;
+using FotNET.NETWORK.LAYERS.UP_SAMPLING.UP_SAMPLING_TYPE.NEAREST_NEIGHBOR;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.Initialization.Xavier;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING.MAE;
@@ -95,14 +98,14 @@ public class NetworkTest {
         const string path = @"C://Users//j1sk1ss//Desktop//RCNN_TEST//";
 
         var generator = new Network(new List<ILayer> {
-            new NoiseLayer(128),
-            new PerceptronLayer(128, 225, new XavierInitialization()),
-            new ActivationLayer(new DoubleLeakyReLu()),
-            new PerceptronLayer(225, 2100, new XavierInitialization()),
-            new ActivationLayer(new DoubleLeakyReLu()),
-            new PerceptronLayer(2100, 4800, new XavierInitialization()),
-            new ActivationLayer(new DoubleLeakyReLu()),
-            new RoughenLayer(40,40,3),
+            new NoiseLayer(144),
+            new RoughenLayer(4,4,9),
+            new TransposedConvolutionLayer(6,4,4,9, new HeInitialization(), 1),
+            new ActivationLayer(new PReLu(.2d)),
+            new TransposedConvolutionLayer(3,12,12,6, new HeInitialization(), 1),
+            new ActivationLayer(new PReLu(.2d)),
+            new TransposedConvolutionLayer(3,23,23,6, new HeInitialization(), 1),
+            new ActivationLayer(new Sigmoid()),
             new NormalizationLayer(new Abs()),
             new NormalizationLayer(new MinMax(1)),
             new DataLayer(DataType.InputTensor)
@@ -140,12 +143,13 @@ public class NetworkTest {
         */
         
         var network = new GaNetwork(generator, discriminator);
-        network.GeneratorFitting(1000, .5d);
+        network.GeneratorFitting(10000, .5d);
         
         for (var i = 0; i < 1; i++)
             network.GenerateBitmap().Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
         //Console.WriteLine(network.GenerateTensor().Channels[0].Print());
         //Console.WriteLine(Normalize(network.GenerateFake(1, 11, 11, 9)[0]).Channels[0].Print());
+        
     }
 
     [Test]
@@ -154,9 +158,12 @@ public class NetworkTest {
         
         var generator = new Network(new List<ILayer> {
             new NoiseLayer(128),
-            new PerceptronLayer(128, 225, new HeInitialization()),
+            new PerceptronLayer(128, 324, new HeInitialization()),
             new ActivationLayer(new PReLu(.2d)),
-            new PerceptronLayer(225, 2100, new HeInitialization()),
+            new RoughenLayer(6,6,9),
+            new UpSamplingLayer(new NearestNeighbor(), 2),
+            new FlattenLayer(),
+            new PerceptronLayer(1296, 2100, new HeInitialization()),
             new ActivationLayer(new PReLu(.2d)),
             new PerceptronLayer(2100, 4800, new HeInitialization()),
             new ActivationLayer(new Sigmoid()),
@@ -169,28 +176,44 @@ public class NetworkTest {
         var generator1 = new Network(new List<ILayer> {
             new NoiseLayer(144),
             new RoughenLayer(4,4,9),
-            new TransposedConvolutionLayer(6,12,12,9, new XavierInitialization(), 2),
-            new ActivationLayer(new DoubleLeakyReLu()),
-            new TransposedConvolutionLayer(3,6,6,6, new XavierInitialization(), 2),
-            new ActivationLayer(new DoubleLeakyReLu()),
+            new TransposedConvolutionLayer(6,4,4,9, new HeInitialization(), 1),
+            new ActivationLayer(new PReLu(.2d)),
+            new TransposedConvolutionLayer(3,12,12,6, new HeInitialization(), 1),
+            new ActivationLayer(new PReLu(.2d)),
+            new TransposedConvolutionLayer(3,23,23,6, new HeInitialization(), 1),
+            new ActivationLayer(new Sigmoid()),
             new NormalizationLayer(new Abs()),
             new NormalizationLayer(new MinMax(1)),
             new DataLayer(DataType.InputTensor)
         });
         
+        var generator2 = new Network(new List<ILayer> {
+            new NoiseLayer(144),
+            new RoughenLayer(4,4,9),
+            new UpSamplingLayer(new NearestNeighbor(), 4),
+            new ConvolutionLayer(6, 3, 3, 9, new HeInitialization(), 1, new ValidPadding()),
+            new UpSamplingLayer(new NearestNeighbor(), 2),
+            new ConvolutionLayer(3, 9, 9, 6, new HeInitialization(), 1, new ValidPadding()),
+            new UpSamplingLayer(new NearestNeighbor(), 2),
+            new NormalizationLayer(new Abs()),
+            new NormalizationLayer(new MinMax(1)),
+            new DataLayer(DataType.InputTensor)
+        });
+        //Console.WriteLine(generator2.ForwardFeed(null).GetInfo());
         var a = Vector.GenerateGaussianNoise(225).AsTensor(1, 225, 1);
         
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < 1000; i++) {
             var answer = generator1.ForwardFeed(null);
 
-            if (i % 10 == 0)
-                Console.WriteLine(new Mae().GetLoss(answer, 
-                    Parser.ImageToTensor(new Bitmap((Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//Untitled.png")))));
+            //if (i % 100 == 0)
+               // Console.WriteLine(new Mae().GetLoss(answer, 
+                    //Parser.ImageToTensor(new Bitmap((Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//Untitled.png")))));
             if (i % 10 == 0)
                 Parser.TensorToImage(answer).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
             generator1.BackPropagation(
                 Parser.ImageToTensor(new Bitmap((Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//Untitled.png"), new Size(40,40))), 
-                new Mae(), .001, true);
+                new Mae(), .0001, true);
         }
+        
     }
 }

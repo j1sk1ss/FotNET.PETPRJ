@@ -1,5 +1,6 @@
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.CUSTOM;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.EQUALS;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
 using FotNET.NETWORK.MATH.OBJECTS;
 
@@ -8,7 +9,7 @@ namespace UnitTests;
 public class ConvolutionTests {
     private Matrix _matrix  = new (3, 3);
     private Matrix _matrix1 = new (2, 2);
-    private Matrix _filter  = new (2, 2);
+    private Matrix _filter  = new (5, 5);
 
     private Matrix Initialize(int maxValue, Matrix matrix) {
         for (var i = 0; i < matrix.Rows; i++)
@@ -55,13 +56,13 @@ public class ConvolutionTests {
         var firstFilter = Initialize(5, _filter);
         Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
 
-        var thirdMatrix = new SamePadding(new Tensor(firstFilter)).GetPadding(new Tensor(firstMatrix)).Channels[0];
-        var ans = Convolution.GetConvolution(firstMatrix, firstFilter, 1, 0);
-        var ans1 = Convolution.GetConvolution(thirdMatrix, firstFilter, 1, 0);
+        var thirdMatrix = new EqualsPadding(new Tensor(firstFilter)).GetPadding(new Tensor(firstMatrix)).Channels[0];
+        //var ans = Convolution.GetConvolution(firstMatrix, firstFilter, 1, 0);
+        //var ans1 = Convolution.GetConvolution(thirdMatrix, firstFilter, 1, 0);
         
         Console.WriteLine("Matrix is:\n" + thirdMatrix.Print());
-        Console.WriteLine("Matrix is:\n" + firstFilter.Print());
-        Console.WriteLine("Matrix is:\n" + ans.Print());
-        Console.WriteLine("Matrix is:\n" + ans1.Print());
+        //Console.WriteLine("Matrix is:\n" + firstFilter.Print());
+        //Console.WriteLine("Matrix is:\n" + ans.Print());
+        //Console.WriteLine("Matrix is:\n" + ans1.Print());
     }
 }

@@ -79,11 +79,12 @@
 
         private Matrix AsMatrix(int x, int y, int pos) {
             var matrix = new Matrix(x, y);
+            var position = pos;
             
             for (var i = 0; i < x; i++)
                 for (var j = 0; j < y; j++) {
-                    if (Size <= pos) return null!;
-                    matrix.Body[i, j] = Body[pos++];
+                    if (Size <= position) return null!;
+                    matrix.Body[i, j] = Body[position++];
                 }
 
             return matrix;
@@ -94,7 +95,7 @@
 
             for (var k = 0; k < channels; k++) 
                 tensor.Channels.Add(AsMatrix(x, y, x * y * k));
-            
+
             return tensor;
         }
 
