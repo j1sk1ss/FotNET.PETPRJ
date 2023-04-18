@@ -26,7 +26,7 @@ public class ConvolutionTests {
         Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
         Console.WriteLine("Filter is:\n" + firstFilter.Print());
         
-        var convolved1 = Convolution.GetConvolution(new SamePadding(new Tensor(firstFilter)).GetPadding(new Tensor(firstMatrix)),
+        var convolved1 = Convolution.GetConvolution(new Tensor(firstMatrix),
             new []{new Tensor(firstFilter).AsFilter()}, 1);
         
         Console.WriteLine("Convolved matrix:\n" + convolved1.Channels[0].Print());

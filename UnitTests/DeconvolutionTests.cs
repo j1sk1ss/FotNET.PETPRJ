@@ -33,7 +33,7 @@ public class DeconvolutionTests {
         Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
         Console.WriteLine("Filter is:\n" + firstFilter.Print());
 
-        var convolved = FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS.TransposedConvolution.GetTransposedConvolution(firstMatrix, firstFilter, 2, 0);
+        var convolved = FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS.TransposedConvolution.GetTransposedConvolution(firstMatrix, firstFilter, 1, 0);
         
         Console.WriteLine("Convolved matrix:\n" + convolved.Print());
     }

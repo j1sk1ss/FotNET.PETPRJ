@@ -1,4 +1,6 @@
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.CUSTOM;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
 using FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.MATH.Initialization;
 using FotNET.NETWORK.MATH.OBJECTS;
@@ -62,15 +64,19 @@ public class TransposedConvolutionLayer : ILayer {
     public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
         var inputTensor = Input;
         var extendedError = error.GetSameChannels(inputTensor);
-        Console.WriteLine(extendedError.GetInfo());
+        
         var originalFilters = new Filter[Filters.Length];
         for (var i = 0; i < Filters.Length; i++)
             originalFilters[i] = new Filter(new List<Matrix>(Filters[i].Channels));
-        
+
         if (backPropagate)
             Parallel.For(0, Filters.Length, filter => {
-                for (var channel = 0; channel < Filters[filter].Channels.Count; channel++) {
-                    Filters[filter].Channels[channel] -= Convolution.GetConvolution(
+                for (var channel = 0; channel < Filters[filter].Channels.Count; channel++)
+                {
+                    Console.WriteLine(Convolution.GetConvolution(
+                        new SamePadding(extendedError).GetPadding(Input).Channels[filter],extendedError.Channels[filter],
+                        4, Filters[filter].Bias).Rows);
+                    Filters[filter].Channels[channel] -= TransposedConvolution.GetTransposedConvolution(
                         extendedError.Channels[filter], Input.Channels[filter],
                         _stride, Filters[filter].Bias) * learningRate;
                 }

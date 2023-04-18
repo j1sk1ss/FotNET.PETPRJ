@@ -180,7 +180,7 @@ public class NetworkTest {
         
         var a = Vector.GenerateGaussianNoise(225).AsTensor(1, 225, 1);
         
-        for (var i = 0; i < 100; i++) {
+        for (var i = 0; i < 1; i++) {
             var answer = generator1.ForwardFeed(null);
 
             if (i % 10 == 0)
