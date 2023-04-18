@@ -4,6 +4,11 @@ using FotNET.NETWORK.MATH.OBJECTS;
 namespace FotNET.NETWORK.LAYERS.UP_SAMPLING;
 
 public class UpSamplingLayer : ILayer {
+    /// <summary>
+    /// Layer that increase size of input tensor by selected value
+    /// </summary>
+    /// <param name="upSampling"> Type of up-sampling </param>
+    /// <param name="scale"> Value of scaling </param>
     public UpSamplingLayer(UpSampling upSampling, int scale) {
         UpSampling = upSampling;
         Scale      = scale;

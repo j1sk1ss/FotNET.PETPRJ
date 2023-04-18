@@ -8,7 +8,13 @@ using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK;
 
+
 public class GaNetwork {
+    /// <summary>
+    /// Generative Adversarial model 
+    /// </summary>
+    /// <param name="generator"> Generator model </param>
+    /// <param name="discriminator"> Discriminator model </param>
     public GaNetwork(Network generator, Network discriminator) {
         Generator = generator;
         Discriminator = discriminator;
@@ -19,9 +25,9 @@ public class GaNetwork {
 
     public Network GetGenerator() => Generator;
     public Network GetDiscriminator() => Discriminator;
-    
-    
-    public List<Tensor> GenerateFake(int count) {
+
+
+    private List<Tensor> GenerateFake(int count) {
         var fake = new List<Tensor>();
         for (var i = 0; i < count; i++) 
             fake.Add(Generator.ForwardFeed(null));
@@ -29,12 +35,25 @@ public class GaNetwork {
         return fake;
     }
 
+    /// <summary>
+    /// Generate real data set
+    /// </summary>
+    /// <param name="directoryPath"> Path for directory with images </param>
+    /// <param name="resizeX"> End size of bitmap </param>
+    /// <param name="resizeY"> End size of bitmap </param>
+    /// <returns></returns>
     public static List<Tensor> LoadReal(string directoryPath, int resizeX, int resizeY) {
         var files = Directory.GetFiles(directoryPath);
         return files.Select(file => Parser.ImageToTensor
             (new Bitmap((Bitmap)Image.FromFile(file), new Size(resizeX, resizeY)))).ToList();
     }
     
+    /// <summary>
+    /// Discriminator fitting
+    /// </summary>
+    /// <param name="epochs"> Epochs count </param>
+    /// <param name="realDataSet"> Real data set </param>
+    /// <param name="learningRate"> Learning rate </param>
     public void DiscriminatorFitting(int epochs, List<Tensor> realDataSet, double learningRate) {
         for (var j = 0; j < epochs; j++) {
             var fakeDataSet = GenerateFake(realDataSet.Count);
@@ -52,6 +71,11 @@ public class GaNetwork {
         }
     }
 
+    /// <summary>
+    /// Generator fitting
+    /// </summary>
+    /// <param name="epochs"> Epochs count </param>
+    /// <param name="learningRate"> Learning rate </param>
     public void GeneratorFitting(int epochs, double learningRate) {
         for (var i = 0; i < epochs; i++) {
             var generated = Generator.ForwardFeed(null);
@@ -64,10 +88,18 @@ public class GaNetwork {
         }
     }
 
+    /// <summary>
+    /// Generate bitmap by generator model
+    /// </summary>
+    /// <returns> Generated bitmap </returns>
     public Bitmap GenerateBitmap() =>
-        Parser.TensorToImage(Generator.ForwardFeed(null));
+        Parser.TensorToImage(Generator.ForwardFeed(null!));
 
+    /// <summary>
+    /// Generate tensor by generator model
+    /// </summary>
+    /// <returns> Generated tensor </returns>
     public Tensor GenerateTensor() {
-        return Generator.ForwardFeed(null);
+        return Generator.ForwardFeed(null!);
     }
 }

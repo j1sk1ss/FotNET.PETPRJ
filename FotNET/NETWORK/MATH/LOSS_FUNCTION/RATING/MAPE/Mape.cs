@@ -2,6 +2,9 @@
 
 namespace FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING.MAPE;
 
+/// <summary>
+/// Mean absolute percent error (MAPE)
+/// </summary>
 public class Mape : LossFunction {
     public override double GetLoss(Tensor outputTensor, Tensor expectedTensor) {
         var sum = 0d;

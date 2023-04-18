@@ -2,7 +2,7 @@
 
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING {
     public abstract class Padding {
-        public abstract Matrix GetPadding(Matrix matrix);
+        protected abstract Matrix GetPadding(Matrix matrix);
         
         public Tensor GetPadding(Tensor tensor) {
             var newTensor = new Tensor(new List<Matrix>());

@@ -6,7 +6,21 @@ using FotNET.SCRIPTS.REGION_CONVOLUTION.SCRIPTS;
 
 namespace FotNET.SCRIPTS.REGION_CONVOLUTION;
 
+/// <summary>
+/// R-CNN Model
+/// </summary>
 public static class RegionConvolution {
+    /// <summary>
+    /// Forward pass during R-CNN model
+    /// </summary>
+    /// <param name="bitmap"> Input image </param>
+    /// <param name="cellSize"> Min size of region </param>
+    /// <param name="stepsCount"> Count of calculation epochs </param>
+    /// <param name="model"> Pre-trained (Or default) CNN model </param>
+    /// <param name="minValue"> Min value of prediction </param>
+    /// <param name="convolutionX"> Resize of region to fit CNN </param>
+    /// <param name="convolutionY"> Resize of region to fit CNN </param>
+    /// <returns> Returns image with selected objects </returns>
     public static Bitmap ForwardFeed(Bitmap bitmap, int cellSize, int stepsCount, Network model, 
         double minValue, int convolutionX, int convolutionY) {
         var graphics = Graphics.FromImage(bitmap);
@@ -30,6 +44,19 @@ public static class RegionConvolution {
         return bitmap;
     }
     
+    /// <summary>
+    /// Forward pass during R-CNN model
+    /// </summary>
+    /// <param name="bitmap"> Input image </param>
+    /// <param name="cellSize"> Min size of region </param>
+    /// <param name="stepsCount"> Count of calculation epochs </param>
+    /// <param name="model"> Pre-trained (Or default) CNN model </param>
+    /// <param name="minValue"> Min value of prediction </param>
+    /// <param name="similarityValue"> Value of similarity, that shows when regions unite </param>
+    /// <param name="expectedClass"> Class that should be selected </param>
+    /// <param name="convolutionX"> Resize of region to fit CNN </param>
+    /// <param name="convolutionY"> Resize of region to fit CNN </param>
+    /// <returns> Returns image with selected objects </returns>
     public static Bitmap ForwardFeed(Bitmap bitmap, int cellSize, int stepsCount, Network model, 
         double minValue, double similarityValue, int expectedClass, int convolutionX, int convolutionY) {
         var graphics = Graphics.FromImage(bitmap);

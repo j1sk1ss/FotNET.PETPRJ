@@ -50,16 +50,16 @@ public class NetworkTest {
     [Test]
     public void CnnTest() {
         var model = new Network(new List<ILayer> {
-            new ConvolutionLayer(8, 9,9,3, new HeInitialization(), 1, new ValidPadding()),
+            new ConvolutionLayer(8, 10, 10, 3, new HeInitialization(), 2, new ValidPadding()),
             new ActivationLayer(new DoubleLeakyReLu()),
-            new PoolingLayer(new MaxPooling(), 4),
-            new ConvolutionLayer(16, 9, 9, 8, new HeInitialization(), 1, new ValidPadding()),
+            new PoolingLayer(new MaxPooling(), 2),
+            new ConvolutionLayer(16, 3, 3, 8, new HeInitialization(), 2, new ValidPadding()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PoolingLayer(new MaxPooling(), 2),
             new FlattenLayer(),
-            new PerceptronLayer(144, 128, new HeInitialization()),
+            new PerceptronLayer(144, 100, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
-            new PerceptronLayer(128, 2, new HeInitialization()),
+            new PerceptronLayer(100, 2, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PerceptronLayer(2),
             new SoftMaxLayer()
@@ -70,7 +70,7 @@ public class NetworkTest {
             model.BackPropagation(1,1,new Mse(), 1, true);
         }
         
-        Console.WriteLine(model.ForwardFeed(new Tensor(new Matrix(64, 64)), AnswerType.Class));
+        //Console.WriteLine(model.ForwardFeed(new Tensor(new Matrix(64, 64)), AnswerType.Class));
     }
 
     [Test]
@@ -176,11 +176,11 @@ public class NetworkTest {
         var generator1 = new Network(new List<ILayer> {
             new NoiseLayer(144),
             new RoughenLayer(4,4,9),
-            new TransposedConvolutionLayer(6,4,4,9, new HeInitialization(), 1),
+            new TransposedConvolutionLayer(6,4,4,9, new HeInitialization(), 2),
             new ActivationLayer(new PReLu(.2d)),
-            new TransposedConvolutionLayer(3,12,12,6, new HeInitialization(), 1),
+            new TransposedConvolutionLayer(3,8,8,6, new HeInitialization(), 2),
             new ActivationLayer(new PReLu(.2d)),
-            new TransposedConvolutionLayer(3,23,23,6, new HeInitialization(), 1),
+            new TransposedConvolutionLayer(3,20,20,6, new HeInitialization(), 2),
             new ActivationLayer(new Sigmoid()),
             new NormalizationLayer(new Abs()),
             new NormalizationLayer(new MinMax(1)),
@@ -190,29 +190,27 @@ public class NetworkTest {
         var generator2 = new Network(new List<ILayer> {
             new NoiseLayer(144),
             new RoughenLayer(4,4,9),
-            new UpSamplingLayer(new NearestNeighbor(), 4),
-            new ConvolutionLayer(6, 3, 3, 9, new HeInitialization(), 1, new ValidPadding()),
-            new UpSamplingLayer(new NearestNeighbor(), 2),
-            new ConvolutionLayer(3, 9, 9, 6, new HeInitialization(), 1, new ValidPadding()),
-            new UpSamplingLayer(new NearestNeighbor(), 2),
-            new NormalizationLayer(new Abs()),
+            new UpSamplingLayer(new NearestNeighbor(), 2), // 8
+            new ConvolutionLayer(6, 3, 3, 9, new HeInitialization(), 1, new ValidPadding()), // 16
+            new UpSamplingLayer(new NearestNeighbor(), 2), // 8
+            new ConvolutionLayer(3, 3, 3, 6, new HeInitialization(), 1, new ValidPadding()), // 16
+            new UpSamplingLayer(new NearestNeighbor(), 2), // 14
+            new NormalizationLayer(new Abs()), // 28
             new NormalizationLayer(new MinMax(1)),
             new DataLayer(DataType.InputTensor)
         });
         //Console.WriteLine(generator2.ForwardFeed(null).GetInfo());
         var a = Vector.GenerateGaussianNoise(225).AsTensor(1, 225, 1);
         
-        for (var i = 0; i < 1000; i++) {
-            var answer = generator1.ForwardFeed(null);
+        for (var i = 0; i < 1; i++) {
+            var answer = generator2.ForwardFeed(null);
 
             //if (i % 100 == 0)
                // Console.WriteLine(new Mae().GetLoss(answer, 
                     //Parser.ImageToTensor(new Bitmap((Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//Untitled.png")))));
-            if (i % 10 == 0)
-                Parser.TensorToImage(answer).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
-            generator1.BackPropagation(
-                Parser.ImageToTensor(new Bitmap((Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//Untitled.png"), new Size(40,40))), 
-                new Mae(), .0001, true);
+            //if (i % 10 == 0)
+                //Parser.TensorToImage(answer).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
+            generator2.BackPropagation(new Tensor(28, 28, 3), new Mae(), .0001, true);
         }
         
     }

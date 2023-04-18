@@ -3,7 +3,18 @@ using System.Drawing.Imaging;
 
 namespace FotNET.SCRIPTS.REGION_CONVOLUTION.SCRIPTS;
 
+/// <summary>
+/// Main class for creation regions of objects
+/// </summary>
 public static class RegionsMaker {
+    /// <summary>
+    /// Main method for creation regions
+    /// </summary>
+    /// <param name="bitmap"> Input image </param>
+    /// <param name="defaultRectangleSize"> Min size of region </param>
+    /// <param name="stepsCount"> Count of calculation epochs </param>
+    /// <param name="similarityValue"> Value of similarity, that shows when regions unite </param>
+    /// <returns></returns>
     public static List<Rectangle> GetRegions(Bitmap bitmap, int defaultRectangleSize, int stepsCount, double similarityValue) {
         var regions = RectanglesFromBitmap(bitmap, defaultRectangleSize);
         

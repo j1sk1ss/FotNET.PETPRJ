@@ -2,6 +2,9 @@
 
 namespace FotNET.NETWORK.LAYERS.UP_SAMPLING.UP_SAMPLING_TYPE.BICUBIC_INTERPOLATE;
 
+/// <summary>
+/// Bicubic Interpolate up-sample method
+/// </summary>
 public class BicubicInterpolate : UpSampling {
     protected override Matrix UpSample(Matrix matrix, int scale) {
         var newWidth = matrix.Rows * scale;

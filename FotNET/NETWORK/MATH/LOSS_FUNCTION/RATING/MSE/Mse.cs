@@ -2,6 +2,9 @@
 
 namespace FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING.MSE;
 
+/// <summary>
+/// Mean square error (MSE)
+/// </summary>
 public class Mse : LossFunction {
     public override double GetLoss(Tensor outputTensor, Tensor expectedTensor) {
         var sum = 0d;

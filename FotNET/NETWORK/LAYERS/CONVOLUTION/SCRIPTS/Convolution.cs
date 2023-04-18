@@ -23,8 +23,8 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
         }
 
         public static Tensor GetConvolution(Tensor tensor, Filter[] filters, int stride) {
-            var xSize = (tensor.Channels[0].Rows - filters[0].Channels[0].Columns) / stride + 1;
-            var ySize = (tensor.Channels[0].Columns - filters[0].Channels[0].Rows) / stride + 1;
+            var xSize = (tensor.Channels[0].Rows - filters[0].Channels[0].Rows) / stride + 1;
+            var ySize = (tensor.Channels[0].Columns - filters[0].Channels[0].Columns) / stride + 1;
 
             var newTensor = new Tensor(new List<Matrix>());
             for (var i = 0; i < filters.Length; i++)

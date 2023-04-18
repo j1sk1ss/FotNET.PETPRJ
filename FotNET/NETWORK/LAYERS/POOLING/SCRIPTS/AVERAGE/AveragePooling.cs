@@ -2,6 +2,9 @@ using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.AVERAGE;
 
+/// <summary>
+/// Takes average value from area and puts in new matrix
+/// </summary>
 public class AveragePooling : Pooling {
     protected override Matrix Pool(Matrix matrix, int poolSize) {
         var outputWidth  = matrix.Rows / poolSize;

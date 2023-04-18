@@ -2,6 +2,9 @@
 
 namespace FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING.MAE;
 
+/// <summary>
+/// Mean absolute error (MAE)
+/// </summary>
 public class Mae : LossFunction {
     public override double GetLoss(Tensor outputTensor, Tensor expectedTensor) {
         var sum = 0d;

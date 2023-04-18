@@ -107,7 +107,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                 Parallel.For(0, Filters.Length, filter => {
                     for (var channel = 0; channel < Filters[filter].Channels.Count; channel++) 
                         Filters[filter].Channels[channel] -= Convolution.GetConvolution(
-                             error.Channels[filter], extendedInput.Channels[filter],
+                            extendedInput.Channels[filter],error.Channels[filter],
                             _stride, Filters[filter].Bias) * learningRate;
                     
                     Filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;

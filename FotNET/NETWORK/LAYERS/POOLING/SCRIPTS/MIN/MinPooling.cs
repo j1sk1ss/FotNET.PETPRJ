@@ -2,6 +2,9 @@ using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.MIN;
 
+/// <summary>
+/// Takes min value from area and puts in new matrix
+/// </summary>
 public class MinPooling : Pooling {
     protected override Matrix Pool(Matrix matrix, int poolSize) {
         var outputWidth  = matrix.Rows / poolSize;

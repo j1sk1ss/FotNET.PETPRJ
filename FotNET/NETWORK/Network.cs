@@ -12,6 +12,10 @@ namespace FotNET.NETWORK {
         
         private List<ILayer> Layers { get; set; }
 
+        /// <summary>
+        /// Method for getting acces to layers in model
+        /// </summary>
+        /// <returns> List of layers </returns>
         public List<ILayer> GetLayers() => Layers;
 
         /// <summary> Forward feed method. Takes data tensor and prefer answer type. </summary>

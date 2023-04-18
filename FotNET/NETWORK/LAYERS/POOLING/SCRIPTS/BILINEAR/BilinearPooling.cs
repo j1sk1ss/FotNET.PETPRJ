@@ -2,6 +2,9 @@
 
 namespace FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.BILINEAR;
 
+/// <summary>
+/// Takes bilinear value from area and puts in new matrix
+/// </summary>
 public class BilinearPooling : Pooling {
     protected override Matrix BackPool(Matrix matrix, Matrix referenceMatrix, int poolSize) {
         var height = matrix.Rows * poolSize;
