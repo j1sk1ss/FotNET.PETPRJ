@@ -2,8 +2,7 @@
 using System.Drawing.Imaging;
 using FotNET.DATA.IMAGE;
 using FotNET.NETWORK;
-using FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING.MAE;
-using FotNET.NETWORK.MATH.LOSS_FUNCTION.RATING.MSE;
+using FotNET.NETWORK.MATH.LOSS_FUNCTION.MAE;
 using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK;
@@ -22,15 +21,11 @@ public class GaNetwork {
 
     private Network Generator { get; }
     private Network Discriminator { get; }
-
-    public Network GetGenerator() => Generator;
-    public Network GetDiscriminator() => Discriminator;
-
-
+    
     private List<Tensor> GenerateFake(int count) {
         var fake = new List<Tensor>();
         for (var i = 0; i < count; i++) 
-            fake.Add(Generator.ForwardFeed(null));
+            fake.Add(Generator.ForwardFeed(null!));
         
         return fake;
     }
@@ -78,9 +73,26 @@ public class GaNetwork {
     /// <param name="learningRate"> Learning rate </param>
     public void GeneratorFitting(int epochs, double learningRate) {
         for (var i = 0; i < epochs; i++) {
-            var generated = Generator.ForwardFeed(null);
-            if (i % 100 == 0)
-                Parser.TensorToImage(generated).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
+            var generated = Generator.ForwardFeed(null!);
+            var answer = Discriminator.ForwardFeed(generated, AnswerType.Class);
+            if (Math.Abs(answer - 1) > .1) 
+                Generator.BackPropagation(Discriminator.BackPropagation(1,1, 
+                    new Mae(), learningRate, false), learningRate, true);
+        }
+    }
+
+    /// <summary>
+    /// Generator fitting with saving steps of fitting
+    /// </summary>
+    /// <param name="epochs"> Epochs count </param>
+    /// <param name="learningRate"> Learning rate </param>
+    /// <param name="saveStep"> Count of steps between that will be saved generator output </param>
+    /// <param name="path"> Path to directory for save </param>
+    public void GeneratorFitting(int epochs, double learningRate, int saveStep, string path) {
+        for (var i = 0; i < epochs; i++) {
+            var generated = Generator.ForwardFeed(null!);
+            if (i % saveStep == 0)
+                Parser.TensorToImage(generated).Save(path + new Guid() + ".png", ImageFormat.Png);
             var answer = Discriminator.ForwardFeed(generated, AnswerType.Class);
             if (Math.Abs(answer - 1) > .1) 
                 Generator.BackPropagation(Discriminator.BackPropagation(1,1, 
