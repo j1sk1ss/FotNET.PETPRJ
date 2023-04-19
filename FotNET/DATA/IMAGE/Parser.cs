@@ -5,6 +5,12 @@ using FotNET.NETWORK.MATH.OBJECTS;
 namespace FotNET.DATA.IMAGE;
 
 public static class Parser {
+    /// <summary>
+    /// Convert stack of images to data set
+    /// </summary>
+    /// <param name="directoryPath"> Path to directory with images </param>
+    /// <param name="labelsPath"> Path to file with labels </param>
+    /// <returns> Data set </returns>
     public static List<IData> FilesToImages(string directoryPath, string labelsPath) {
         var files = Directory.GetFiles(directoryPath);
         var images = new List<IData>();
@@ -20,6 +26,11 @@ public static class Parser {
         return images;
     }
 
+    /// <summary>
+    /// Convert image to 3D array
+    /// </summary>
+    /// <param name="path"> Path to image </param>
+    /// <returns> 3D array </returns>
     public static double[,,] ImageToArray(string path) {
         var bitmap = (Bitmap)Image.FromFile(path);
         var array = new double[bitmap.Height, bitmap.Width, 3];
@@ -37,6 +48,11 @@ public static class Parser {
         return array;
     }
 
+    /// <summary>
+    /// Convert image to tensor
+    /// </summary>
+    /// <param name="path"> Path to image </param>
+    /// <returns> Tensor </returns>
     public static Tensor ImageToTensor(string path) {
         var bitmap = (Bitmap)Image.FromFile(path);
         var tensor = new Tensor(new List<Matrix>());
@@ -57,6 +73,11 @@ public static class Parser {
         return tensor;
     }
 
+    /// <summary>
+    /// Convert image to tensor
+    /// </summary>
+    /// <param name="bitmap"> Image </param>
+    /// <returns> Tensor </returns>
     public static Tensor ImageToTensor(Bitmap bitmap) {
         var tensor = new Tensor(new List<Matrix>());
         
@@ -76,6 +97,11 @@ public static class Parser {
         return tensor;
     }
     
+    /// <summary>
+    /// Convert tensor to bitmap
+    /// </summary>
+    /// <param name="tensor"> Tensor </param>
+    /// <returns> Bitmap </returns>
     public static Bitmap TensorToImage(Tensor tensor) {
         var height = tensor.Channels[0].Rows;
         var width = tensor.Channels[0].Columns;

@@ -1,14 +1,19 @@
 ﻿namespace FotNET.NETWORK.MATH.OBJECTS {
-    /// <summary>
-    /// Matrix object for working with 2D arrays
-    /// </summary>
     public class Matrix {
+        /// <summary>
+        /// Matrix object for working with 2D arrays
+        /// </summary>
+        /// <param name="body"> 2D array </param>
         public Matrix(double[,] body) {
             Rows    = body.GetLength(0);
             Columns = body.GetLength(1);
             Body    = body;
         }
 
+        /// <summary>
+        /// Matrix object for working with 2D arrays
+        /// </summary>
+        /// <param name="body"> 1D array </param>
         public Matrix(IReadOnlyList<double> body) {
             Rows    = body.Count;
             Columns = 1;
@@ -18,12 +23,21 @@
                 Body[i, 0] = body[i];
         }
         
+        /// <summary>
+        /// Matrix object for working with 2D arrays
+        /// </summary>
+        /// <param name="rows"> Rows of matrix </param>
+        /// <param name="columns"> Columns of matrix </param>
         public Matrix(int rows, int columns) {
             Rows    = rows;
             Columns = columns;
             Body    = new double[rows, columns];
         }
 
+        /// <summary>
+        /// Matrix object for working with 2D arrays
+        /// </summary>
+        /// <param name="data"> String with matrix data </param>
         public Matrix(string data) {
             var rows = data.Split("\n", StringSplitOptions.RemoveEmptyEntries);
 
@@ -43,6 +57,10 @@
         public int Columns { get; }
         public double[,] Body { get; }
 
+        /// <summary>
+        /// Transpose matrix
+        /// </summary>
+        /// <returns> Transposed matrix </returns>
         public Matrix Transpose() {
             var temp = new double[Columns, Rows];
             
@@ -53,6 +71,10 @@
             return new Matrix(temp);
         }
 
+        /// <summary>
+        /// Flip matrix or rotate it by 180 degrees 
+        /// </summary>
+        /// <returns> Flipped matrix </returns>
         public Matrix Flip() {
             var rotatedMatrix = new Matrix(new double[Rows, Columns]);
 
@@ -161,6 +183,14 @@
             return sum;
         }
 
+        /// <summary>
+        /// Create sub-matrix
+        /// </summary>
+        /// <param name="x1"> First x coordinate </param>
+        /// <param name="y1"> First y coordinate </param>
+        /// <param name="x2"> Second x coordinate </param>
+        /// <param name="y2"> Second y coordinate </param>
+        /// <returns> Sub-matrix </returns>
         public Matrix GetSubMatrix(int x1, int y1, int x2, int y2) {
             var subMatrix = new Matrix(x2 - x1, y2 - y1);
 

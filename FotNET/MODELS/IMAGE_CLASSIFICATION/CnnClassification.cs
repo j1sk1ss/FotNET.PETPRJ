@@ -13,6 +13,9 @@ using FotNET.NETWORK.MATH.Initialization.HE;
 namespace FotNET.MODELS.IMAGE_CLASSIFICATION;
 
 public static class CnnClassification {
+    /// <summary>
+    /// CNN model for MNIST data set. Takes 28x28 tensor.
+    /// </summary>
     public static Network SimpleConvolutionNetwork = new Network(new List<ILayer> {
         new ConvolutionLayer(6, 5,5,3, new HeInitialization(), 1, new ValidPadding()),
         new ActivationLayer(new DoubleLeakyReLu()),
@@ -28,6 +31,9 @@ public static class CnnClassification {
         new PerceptronLayer(10)
     });
     
+    /// <summary>
+    /// Big CNN model for MNIST data set. Takes 28x28 tensor.
+    /// </summary>
     public static Network DeepConvolutionNetwork = new Network(new List<ILayer> {
         new ConvolutionLayer(16, 5,5,3, new HeInitialization(), 1, new ValidPadding()),
         new ActivationLayer(new DoubleLeakyReLu()),

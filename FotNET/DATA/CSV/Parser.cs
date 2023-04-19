@@ -5,6 +5,12 @@ using Array = FotNET.DATA.DATA_OBJECTS.ARRAY.Array;
 namespace FotNET.DATA.CSV;
 
 public static class Parser {
+    /// <summary>
+    /// Method for creating data set from csv file
+    /// </summary>
+    /// <param name="path"> Path to csv file </param>
+    /// <param name="config"> Config file for csv </param>
+    /// <returns> Data set </returns>
     public static List<IData> CsvToArrays(string path, Config config) {
         var data = Parse(path, config.StartRow, config.Delimiters);
         return new List<IData>(data.Select(datum => new Array(datum, config)).ToList());

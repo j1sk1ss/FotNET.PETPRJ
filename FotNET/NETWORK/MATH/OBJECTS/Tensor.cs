@@ -1,12 +1,23 @@
 ﻿namespace FotNET.NETWORK.MATH.OBJECTS {
-    /// <summary>
-    /// Tensor object for working with list of matrices
-    /// </summary>
     public class Tensor {
+        /// <summary>
+        /// Tensor or stack of matrices
+        /// </summary>
+        /// <param name="matrix"> Matrix will be converted to tensor </param>
         public Tensor(Matrix matrix) => Channels = new List<Matrix> { matrix };
 
+        /// <summary>
+        /// Tensor or stack of matrices
+        /// </summary>
+        /// <param name="matrix"> List of matrices </param>
         public Tensor(List<Matrix> matrix) => Channels = matrix;
 
+        /// <summary>
+        /// Tensor or stack of matrices
+        /// </summary>
+        /// <param name="x"> X size of tensor </param>
+        /// <param name="y"> Y size of tensor </param>
+        /// <param name="depth"> Depth of tensor </param>
         public Tensor(int x, int y, int depth) {
             Channels = new List<Matrix>();
             for (var i = 0; i < depth; i++)
@@ -29,13 +40,17 @@
             return new Tensor(Channels);
         }
 
+        /// <summary>
+        /// Fit tensor size with reference
+        /// </summary>
+        /// <param name="reference"> Reference tensor </param>
+        /// <returns> Tensor with same size with reference </returns>
         public Tensor GetSameChannels(Tensor reference) {
-            if (Channels.Count != reference.Channels.Count) {
+            if (Channels.Count != reference.Channels.Count) 
                 return Channels.Count < reference.Channels.Count
                     ? IncreaseChannels(reference.Channels.Count - Channels.Count)
                     : CropChannels(reference.Channels.Count);
-            }
-
+            
             return this;
         }
 
@@ -61,6 +76,10 @@
             return new Tensor(matrix);
         }
 
+        /// <summary>
+        /// Find max element in tensor
+        /// </summary>
+        /// <returns> Index of max element </returns>
         public int GetMaxIndex() {
             var values = Flatten();
             var max = values[0];

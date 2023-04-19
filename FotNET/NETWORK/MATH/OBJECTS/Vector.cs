@@ -1,13 +1,18 @@
 ﻿namespace FotNET.NETWORK.MATH.OBJECTS {
-    /// <summary>
-    /// Vector object for working with arrays
-    /// </summary>
     public class Vector {
+        /// <summary>
+        /// Vector object for working with arrays
+        /// </summary>
+        /// <param name="array"> 1D array </param>
         public Vector(double[] array) {
             Body = array;
             Size = array.Length;
         }
 
+        /// <summary>
+        /// Vector object for working with arrays
+        /// </summary>
+        /// <param name="size"> Size of array </param>
         public Vector(int size) {
             Body = new double[size];
             Size = size;
@@ -90,6 +95,13 @@
             return matrix;
         }
         
+        /// <summary>
+        /// Method for converting vector to tensor
+        /// </summary>
+        /// <param name="x"> X size of tensor </param>
+        /// <param name="y"> Y size of tensor </param>
+        /// <param name="channels"> Depth of tensor </param>
+        /// <returns> Tensor from vector </returns>
         public Tensor AsTensor(int x, int y, int channels) {
             var tensor = new Tensor(new List<Matrix>());
 
