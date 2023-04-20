@@ -75,9 +75,13 @@ public class GaNetwork {
         for (var i = 0; i < epochs; i++) {
             var generated = Generator.ForwardFeed(null!);
             var answer = Discriminator.ForwardFeed(generated, AnswerType.Class);
-            if (Math.Abs(answer - 1) > .1) 
-                Generator.BackPropagation(Discriminator.BackPropagation(1,1, 
+
+            if (Math.Abs(answer - 1) > .1)
+                Generator.BackPropagation(Discriminator.BackPropagation(1, 1,
                     new Mae(), learningRate, false), learningRate, true);
+            else
+                Discriminator.BackPropagation(0, 1,
+                    new Mae(), learningRate, false);
         }
     }
 
@@ -94,9 +98,13 @@ public class GaNetwork {
             if (i % saveStep == 0)
                 Parser.TensorToImage(generated).Save(path + new Guid() + ".png", ImageFormat.Png);
             var answer = Discriminator.ForwardFeed(generated, AnswerType.Class);
-            if (Math.Abs(answer - 1) > .1) 
-                Generator.BackPropagation(Discriminator.BackPropagation(1,1, 
+            
+            if (Math.Abs(answer - 1) > .1)
+                Generator.BackPropagation(Discriminator.BackPropagation(1, 1,
                     new Mae(), learningRate, false), learningRate, true);
+            else
+                Discriminator.BackPropagation(0, 1,
+                    new Mae(), learningRate, false);
         }
     }
 

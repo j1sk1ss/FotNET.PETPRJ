@@ -6,14 +6,10 @@ using FotNET.NETWORK;
 using FotNET.NETWORK.LAYERS;
 using FotNET.NETWORK.LAYERS.ACTIVATION;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.DOUBLE_LEAKY_RELU;
-using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.HYPERBOLIC_TANGENT;
-using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.LEAKY_RELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.PRELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.RELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.SIGMOID;
-using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.TANGENSOID;
 using FotNET.NETWORK.LAYERS.CONVOLUTION;
-using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.VALID;
 using FotNET.NETWORK.LAYERS.DATA;
 using FotNET.NETWORK.LAYERS.DECONVOLUTION;
@@ -30,8 +26,6 @@ using FotNET.NETWORK.LAYERS.SOFT_MAX;
 using FotNET.NETWORK.LAYERS.UP_SAMPLING;
 using FotNET.NETWORK.LAYERS.UP_SAMPLING.UP_SAMPLING_TYPE.NEAREST_NEIGHBOR;
 using FotNET.NETWORK.MATH.Initialization.HE;
-using FotNET.NETWORK.MATH.Initialization.Xavier;
-using FotNET.NETWORK.MATH.LOSS_FUNCTION.MAE;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.MSE;
 using FotNET.NETWORK.MATH.OBJECTS;
 using FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK;
@@ -176,11 +170,11 @@ public class NetworkTest {
         var generator1 = new Network(new List<ILayer> {
             new NoiseLayer(144),
             new RoughenLayer(4,4,9),
-            new TransposedConvolutionLayer(6,4,4,9, new HeInitialization(), 2),
+            new TransposedConvolutionLayer(6,4,4,9, new HeInitialization(), 1),
             new ActivationLayer(new PReLu(.2d)),
-            new TransposedConvolutionLayer(3,8,8,6, new HeInitialization(), 2),
+            new TransposedConvolutionLayer(3,12,12,6, new HeInitialization(), 1),
             new ActivationLayer(new PReLu(.2d)),
-            new TransposedConvolutionLayer(3,20,20,6, new HeInitialization(), 2),
+            new TransposedConvolutionLayer(3,23,23,6, new HeInitialization(), 1),
             new ActivationLayer(new Sigmoid()),
             new NormalizationLayer(new Abs()),
             new NormalizationLayer(new MinMax(1)),
@@ -190,27 +184,23 @@ public class NetworkTest {
         var generator2 = new Network(new List<ILayer> {
             new NoiseLayer(144),
             new RoughenLayer(4,4,9),
-            new UpSamplingLayer(new NearestNeighbor(), 2), // 8
+            new UpSamplingLayer(new NearestNeighbor(), 2), 
             new ConvolutionLayer(6, 3, 3, 9, new HeInitialization(), 1, new ValidPadding()), // 16
-            new UpSamplingLayer(new NearestNeighbor(), 2), // 8
+            new UpSamplingLayer(new NearestNeighbor(), 2),
             new ConvolutionLayer(3, 3, 3, 6, new HeInitialization(), 1, new ValidPadding()), // 16
-            new UpSamplingLayer(new NearestNeighbor(), 2), // 14
-            new NormalizationLayer(new Abs()), // 28
+            new UpSamplingLayer(new NearestNeighbor(), 2), 
+            new NormalizationLayer(new Abs()), 
             new NormalizationLayer(new MinMax(1)),
             new DataLayer(DataType.InputTensor)
         });
-        //Console.WriteLine(generator2.ForwardFeed(null).GetInfo());
-        var a = Vector.GenerateGaussianNoise(225).AsTensor(1, 225, 1);
         
-        for (var i = 0; i < 1; i++) {
-            var answer = generator2.ForwardFeed(null);
+        for (var i = 0; i < 1000; i++) {
+            var answer = generator1.ForwardFeed(null!);
 
-            //if (i % 100 == 0)
-               // Console.WriteLine(new Mae().GetLoss(answer, 
-                    //Parser.ImageToTensor(new Bitmap((Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//Untitled.png")))));
-            //if (i % 10 == 0)
-                //Parser.TensorToImage(answer).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
-            generator2.BackPropagation(new Tensor(28, 28, 3), new Mae(), .0001, true);
+            if (i % 10 == 0)
+                Parser.TensorToImage(answer).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.jpg", ImageFormat.Png);
+            generator1.BackPropagation(Parser.ImageToTensor(new Bitmap((Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//Untitled.png"), new Size(40,40))),
+                new Mse(), .01, true);
         }
         
     }

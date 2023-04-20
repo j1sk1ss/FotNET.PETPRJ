@@ -6,6 +6,7 @@ using FotNET.NETWORK.LAYERS.DATA;
 using FotNET.NETWORK.LAYERS.FLATTEN;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
 using FotNET.NETWORK.LAYERS.RECURRENT;
+using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.EXTENDED_MANY_TO_MANY;
 using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.MANY_TO_ONE;
 using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.ONE_TO_MANY;
 using FotNET.NETWORK.LAYERS.RECURRENT.RECURRENCY_TYPE.VALID_MANY_TO_MANY;
@@ -65,16 +66,18 @@ public class RecurrentTests {
         var testTensorData = new Tensor(new Matrix(new[] { .7d, .1d, .3d, .21d, .14d, .77d }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new HyperbolicTangent(), new ValidManyToMany(), 10, new XavierInitialization()),
+            new RecurrentLayer(new HyperbolicTangent(), new ExtendedManyToMany(), 10, new XavierInitialization()),
             new DataLayer(DataType.InputTensor)
         });
-        
-        var expected = new Tensor(new Matrix(new[] { .12d, .44d, .76d, .11d, .4d, .13d })); // Error cuz output is 1x1x10 instean 1x10x1 like we pass
+
+        var expected = new Vector(new[] { .7d, .1d, .3d, .21d, .14d, .77d }).AsTensor(1, 6, 1);
         
         Console.WriteLine();
+        
+        model.ForwardFeed(testTensorData).GetInfo();
         //Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
         for (var i = 0; i < 200; i++) {
-            model.BackPropagation(expected, new Mse(), -.0015d, true);
+            model.BackPropagation(expected, new Mse(), .0015d, true);
             model.ForwardFeed(testTensorData);
         }
         
@@ -114,7 +117,7 @@ public class RecurrentTests {
             new DataLayer(DataType.InputTensor)
         });
 
-        var expected = new Tensor(new Matrix(new[] { .12d, .44d, .76d, .11d, .4d }));
+        var expected = new Vector(new[] { .7d, .1d, .3d, .21d, .14d, .77d }).AsTensor(1, 6, 1);
         
         Console.WriteLine();
         Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());

@@ -40,9 +40,9 @@ public class BilinearInterpolation : UpSampling {
                 var value11 = matrix.Body[y1, x1];
 
                 var interpolatedValue = weightX0 * weightY0 * value00
-                                        + weightX1 * weightY0 * value10
-                                        + weightX0 * weightY1 * value01
-                                        + weightX1 * weightY1 * value11;
+                                            + weightX1 * weightY0 * value10
+                                            + weightX0 * weightY1 * value01
+                                            + weightX1 * weightY1 * value11;
 
                 result.Body[y, x] = interpolatedValue;
             }

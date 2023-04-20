@@ -224,7 +224,7 @@
             return tempValues;
         }
 
-        public List<double> GetAsList() {
+        public IEnumerable<double> GetAsList() {
             var tempValues = new List<double>();
 
             for (var i = 0; i < Rows; i++)

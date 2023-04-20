@@ -94,8 +94,16 @@
             return index;
         }
 
+        /// <summary>
+        /// Returns min value in tensor
+        /// </summary>
+        /// <returns> Min value in tensor </returns>
         public double Min() => Flatten().Min();
         
+        /// <summary>
+        /// Returns max value in tensor
+        /// </summary>
+        /// <returns> Max value in tensor </returns>
         public double Max() => Flatten().Max();
         
         public static Tensor operator +(Tensor tensor1, Tensor tensor2) {
