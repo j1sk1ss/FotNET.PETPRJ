@@ -14,7 +14,9 @@ public class ManyToOne : IRecurrentType {
             var inputNeurons = Matrix.Multiply(new Matrix(new[] { currentElement }), layer.InputWeights);
             
             if (step > 0)
-                layer.HiddenNeurons.Add(inputNeurons + Matrix.Multiply(layer.HiddenNeurons[step - 1], layer.HiddenWeights) + new Matrix(layer.HiddenBias).Transpose());
+                layer.HiddenNeurons.Add(inputNeurons 
+                                        + Matrix.Multiply(layer.HiddenNeurons[step - 1], layer.HiddenWeights) 
+                                        + new Matrix(layer.HiddenBias).Transpose());
             else
                 layer.HiddenNeurons.Add(inputNeurons);
 
