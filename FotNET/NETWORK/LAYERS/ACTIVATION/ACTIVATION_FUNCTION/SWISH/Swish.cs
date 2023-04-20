@@ -1,4 +1,6 @@
-﻿namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.SWISH;
+﻿using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.SIGMOID;
+
+namespace FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.SWISH;
 
 public class Swish : Function {
     /// <summary>
@@ -17,7 +19,8 @@ public class Swish : Function {
     protected override double Activate(double value) => value / (1 + Math.Exp(-(value * Beta)));
 
     protected override double Derivation(double value, double activatedValue) {
-        var deactivatedValue = Math.Pow(activatedValue, 2) * activatedValue * (1 - activatedValue) * activatedValue;
+        var deactivatedValue =
+            activatedValue + new Sigmoid().Activate(new[] { activatedValue })[0] * (Beta - activatedValue);
         Beta -= value * LearningRate;
         return value * deactivatedValue;
     }
