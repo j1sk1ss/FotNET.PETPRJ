@@ -63,6 +63,20 @@ For creating neural network class u need do **SIMPLE** steps:
 			new NormalizationLayer();
 			new DataLayer();
 		}
+		
+		>> OR
+		
+		List<ILayer> layers = new List<ILayer> {
+			new BatchNormalizationLayer(); // Batch normalizer
+			new UpSampleLayer(); // Up sample input tensor by one of types of up sampling
+			new ConvolutionLayer();
+			new ActivationLayer(); // Input tensor get activated
+			new UpSampleLayer(); 
+			new ConvolutionLayer();
+			new ActivationLayer(); 
+			new NormalizationLayer();
+			new DataLayer();
+		}
 
 1.1.1. Every layer needs a parametrs, that u should choose by ur self:
 
@@ -84,19 +98,30 @@ For creating neural network class u need do **SIMPLE** steps:
 		new MaxPooling();
 		new MinPooling();
 		new AveragePooling();
+		new BilinearPooling();
 
 1.1.1.2. Variants of weight initialization:
 
 		new HeInitialization(); // Usualy uses with ReLU, Leaky ReLU and Double Leaky ReLU
 		new XavierInitialization(); // Also uses with Tanghensoid and Sighmoid
 		new NormalizedXavierInitialization(); // Same with upper activation function, but normalized
+		new ConstInitialization();
+		new RandomInitialization();
+		new ZeroInitialization();
+		new LeCunNormalization();
 
 1.1.1.3. Types of normalization:
 
 		new Abs(); // Normalize tensor with Abs
 		new MinMax(); // Normalize tensor between min and max value
 
-1.2. After it u should choose one of **ACTIVATION FUNCTIONS** or create ur own, but dont forget add IFunction interface:
+1.1.1.4. Types of Up sampling
+
+		new NearestNeighbor();
+		new BilinearInterpolation();
+		new BicubicInterpolation();
+
+1.2. After it u should choose one of **ACTIVATION FUNCTIONS** or create ur own, but dont forget add Function abstract class:
 
 		new ReLu();
 		new LeakyReLu();
@@ -107,6 +132,11 @@ For creating neural network class u need do **SIMPLE** steps:
 		new BinaryStep();
 		new SoftPlus();
 		new Identity();
+		new Swish();
+		new HardSigmoid();
+		new SiLu();
+		new SeLu();
+		new HyperbolicTangent();
 
 ------------
 
@@ -139,8 +169,12 @@ If predicted class is wrong, we going to Back Propagation.
 		
 U can see lossFunction option:
 
-		new OneByOne();
-		new ValueByValue();
+		new Mse();
+		new Mae();
+		new Cost();
+		new CeLl();
+		new Mape();
+		new Mbe();
 
 If expected class is different that was predicted, we should use **BACKPROPAGATION** method.
 
