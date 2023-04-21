@@ -24,7 +24,7 @@ public class RecurrentTests {
         var testTensorData = new Tensor(new Matrix(new double[] { 0, 0, 0, 1, 1, 1 }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new DoubleLeakyReLu(), new ValidManyToMany(), 10, new HeInitialization()),
+            new RecurrentLayer(new DoubleLeakyReLu(), new ExtendedManyToMany(), 10, new HeInitialization()),
             new SoftMaxLayer()
         });
         model.ForwardFeed(testTensorData, AnswerType.Class);
@@ -70,14 +70,14 @@ public class RecurrentTests {
             new DataLayer(DataType.InputTensor)
         });
 
-        var expected = new Vector(new[] { .7d, .1d, .3d, .21d, .14d, .77d }).AsTensor(1, 6, 1);
+        var expected = new Vector(new[] { .7d, .91d, .2d, .21d, .0d, .77d }).AsTensor(1, 6, 1);
         
         Console.WriteLine();
         
         model.ForwardFeed(testTensorData).GetInfo();
         //Console.WriteLine(new Vector(model.ForwardFeed(testTensorData).Flatten().ToArray()).Print());
-        for (var i = 0; i < 200; i++) {
-            model.BackPropagation(expected, new Mse(), .0015d, true);
+        for (var i = 0; i < 1; i++) {
+            model.BackPropagation(expected, new Mse(), .15d, true);
             model.ForwardFeed(testTensorData);
         }
         

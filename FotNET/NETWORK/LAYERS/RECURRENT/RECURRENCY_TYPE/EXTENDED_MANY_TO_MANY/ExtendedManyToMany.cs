@@ -37,11 +37,9 @@ public class ExtendedManyToMany : IRecurrentType {
         var transposedOutputWeights = layer.OutputWeights.Transpose();
         var transposedHiddenWeights = layer.HiddenWeights.Transpose();
         
-        for (var step = sequence.Count - 1; step >= 0; step--) {
-            var currentError = sequence[step - layer.HiddenNeurons.Count < 0 ? 0 : step - layer.HiddenNeurons.Count];
+        for (var step = layer.HiddenNeurons.Count - 1; step >= 0; step--) {
+            var currentError = sequence[step - sequence.Count < 0 ? 0 : step - sequence.Count];
 
-            if (step < layer.InputData.Flatten().Count) currentError = 0;
-            
             layer.OutputWeights -= Matrix.Multiply(layer.HiddenNeurons[step].Transpose(),
                 new Matrix(new[] { currentError })) * learningRate;
             layer.OutputBias -= currentError * learningRate;
@@ -62,7 +60,7 @@ public class ExtendedManyToMany : IRecurrentType {
             if (step < layer.InputData.Flatten().Count)
                 layer.InputWeights -= Matrix.Multiply(new Matrix(new[]{layer.InputData.Flatten()[step]}), nextHidden) * learningRate;
         }
-
+        
         return error;
     }
 }

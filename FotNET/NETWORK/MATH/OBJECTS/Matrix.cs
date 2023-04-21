@@ -163,6 +163,16 @@
             return endMatrix;
         }
 
+        public static Matrix operator /(Matrix matrix1, double value) {
+            var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
+
+            for (var i = 0; i < matrix1.Rows; i++)
+            for (var j = 0; j < matrix1.Columns; j++)
+                endMatrix.Body[i, j] = matrix1.Body[i, j] / value;
+
+            return endMatrix;
+        }
+        
         public static Matrix operator +(Matrix matrix1, double value) {
             var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 

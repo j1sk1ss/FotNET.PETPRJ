@@ -115,42 +115,51 @@
             return endTensor;
         }
 
-        public static Tensor operator -(Tensor tensor1, Tensor tensor2) {
-            var endTensor = new Tensor(tensor1.Channels);
+        public static Tensor operator -(Tensor firstTensor, Tensor secondTensor) {
+            var endTensor = new Tensor(firstTensor.Channels);
 
             for (var i = 0; i < endTensor.Channels.Count; i++)
-                endTensor.Channels[i] = tensor1.Channels[i] - tensor2.Channels[i];
+                endTensor.Channels[i] = firstTensor.Channels[i] - secondTensor.Channels[i];
 
             return endTensor;
         }
 
-        public static Tensor operator *(Tensor tensor1, Tensor tensor2) {
-            var endTensor = new Tensor(tensor1.Channels);
+        public static Tensor operator *(Tensor tensor, Tensor secondTensor) {
+            var endTensor = new Tensor(tensor.Channels);
 
             for (var i = 0; i < endTensor.Channels.Count; i++)
-                endTensor.Channels[i] = tensor1.Channels[i] * tensor2.Channels[i];
+                endTensor.Channels[i] = tensor.Channels[i] * secondTensor.Channels[i];
 
             return endTensor;
         }
 
-        public static Tensor operator -(Tensor tensor1, double value) {
-            var endTensor = new Tensor(tensor1.Channels);
+        public static Tensor operator -(Tensor firstTensor, double value) {
+            var endTensor = new Tensor(firstTensor.Channels);
 
-            for (var i = 0; i < tensor1.Channels.Count; i++)
-                tensor1.Channels[i] -= value;
-
-            return endTensor;
-        }
-
-        public static Tensor operator *(Tensor tensor1, double value) {
-            var endTensor = new Tensor(tensor1.Channels);
-
-            for (var i = 0; i < tensor1.Channels.Count; i++)
-                tensor1.Channels[i] *= value;
+            for (var i = 0; i < firstTensor.Channels.Count; i++)
+                firstTensor.Channels[i] -= value;
 
             return endTensor;
         }
 
+        public static Tensor operator *(Tensor tensor, double value) {
+            var endTensor = new Tensor(tensor.Channels);
+
+            for (var i = 0; i < tensor.Channels.Count; i++)
+                tensor.Channels[i] *= value;
+
+            return endTensor;
+        }
+
+        public static Tensor operator /(Tensor tensor, double value) {
+            var endTensor = new Tensor(tensor.Channels);
+
+            for (var i = 0; i < tensor.Channels.Count; i++)
+                tensor.Channels[i] /= value;
+
+            return endTensor;
+        }
+        
         public string GetInfo() => $"x: {Channels[0].Rows}\n" +
                                    $"y: {Channels[0].Columns}\n" +
                                    $"depth: {Channels.Count}";
