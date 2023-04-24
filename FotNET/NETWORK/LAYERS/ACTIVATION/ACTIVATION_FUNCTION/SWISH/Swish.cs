@@ -17,7 +17,7 @@ public class Swish : Function {
     private double LearningRate { get; }
     
     protected override double Activate(double value) => value / (1 + Math.Exp(-(value * Beta)));
-
+    
     protected override double Derivation(double value, double activatedValue) {
         var deactivatedValue =
             activatedValue + new Sigmoid().Activate(new[] { activatedValue })[0] * (Beta - activatedValue);
