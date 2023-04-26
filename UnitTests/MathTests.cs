@@ -1,3 +1,4 @@
+using FotNET.NETWORK.LAYERS.NOISE.SCRIPTS.GAUSSIAN;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.OBJECTS;
 using NUnit.Framework;
@@ -18,7 +19,7 @@ public class MathTests {
 
     [Test]
     public void NoiseGeneratorTest() {
-        Console.WriteLine(Vector.GenerateGaussianNoise(10).Print());
+        Console.WriteLine(new GaussianNoise().GenerateNoise(10).Print());
     }
     
     [Test]

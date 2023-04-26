@@ -14,6 +14,7 @@ using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.VALID;
 using FotNET.NETWORK.LAYERS.DATA;
 using FotNET.NETWORK.LAYERS.FLATTEN;
 using FotNET.NETWORK.LAYERS.NOISE;
+using FotNET.NETWORK.LAYERS.NOISE.SCRIPTS.GAUSSIAN;
 using FotNET.NETWORK.LAYERS.NORMALIZATION;
 using FotNET.NETWORK.LAYERS.NORMALIZATION.NORMALIZATION_TYPE.ABS;
 using FotNET.NETWORK.LAYERS.NORMALIZATION.NORMALIZATION_TYPE.MIN_MAX;
@@ -82,7 +83,6 @@ public class NetworkTest {
             new DataLayer(DataType.InputTensor)
         });
         
-        Console.WriteLine(model.ForwardFeed(Vector.GenerateGaussianNoise(288).AsTensor(3,3,32)).GetInfo());
         var errorTensor = new Tensor(new List<Matrix> { new (76, 76), new (76, 76), new (76, 76) });
         model.BackPropagation(errorTensor, new Mse(), .1, true);
     }
@@ -92,7 +92,7 @@ public class NetworkTest {
         const string path = @"C://Users//j1sk1ss//Desktop//RCNN_TEST//";
 
         var generator = new Network(new List<ILayer> {
-            new NoiseLayer(144),
+            new NoiseLayer(144, new GaussianNoise()),
             new RoughenLayer(4,4,9),
             new TransposedConvolutionLayer(6,4,4,9, new HeInitialization(), 1),
             new ActivationLayer(new PReLu(.2d)),
@@ -151,7 +151,7 @@ public class NetworkTest {
         const string path = @"C://Users//j1sk1ss//Desktop//RCNN_TEST//";
         
         var generator = new Network(new List<ILayer> {
-            new NoiseLayer(128),
+            new NoiseLayer(128, new GaussianNoise()),
             new PerceptronLayer(128, 324, new HeInitialization()),
             new ActivationLayer(new PReLu(.2d)),
             new RoughenLayer(6,6,9),
@@ -168,7 +168,7 @@ public class NetworkTest {
         });
         
         var generator1 = new Network(new List<ILayer> {
-            new NoiseLayer(144),
+            new NoiseLayer(144, new GaussianNoise()),
             new RoughenLayer(4,4,9),
             new TransposedConvolutionLayer(6,4,4,9, new HeInitialization(), 1),
             new ActivationLayer(new PReLu(.2d)),
@@ -182,7 +182,7 @@ public class NetworkTest {
         });
         
         var generator2 = new Network(new List<ILayer> {
-            new NoiseLayer(144),
+            new NoiseLayer(144, new GaussianNoise()),
             new RoughenLayer(4,4,9),
             new UpSamplingLayer(new NearestNeighbor(), 2), 
             new ConvolutionLayer(6, 3, 3, 9, new HeInitialization(), 1, new ValidPadding()), // 16

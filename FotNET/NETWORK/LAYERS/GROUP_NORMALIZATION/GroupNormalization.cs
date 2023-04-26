@@ -29,17 +29,10 @@ public class GroupNormalization : ILayer {
             groups[i] = tempTensor;
         }
 
-        var means = new double[NumGroups];
-        var variances = new double[NumGroups];
-        for (var i = 0; i < NumGroups; i++) {
-            means[i] = TensorMean(groups[i]);
-            variances[i] = TensorVar(groups[i]);
-        }
-
         var normalizedGroups = new Tensor[NumGroups];
         for (var i = 0; i < NumGroups; i++) 
-            normalizedGroups[i] = (groups[i] - means[i]) / Math.Sqrt(variances[i] + Epsilon);
-
+            normalizedGroups[i] = (groups[i] - TensorMean(groups[i])) / Math.Sqrt(TensorVar(groups[i]) + Epsilon);
+        
         var normalized = new Tensor(new List<Matrix>());
         foreach (var currentTensor in normalizedGroups)
             normalized.Channels.AddRange(currentTensor.Channels);

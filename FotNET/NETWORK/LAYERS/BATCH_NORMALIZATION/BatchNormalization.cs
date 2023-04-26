@@ -38,15 +38,12 @@ public class BatchNormalization : ILayer {
             Mean[i] = sum / input.Length;
         
         sum = input.Select((t, i) => Math.Pow(t - Mean[i], 2)).Sum();
-        
-        for (var i = 0; i < input.Length; i++) 
-            Variance[i] = sum / input.Length;
 
-        for (var i = 0; i < input.Length; i++) 
-            XNormalized[i] = (input[i] - Mean[i]) / Math.Sqrt(Variance[i] + double.Epsilon);
-        
-        for (var i = 0; i < input.Length; i++) 
-            input[i] = Gamma[i] * XNormalized[i] + Beta[i];
+        for (var i = 0; i < input.Length; i++) {
+            Variance[i] = sum / input.Length;
+            XNormalized[i] = (input[i] - Mean[i]) / Math.Sqrt(Variance[i] + double.Epsilon);    
+            input[i] = Gamma[i] * XNormalized[i] + Beta[i];            
+        }
 
         Input = tensor;
         
@@ -59,20 +56,16 @@ public class BatchNormalization : ILayer {
         var input = error.Flatten().ToArray();
         var gammaGradient = new double[input.Length];
         
-        for (var i = 0; i < input.Length; i++) 
-            gammaGradient[i] += input[i] * XNormalized[i];
-        
         var dxNormalized = new double[input.Length];
-        for (var i = 0; i < input.Length; i++)
+        var dVariance    = new double[input.Length];
+        var dMean        = new double[input.Length];
+        
+        for (var i = 0; i < input.Length; i++) {
+            gammaGradient[i] += input[i] * XNormalized[i];
             dxNormalized[i] = input[i] * Gamma[i];
-        
-        var dVariance = new double[input.Length];
-        for (var i = 0; i < input.Length; i++) 
-            dVariance[i] = dxNormalized[i] * (x[i] - Mean[i]) * (-0.5) * Math.Pow(Variance[i] + double.Epsilon, -1.5);
-        
-        var dMean = new double[input.Length];
-        for (var i = 0; i < input.Length; i++)
+            dVariance[i] = dxNormalized[i] * (x[i] - Mean[i]) * -.5d * Math.Pow(Variance[i] + double.Epsilon, -1.5d);
             dMean[i] = -dxNormalized[i] / Math.Sqrt(Variance[i] + double.Epsilon);
+        }
         
         var dVarianceSum = dVariance.Sum();
         for (var i = 0; i < input.Length; i++)

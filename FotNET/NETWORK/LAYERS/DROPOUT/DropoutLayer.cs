@@ -15,8 +15,10 @@ public class DropoutLayer : ILayer {
         foreach (var channel in tensor.Channels) 
             for (var i = 0; i < channel.Rows; i++)
                 for (var j = 0; j < channel.Columns; j++)
-                    if (new Random().Next() % 100 <= Percent && --neuronsCount > 0)
-                        channel.Body[i, j] = 0;
+                    if (new Random().Next() % 100 <= Percent)
+                        if (--neuronsCount > 0)
+                            channel.Body[i, j] = 0;
+                        else return tensor;
         
         return tensor;
     }

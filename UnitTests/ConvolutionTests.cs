@@ -9,7 +9,7 @@ namespace UnitTests;
 public class ConvolutionTests {
     private Matrix _matrix  = new (3, 3);
     private Matrix _matrix1 = new (2, 2);
-    private Matrix _filter  = new (5, 5);
+    private Matrix _filter  = new (2, 2);
 
     private Matrix Initialize(int maxValue, Matrix matrix) {
         for (var i = 0; i < matrix.Rows; i++)
@@ -35,9 +35,9 @@ public class ConvolutionTests {
 
     [Test]
     public void TensorConvolution() {
-        var firstMatrix = Initialize(3, _matrix);
+        var firstMatrix = Initialize(5, _matrix);
         var second = Initialize(3, _matrix1);
-        var firstFilter = Initialize(2, _filter);
+        var firstFilter = Initialize(5, _filter);
 
         var firstTensor = new Tensor(new List<Matrix> { firstMatrix});
         var secondTensor = new Filter(new List<Matrix> { firstFilter});
@@ -45,7 +45,7 @@ public class ConvolutionTests {
         Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
         Console.WriteLine("Matrix is:\n" + firstFilter.Print());
         
-        var convolved = Convolution.GetConvolution(firstTensor, new[] { secondTensor }, 1);
+        var convolved = Convolution.GetConvolution(firstTensor, new[] { secondTensor }, 2);
         
         Console.WriteLine(convolved.Channels[0].Print());
     }

@@ -66,7 +66,6 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         
         private readonly int _stride;
         private readonly bool _backPropagate;
-        
         private readonly Padding _padding;
 
         private Filter[] Filters { get; }

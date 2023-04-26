@@ -3,18 +3,12 @@
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS {
     public static class Convolution {
         public static Matrix GetConvolution(Matrix matrix, Matrix filter, int stride, double bias) {
-            var xFilterSize = filter.Rows;
-            var yFilterSize = filter.Columns;
-
-            var xMatrixSize = matrix.Rows;
-            var yMatrixSize = matrix.Columns;
-            
-            var conMat = new Matrix((xMatrixSize - xFilterSize) / stride + 1, 
-                (yMatrixSize - yFilterSize) / stride + 1);
+            var conMat = new Matrix((matrix.Rows - filter.Rows) / stride + 1, 
+                (matrix.Columns - filter.Columns) / stride + 1);
 
             Parallel.For(0, conMat.Rows, i => {
                     for (var j = 0; j < conMat.Columns; j += stride) {
-                        var subMatrix = matrix.GetSubMatrix(i, j, i + xFilterSize, j + yFilterSize);
+                        var subMatrix = matrix.GetSubMatrix(i, j, i + filter.Rows, j + filter.Columns);
                         conMat.Body[i, j] += (filter * subMatrix).Sum() + bias;
                     }
             });
