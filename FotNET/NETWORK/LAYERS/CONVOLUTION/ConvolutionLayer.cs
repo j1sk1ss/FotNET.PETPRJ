@@ -1,6 +1,7 @@
 ﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
+using FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.MATH.Initialization;
 using FotNET.NETWORK.MATH.OBJECTS;
 
@@ -113,7 +114,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                     Filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;
                 });
 
-            return Convolution.GetConvolution(new SamePadding(originalFilters[0]).GetPadding(error), 
+            return TransposedConvolution.GetTransposedConvolution(_padding.GetPadding(error), 
                 FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
         }
 
