@@ -1,4 +1,5 @@
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
+using FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace UnitTests;
@@ -33,7 +34,7 @@ public class DeconvolutionTests {
         Console.WriteLine("Matrix is:\n" + firstMatrix.Print());
         Console.WriteLine("Filter is:\n" + firstFilter.Print());
 
-        var convolved = FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS.TransposedConvolution.GetTransposedConvolution(firstMatrix, firstFilter, 1, 0);
+        var convolved = TransposedConvolution.GetTransposedConvolution(firstMatrix, firstFilter, 1, 0);
         
         Console.WriteLine("Convolved matrix:\n" + convolved.Print());
     }
@@ -47,7 +48,7 @@ public class DeconvolutionTests {
         var firstTensor = new Tensor(new List<Matrix> { second, firstMatrix, firstMatrix, firstMatrix });
         var secondTensor = new Filter(new List<Matrix> { firstFilter, firstFilter, firstFilter, firstFilter });
         
-        var answer = FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS.TransposedConvolution.GetTransposedConvolution(firstTensor, 
+        var answer = TransposedConvolution.GetTransposedConvolution(firstTensor, 
             new[]{secondTensor}, 1);
         
         Console.WriteLine(answer.Channels[0].Print());

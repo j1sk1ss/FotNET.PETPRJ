@@ -1,6 +1,6 @@
 using FotNET.NETWORK.MATH.OBJECTS;
 
-namespace FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS;
+namespace FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION.SCRIPTS;
 
 public static class TransposedConvolution {
     public static Matrix GetTransposedConvolution(Matrix matrix, Matrix filter, int stride, double bias) {
