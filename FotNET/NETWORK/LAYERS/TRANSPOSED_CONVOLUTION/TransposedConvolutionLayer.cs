@@ -3,7 +3,7 @@ using FotNET.NETWORK.LAYERS.DECONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.MATH.Initialization;
 using FotNET.NETWORK.MATH.OBJECTS;
 
-namespace FotNET.NETWORK.LAYERS.DECONVOLUTION;
+namespace FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION;
 
 public class TransposedConvolutionLayer : ILayer {
     /// <summary> Layer that perform tensor deconvolution by filters and biases. </summary>
