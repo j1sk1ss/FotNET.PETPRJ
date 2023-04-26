@@ -10,10 +10,11 @@ public class NearestNeighbor : UpSampling {
     protected override Matrix UpSample(Matrix matrix, int scale) {
         var output = new Matrix(matrix.Rows * scale, matrix.Columns * scale);
 
-        for (var i = 0; i < output.Rows; i++) 
+        Parallel.For(0, output.Rows, i => {
             for (var j = 0; j < output.Columns; j++) 
-                output.Body[i, j] = matrix.Body[i / scale, j / scale];
-        
+                            output.Body[i, j] = matrix.Body[i / scale, j / scale];
+        });
+
         return output;
     }
     

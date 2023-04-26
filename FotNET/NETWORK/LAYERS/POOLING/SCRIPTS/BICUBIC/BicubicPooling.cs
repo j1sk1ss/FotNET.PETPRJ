@@ -15,7 +15,7 @@ public class BicubicPooling : Pooling {
 
         var output = new Matrix(inputWidth / poolSize, inputHeight / poolSize);
 
-        for (var y = 0; y < output.Columns; y++) {
+        Parallel.For(0, output.Columns, y => {
             for (var x = 0; x < output.Rows; x++) {
                 var secondX = x * xScale;
                 var secondY = y * yScale;
@@ -26,15 +26,15 @@ public class BicubicPooling : Pooling {
                 var samples = new Matrix(4, 4);
 
                 for (var j = 0; j < 4; j++) 
-                    for (var i = 0; i < 4; i++) {
-                        var neighborX = floorX + i;
-                        var neighborY = floorY + j;
+                for (var i = 0; i < 4; i++) {
+                    var neighborX = floorX + i;
+                    var neighborY = floorY + j;
 
-                        if (neighborX < 0 || neighborX >= inputWidth || neighborY < 0 || neighborY >= inputHeight)
-                            samples.Body[j, i] = 0;
-                        else
-                            samples.Body[j, i] = matrix.Body[neighborY, neighborX];
-                    }
+                    if (neighborX < 0 || neighborX >= inputWidth || neighborY < 0 || neighborY >= inputHeight)
+                        samples.Body[j, i] = 0;
+                    else
+                        samples.Body[j, i] = matrix.Body[neighborY, neighborX];
+                }
                 
                 var fractionalX = secondX - floorX - 1;
                 var fractionalY = secondY - floorY - 1;
@@ -42,18 +42,18 @@ public class BicubicPooling : Pooling {
                 var weights = new Matrix(4, 4);
 
                 for (var j = 0; j < 4; j++)
-                    for (var i = 0; i < 4; i++)
-                        weights.Body[j, i] = CubicWeight(i - fractionalX) * CubicWeight(j - fractionalY);
+                for (var i = 0; i < 4; i++)
+                    weights.Body[j, i] = CubicWeight(i - fractionalX) * CubicWeight(j - fractionalY);
                 
                 double sum = 0;
                 for (var j = 0; j < 4; j++)
-                    for (var i = 0; i < 4; i++)
-                            sum += samples.Body[j, i] * weights.Body[j, i];
+                for (var i = 0; i < 4; i++)
+                    sum += samples.Body[j, i] * weights.Body[j, i];
                 
                 output.Body[y, x] = sum;
             }
-        }
-
+        });
+        
         return output;
     }
 
@@ -72,9 +72,9 @@ public class BicubicPooling : Pooling {
         var inWidth = matrix.Columns / poolSize;
         var output = new Matrix(inHeight * poolSize, inWidth * poolSize);
 
-        for (var i = 0; i < inHeight; i++) {
-            for (var j = 0; j < inWidth; j++) {
-                for (var k = 0; k < poolSize; k++) {
+        Parallel.For(0, inHeight, i => {
+            for (var j = 0; j < inWidth; j++) 
+                for (var k = 0; k < poolSize; k++) 
                     for (var l = 0; l < poolSize; l++) {
                         var row = i * poolSize + k;
                         var col = j * poolSize + l;
@@ -94,9 +94,7 @@ public class BicubicPooling : Pooling {
 
                         output.Body[row, col] = xWeight * yWeight;
                     }
-                }
-            }
-        }
+        });
 
         return output;
     }

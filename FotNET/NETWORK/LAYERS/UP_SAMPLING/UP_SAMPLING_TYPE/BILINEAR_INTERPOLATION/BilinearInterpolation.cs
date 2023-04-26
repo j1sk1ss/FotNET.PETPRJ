@@ -14,25 +14,18 @@ public class BilinearInterpolation : UpSampling {
         var dstHeight = srcHeight * scale;
         
         var result = new Matrix(dstHeight, dstWidth);
-        for (var y = 0; y < dstHeight; y++) {
+
+        Parallel.For(0, dstHeight, y => {
             for (var x = 0; x < dstWidth; x++) {
-                var srcX = (double)x / scale;
-                var srcY = (double)y / scale;
-
-                var x0 = (int)srcX;
-                var x1 = x0 + 1;
-                var y0 = (int)srcY;
-                var y1 = y0 + 1;
-
-                var weightX1 = srcX - x0;
+                var weightX1 = (double)x / scale - (double)x / scale;
                 var weightX0 = 1.0 - weightX1;
-                var weightY1 = srcY - y0;
+                var weightY1 = (double)y / scale - (double)y / scale;
                 var weightY0 = 1.0 - weightY1;
 
-                x0 = Math.Max(0, Math.Min(x0, srcWidth - 1));
-                x1 = Math.Max(0, Math.Min(x1, srcWidth - 1));
-                y0 = Math.Max(0, Math.Min(y0, srcHeight - 1));
-                y1 = Math.Max(0, Math.Min(y1, srcHeight - 1));
+                var x0 = Math.Max(0, Math.Min((int)(double)x / scale, srcWidth - 1));
+                var x1 = Math.Max(0, Math.Min((int)(double)x + 1, srcWidth - 1));
+                var y0 = Math.Max(0, Math.Min((int)(double)y / scale, srcHeight - 1));
+                var y1 = Math.Max(0, Math.Min((int)(double)y / scale + 1, srcHeight - 1));
 
                 var value00 = matrix.Body[y0, x0];
                 var value01 = matrix.Body[y1, x0];
@@ -40,13 +33,13 @@ public class BilinearInterpolation : UpSampling {
                 var value11 = matrix.Body[y1, x1];
 
                 var interpolatedValue = weightX0 * weightY0 * value00
-                                            + weightX1 * weightY0 * value10
-                                            + weightX0 * weightY1 * value01
-                                            + weightX1 * weightY1 * value11;
+                                        + weightX1 * weightY0 * value10
+                                        + weightX0 * weightY1 * value01
+                                        + weightX1 * weightY1 * value11;
 
                 result.Body[y, x] = interpolatedValue;
             }
-        }
+        });
 
         return result;
     }

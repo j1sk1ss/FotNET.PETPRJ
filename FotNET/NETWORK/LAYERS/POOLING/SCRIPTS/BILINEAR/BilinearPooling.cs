@@ -9,17 +9,18 @@ public class BilinearPooling : Pooling {
     protected override Matrix BackPool(Matrix matrix, Matrix referenceMatrix, int poolSize) {
         var height = matrix.Rows * poolSize;
         var width  = matrix.Columns * poolSize;
-
+        
         var dInput = new Matrix(height, width);
-        
-        for (var i = 0; i < matrix.Rows; i++) 
+
+        Parallel.For(0, matrix.Rows, i => {
             for (var j = 0; j < matrix.Columns; j++) 
-                for (var p = 0; p < poolSize; p++) 
-                    for (var q = 0; q < poolSize; q++) 
-                        dInput.Body[i * poolSize + p, j * poolSize + q] 
-                            = matrix.Body[i, j] * (1 - Math.Abs(i * poolSize + p + 0.5 - height) / poolSize) 
-                                                * (1 - Math.Abs(j * poolSize + q + 0.5 - width) / poolSize);
-        
+                         for (var p = 0; p < poolSize; p++) 
+                             for (var q = 0; q < poolSize; q++) 
+                                 dInput.Body[i * poolSize + p, j * poolSize + q] 
+                                     = matrix.Body[i, j] * (1 - Math.Abs(i * poolSize + p + 0.5 - height) / poolSize) 
+                                                         * (1 - Math.Abs(j * poolSize + q + 0.5 - width) / poolSize);
+        });
+
         return dInput;
     }
 
@@ -29,7 +30,7 @@ public class BilinearPooling : Pooling {
 
         var output = new Matrix(outHeight, outWidth);
 
-        for (var i = 0; i < outHeight; i++)  
+        Parallel.For(0, outHeight, i => {
             for (var j = 0; j < outWidth; j++) {
                 var val = 0d;
                 
@@ -41,7 +42,8 @@ public class BilinearPooling : Pooling {
                 
                 output.Body[i, j] = val;
             }
-        
+        });
+
         return output;
     }
 }

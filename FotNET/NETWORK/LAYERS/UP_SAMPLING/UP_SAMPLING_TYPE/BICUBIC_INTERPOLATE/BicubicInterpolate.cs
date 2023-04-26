@@ -12,7 +12,7 @@ public class BicubicInterpolate : UpSampling {
         var newHeight = matrix.Columns * scale;
         var result = new Matrix(newWidth, newHeight);
 
-        for (var y = 0; y < matrix.Columns; y++) {
+        Parallel.For(0, matrix.Columns, y => {
             for (var x = 0; x < newWidth; x++) {
                 var xScaled = (double)x / scale;
                 var floorX = (int)Math.Floor(xScaled) - 1;
@@ -28,9 +28,9 @@ public class BicubicInterpolate : UpSampling {
                 result.Body[x, y] = BicubicInterpolateValue(matrix.Body[floorX, y], matrix.Body[secondX, y], 
                     matrix.Body[thirdX, y], matrix.Body[fourthX, y], xScaled - floorX);
             }
-        }
+        });
 
-        for (var x = 0; x < newWidth; x++) {
+        Parallel.For(0, newWidth, x => {
             for (var y = 0; y < newHeight; y++) {
                 var yScaled = (double)y / scale;
                 var floorY = (int)Math.Floor(yScaled) - 1;
@@ -46,7 +46,7 @@ public class BicubicInterpolate : UpSampling {
                 result.Body[x, y] = BicubicInterpolateValue(result.Body[x, floorY], result.Body[x, secondY], 
                     result.Body[x, thirdY], result.Body[x, fourthY], yScaled - floorY);
             }
-        }
+        });
 
         return result;
     }
