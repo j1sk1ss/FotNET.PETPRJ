@@ -35,6 +35,13 @@
             return firstVector;
         }
 
+        public static Vector operator -(Vector firstVector, Vector secondVector) {
+            for (var i = 0; i < firstVector.Size; i++) 
+                firstVector[i] -= secondVector[i];
+        
+            return firstVector;
+        }
+        
         public static Vector operator -(Vector firstVector, double value) {
             for (var i = 0; i < firstVector.Size; i++) 
                 firstVector[i] -= value;

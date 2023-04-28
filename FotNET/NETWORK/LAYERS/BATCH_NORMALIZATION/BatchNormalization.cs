@@ -10,11 +10,11 @@ public class BatchNormalization : ILayer {
     public BatchNormalization(int size) {
         Input = new Tensor(0,0,0);
         
-        Gamma       = new double[size];
-        Beta        = new double[size];
-        Mean        = new double[size];
-        Variance    = new double[size];
-        XNormalized = new double[size];
+        Gamma       = new Vector(size);
+        Beta        = new Vector(size);
+        Mean        = new Vector(size);
+        Variance    = new Vector(size);
+        XNormalized = new Vector(size);
 
         for (var i = 0; i < size; i++) {
             Gamma[i]    = 1;
@@ -22,11 +22,11 @@ public class BatchNormalization : ILayer {
         }
     }
     
-    private double[] Gamma { get; }
-    private double[] Beta { get; }
-    private double[] Mean { get; }
-    private double[] Variance { get; }
-    private double[] XNormalized { get; }
+    private Vector Gamma { get; set; }
+    private Vector Beta { get; }
+    private Vector Mean { get; }
+    private Vector Variance { get; }
+    private Vector XNormalized { get; }
     
     private Tensor Input { get; set; }
     
@@ -54,9 +54,9 @@ public class BatchNormalization : ILayer {
     public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
         var x = Input.Flatten().ToArray();
         var input = error.Flatten().ToArray();
-        var gammaGradient = new double[input.Length];
+        var gammaGradient = new Vector(input.Length);
         
-        var dxNormalized = new double[input.Length];
+        var dxNormalized = new Vector(input.Length);
         var dVariance    = new double[input.Length];
         var dMean        = new double[input.Length];
         
@@ -76,6 +76,8 @@ public class BatchNormalization : ILayer {
         for (var i = 0; i < input.Length; i++) 
             output[i] = dxNormalized[i] / Math.Sqrt(Variance[i] + double.Epsilon) 
                         + dVariance[i] * 2 * (x[i] - Mean[i]) / input.Length + dMeanSum / input.Length;
+
+        Gamma -= gammaGradient;
         
         return new Vector(input).AsTensor(Input.Channels[0].Rows, Input.Channels[0].Columns,
             Input.Channels.Count);

@@ -1,6 +1,9 @@
 ﻿using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS {
+    /// <summary>
+    /// ILayer interface that include methods for layers
+    /// </summary>
     public interface ILayer {
         public Tensor GetNextLayer(Tensor tensor);
         public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate);
