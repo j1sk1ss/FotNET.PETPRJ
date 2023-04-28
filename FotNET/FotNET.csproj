@@ -28,7 +28,6 @@ Group, Instance and Batch normalization</PackageReleaseNotes>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ManagedCuda" Version="10.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.0-preview.2.23128.3" />
   </ItemGroup>
 

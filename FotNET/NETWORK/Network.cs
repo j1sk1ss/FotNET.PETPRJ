@@ -46,10 +46,9 @@ namespace FotNET.NETWORK {
         /// <returns> Returns error after all layers of model. </returns>
         public Tensor BackPropagation(double expectedAnswer, double expectedValue, LossFunction errorFunction, double learningRate, bool backPropagate) {
             var expectedTensor = new Tensor(new Matrix(1, Layers[^1].GetValues().Flatten().Count));
-            for (var i = 0; i < expectedTensor.Channels[0].Rows; i++)
-                 for (var j = 0; j < expectedTensor.Channels[0].Columns; j++)
-                     if (j == (int)expectedAnswer)
-                         expectedTensor.Channels[0].Body[i, j] = expectedValue;
+            for (var j = 0; j < expectedTensor.Channels[0].Columns; j++)
+                if (j == (int)expectedAnswer)
+                    expectedTensor.Channels[0].Body[0, j] = expectedValue;
             
             var errorTensor = errorFunction.GetErrorTensor(Layers[^1].GetValues(), expectedTensor);
             for (var i = Layers.Count - 1; i >= 0; i--)

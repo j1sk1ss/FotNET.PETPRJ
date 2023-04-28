@@ -92,36 +92,34 @@ public class NetworkTest {
         const string path = @"C://Users//j1sk1ss//Desktop//RCNN_TEST//";
 
         var generator = new Network(new List<ILayer> {
-            new NoiseLayer(144, new GaussianNoise()),
-            new RoughenLayer(4,4,9),
-            new TransposedConvolutionLayer(6,4,4,9, new HeInitialization(), 1),
+            new NoiseLayer(128, new GaussianNoise()),
+            new PerceptronLayer(128, 324, new HeInitialization()),
             new ActivationLayer(new PReLu(.2d)),
-            new TransposedConvolutionLayer(3,12,12,6, new HeInitialization(), 1),
+            new RoughenLayer(6,6,9),
+            new UpSamplingLayer(new NearestNeighbor(), 2),
+            new FlattenLayer(),
+            new PerceptronLayer(1296, 2100, new HeInitialization()),
             new ActivationLayer(new PReLu(.2d)),
-            new TransposedConvolutionLayer(3,23,23,6, new HeInitialization(), 1),
+            new PerceptronLayer(2100, 4800, new HeInitialization()),
             new ActivationLayer(new Sigmoid()),
+            new RoughenLayer(40,40,3),
             new NormalizationLayer(new Abs()),
             new NormalizationLayer(new MinMax(1)),
             new DataLayer(DataType.InputTensor)
         });
         
         var discriminator = new Network(new List<ILayer> {
-            new ConvolutionLayer(3, 9, 9, 3, new HeInitialization(), 1, new ValidPadding()),
+            new PerceptronLayer(4800, 100, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
-            new PoolingLayer(new MaxPooling(), 4),
-            new ConvolutionLayer(16, 5, 5, 3, new HeInitialization(), 1, new ValidPadding()),
+            new PerceptronLayer(100, 10, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
-            new PoolingLayer(new MaxPooling(), 2),
-            new FlattenLayer(),
-            new PerceptronLayer(64, 32, new HeInitialization()),
-            new ActivationLayer(new DoubleLeakyReLu()),
-            new PerceptronLayer(32, 2, new HeInitialization()),
+            new PerceptronLayer(10, 2, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PerceptronLayer(2),
             new SoftMaxLayer()
         });
         
-        discriminator.LoadWeights(File.ReadAllText(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//ForTest.txt"));
+        //discriminator.LoadWeights(File.ReadAllText(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//ForTest.txt"));
         //var a = discriminator.ForwardFeed(Parser.ImageToTensor(
           //@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//faces//41d3e9385e34ebc0e3ba.jpeg"), AnswerType.Value);
         //var b = discriminator.ForwardFeed(generator.ForwardFeed(null), AnswerType.Value);
@@ -129,21 +127,15 @@ public class NetworkTest {
         //Console.WriteLine(b);
         
         
-        /*
         var network = new GaNetwork(generator, discriminator);
-        network.DiscriminatorFitting(10, GaNetwork.LoadReal(path + "faces", 40, 40), .005d);
+        network.DiscriminatorFitting(5, GaNetwork.LoadReal(path + "faces", 40, 40), .05d);
         //
         File.WriteAllText(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.txt", network.GetDiscriminator().GetWeights());
-        */
         
-        var network = new GaNetwork(generator, discriminator);
-        network.GeneratorFitting(10000, .5d);
         
-        for (var i = 0; i < 1; i++)
-            network.GenerateBitmap().Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png", ImageFormat.Png);
-        //Console.WriteLine(network.GenerateTensor().Channels[0].Print());
-        //Console.WriteLine(Normalize(network.GenerateFake(1, 11, 11, 9)[0]).Channels[0].Print());
         
+        //var network = new GaNetwork(generator, discriminator);
+        //network.GeneratorFitting(1000, .005d, 1, @$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png");
     }
 
     [Test]

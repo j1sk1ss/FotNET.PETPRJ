@@ -21,6 +21,8 @@ public class GaNetwork {
 
     private Network Generator { get; }
     private Network Discriminator { get; }
+
+    public Network GetDiscriminator() => Discriminator;
     
     private List<Tensor> GenerateFake(int count) {
         var fake = new List<Tensor>();
@@ -54,11 +56,11 @@ public class GaNetwork {
             var fakeDataSet = GenerateFake(realDataSet.Count);
             for (var i = 0; i < realDataSet.Count; i++)
                 switch (new Random().Next() % 100 > 50) {
-                    case true: // load real 1
+                    case true:
                         if (Math.Abs(Discriminator.ForwardFeed(realDataSet[i], AnswerType.Class) - 1) > .1)
                             Discriminator.BackPropagation(1, 1, new Mae(), learningRate, true);
                         break;
-                    case false: // load fake 0
+                    case false:
                         if (Discriminator.ForwardFeed(fakeDataSet[i], AnswerType.Class) > 0.01d)
                             Discriminator.BackPropagation(0, 1, new Mae(), learningRate, true);
                         break;
