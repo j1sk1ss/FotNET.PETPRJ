@@ -10,6 +10,7 @@ using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.PRELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.RELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.SIGMOID;
 using FotNET.NETWORK.LAYERS.CONVOLUTION;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.VALID;
 using FotNET.NETWORK.LAYERS.DATA;
 using FotNET.NETWORK.LAYERS.FLATTEN;
@@ -19,6 +20,8 @@ using FotNET.NETWORK.LAYERS.NORMALIZATION;
 using FotNET.NETWORK.LAYERS.NORMALIZATION.NORMALIZATION_TYPE.ABS;
 using FotNET.NETWORK.LAYERS.NORMALIZATION.NORMALIZATION_TYPE.MIN_MAX;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
+using FotNET.NETWORK.LAYERS.PERCEPTRON.ADAM.ADAM_PERCEPTRON;
+using FotNET.NETWORK.LAYERS.PERCEPTRON.ADAM.DEFAULT_PERCEPTRON;
 using FotNET.NETWORK.LAYERS.POOLING;
 using FotNET.NETWORK.LAYERS.POOLING.SCRIPTS.MAX;
 using FotNET.NETWORK.LAYERS.ROUGHEN;
@@ -52,9 +55,9 @@ public class NetworkTest {
             new ActivationLayer(new DoubleLeakyReLu()),
             new PoolingLayer(new MaxPooling(), 2),
             new FlattenLayer(),
-            new PerceptronLayer(144, 100, new HeInitialization()),
+            //new PerceptronLayer(144, 100, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
-            new PerceptronLayer(100, 2, new HeInitialization()),
+            //new PerceptronLayer(100, 2, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PerceptronLayer(2),
             new SoftMaxLayer()
@@ -93,14 +96,14 @@ public class NetworkTest {
 
         var generator = new Network(new List<ILayer> {
             new NoiseLayer(128, new GaussianNoise()),
-            new PerceptronLayer(128, 324, new HeInitialization()),
+            //new PerceptronLayer(128, 324, new HeInitialization()),
             new ActivationLayer(new PReLu(.2d)),
             new RoughenLayer(6,6,9),
             new UpSamplingLayer(new NearestNeighbor(), 2),
             new FlattenLayer(),
-            new PerceptronLayer(1296, 2100, new HeInitialization()),
+            //new PerceptronLayer(1296, 2100, new HeInitialization()),
             new ActivationLayer(new PReLu(.2d)),
-            new PerceptronLayer(2100, 4800, new HeInitialization()),
+            //new PerceptronLayer(2100, 4800, new HeInitialization()),
             new ActivationLayer(new Sigmoid()),
             new RoughenLayer(40,40,3),
             new NormalizationLayer(new Abs()),
@@ -109,11 +112,11 @@ public class NetworkTest {
         });
         
         var discriminator = new Network(new List<ILayer> {
-            new PerceptronLayer(4800, 100, new HeInitialization()),
+            //new PerceptronLayer(4800, 100, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
-            new PerceptronLayer(100, 10, new HeInitialization()),
+            //new PerceptronLayer(100, 10, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
-            new PerceptronLayer(10, 2, new HeInitialization()),
+            //new PerceptronLayer(10, 2, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PerceptronLayer(2),
             new SoftMaxLayer()
@@ -126,16 +129,13 @@ public class NetworkTest {
         //Console.WriteLine(a);
         //Console.WriteLine(b);
         
-        
         var network = new GaNetwork(generator, discriminator);
-        network.DiscriminatorFitting(5, GaNetwork.LoadReal(path + "faces", 40, 40), .05d);
+        network.DiscriminatorFitting(1, GaNetwork.LoadReal(path + "faces", 40, 40), .05d);
         //
-        File.WriteAllText(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.txt", network.GetDiscriminator().GetWeights());
-        
-        
+        //File.WriteAllText(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.txt", network.GetDiscriminator().GetWeights());
         
         //var network = new GaNetwork(generator, discriminator);
-        //network.GeneratorFitting(1000, .005d, 1, @$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png");
+        network.GeneratorFitting(1000, .5d, 1, @$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png");
     }
 
     [Test]
@@ -144,14 +144,14 @@ public class NetworkTest {
         
         var generator = new Network(new List<ILayer> {
             new NoiseLayer(128, new GaussianNoise()),
-            new PerceptronLayer(128, 324, new HeInitialization()),
+            new PerceptronLayer(128, 324, new HeInitialization(), new NoPerceptronOptimization()),
             new ActivationLayer(new PReLu(.2d)),
             new RoughenLayer(6,6,9),
             new UpSamplingLayer(new NearestNeighbor(), 2),
             new FlattenLayer(),
-            new PerceptronLayer(1296, 2100, new HeInitialization()),
+            new PerceptronLayer(1296, 2100, new HeInitialization(), new NoPerceptronOptimization()),
             new ActivationLayer(new PReLu(.2d)),
-            new PerceptronLayer(2100, 4800, new HeInitialization()),
+            new PerceptronLayer(2100, 4800, new HeInitialization(), new NoPerceptronOptimization()),
             new ActivationLayer(new Sigmoid()),
             new RoughenLayer(40,40,3),
             new NormalizationLayer(new Abs()),
@@ -177,9 +177,9 @@ public class NetworkTest {
             new NoiseLayer(144, new GaussianNoise()),
             new RoughenLayer(4,4,9),
             new UpSamplingLayer(new NearestNeighbor(), 2), 
-            new ConvolutionLayer(6, 3, 3, 9, new HeInitialization(), 1, new ValidPadding()), // 16
+            new ConvolutionLayer(6, 3, 3, 9, new HeInitialization(), 1, new SamePadding(new Tensor(3,3,9))),
             new UpSamplingLayer(new NearestNeighbor(), 2),
-            new ConvolutionLayer(3, 3, 3, 6, new HeInitialization(), 1, new ValidPadding()), // 16
+            new ConvolutionLayer(3, 3, 3, 6, new HeInitialization(), 1, new SamePadding(new Tensor(3,3,6))),
             new UpSamplingLayer(new NearestNeighbor(), 2), 
             new NormalizationLayer(new Abs()), 
             new NormalizationLayer(new MinMax(1)),
@@ -187,11 +187,11 @@ public class NetworkTest {
         });
         
         for (var i = 0; i < 1000; i++) {
-            var answer = generator1.ForwardFeed(null!);
-
-            if (i % 10 == 0)
-                Parser.TensorToImage(answer).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.jpg", ImageFormat.Png);
-            generator1.BackPropagation(Parser.ImageToTensor(new Bitmap((Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//Untitled.png"), new Size(40,40))),
+            var answer = generator.ForwardFeed(null!);
+            
+            if (i % 1 == 0)
+                Parser.TensorToImage(answer).Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//2.jpg", ImageFormat.Png);
+            generator.BackPropagation(Parser.ImageToTensor(new Bitmap((Bitmap)Bitmap.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//Untitled.png"), new Size(40,40))),
                 new Mse(), .01, true);
         }
         

@@ -12,7 +12,7 @@ public class OneToMany : IRecurrentType {
         for (var step = 0; step < layer.HiddenWeights.Columns; step++) {
             if (step > 0)
                 layer.HiddenNeurons.Add(Matrix.Multiply(layer.HiddenNeurons[step - 1],
-                    layer.HiddenWeights) + new Matrix(layer.HiddenBias).Transpose());
+                    layer.HiddenWeights) + layer.HiddenBias.AsMatrix(1, layer.HiddenBias.Size).Transpose());
             else
                 layer.HiddenNeurons.Add(Matrix.Multiply(new Matrix(new[] { currentElement }), layer.InputWeights));
 
@@ -47,7 +47,7 @@ public class OneToMany : IRecurrentType {
             if (step > 0) {
                 var hiddenWeightGradient = Matrix.Multiply(layer.HiddenNeurons[step - 1].Transpose(), nextHidden);
                 layer.HiddenWeights -= hiddenWeightGradient * learningRate;
-                for (var bias = 0; bias < layer.HiddenBias.Length; bias++)
+                for (var bias = 0; bias < layer.HiddenBias.Size; bias++)
                     layer.HiddenBias[bias] -= hiddenWeightGradient.GetAsList().Average() * learningRate;                
             } 
             else layer.InputWeights -= Matrix.Multiply(new Matrix

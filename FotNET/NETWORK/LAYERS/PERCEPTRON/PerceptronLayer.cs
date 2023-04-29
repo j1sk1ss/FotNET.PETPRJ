@@ -1,4 +1,6 @@
-﻿using FotNET.NETWORK.MATH.Initialization;
+﻿using FotNET.NETWORK.LAYERS.PERCEPTRON.ADAM;
+using FotNET.NETWORK.LAYERS.PERCEPTRON.ADAM.DEFAULT_PERCEPTRON;
+using FotNET.NETWORK.MATH.Initialization;
 using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
@@ -7,9 +9,13 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
         /// <param name="size"> Size of neurons on this layer. </param>
         /// <param name="nextSize"> Size of neurons on second layer. </param>
         /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
-        public PerceptronLayer(int size, int nextSize, IWeightsInitialization weightsInitialization) {
+        /// <param name="perceptronOptimization"> Optimization type </param>
+        public PerceptronLayer(int size, int nextSize, IWeightsInitialization weightsInitialization, 
+            IPerceptronOptimization perceptronOptimization) {
+            PerceptronOptimization = perceptronOptimization;
+            
             Neurons = new Vector(size);
-            Bias    = new double[nextSize];
+            Bias    = new Vector(nextSize);
             Weights = weightsInitialization.Initialize(new Matrix(nextSize, size));
 
             for (var i = 0; i < nextSize; i++)
@@ -21,8 +27,10 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
         /// <summary> Last layer of perceptron. </summary>
         /// <param name="size"> Size of neurons on this layer. </param>
         public PerceptronLayer(int size) {
+            PerceptronOptimization = new NoPerceptronOptimization();
+            
             Neurons = new Vector(size);
-            Bias    = new double[size];
+            Bias    = new Vector(size);
 
             Weights = new Matrix(size, size);
             for (var i = 0; i < size; i++)
@@ -33,38 +41,27 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
 
         private readonly bool _isEndLayer;
         private Vector Neurons { get; set; }
-        private double[] Bias { get; }
+        private Vector Bias { get; }
         private Matrix Weights { get; }
+        private IPerceptronOptimization PerceptronOptimization { get; }
 
         public Tensor GetValues() => Neurons.AsTensor(1, Neurons.Size, 1);
 
         public Tensor GetNextLayer(Tensor tensor) {
             Neurons = new Vector(tensor.Flatten().ToArray());
-            var nextLayer = Neurons * Weights + new Vector(Bias);
+            var nextLayer = Neurons * Weights + Bias;
             return nextLayer.AsTensor(1, nextLayer.Size, 1);
         }
 
-        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
-            var previousError = new Vector(error.Flatten().ToArray());
-            if (_isEndLayer) return previousError.AsTensor(1, previousError.Size, 1);
-
-            var neuronsError = previousError * Weights.Transpose();
-            if (backPropagate) {
-                for (var j = 0; j < Weights.Rows; ++j)
-                    for (var k = 0; k < Weights.Columns; ++k)
-                        Weights.Body[j, k] -= Neurons[k] * previousError[j] * learningRate;
-    
-                for (var j = 0; j < Weights.Rows; j++)
-                    Bias[j] -= previousError[j] * learningRate;
-            }
-            
-            return neuronsError.AsTensor(1, neuronsError.Size, 1);
-        }
+        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) =>
+            PerceptronOptimization.BackPropagate(error, learningRate, backPropagate, _isEndLayer, Weights, Neurons,
+                Bias);
 
         public string GetData() {
             var temp = "";
             temp += Weights.GetValues();
-            return Bias.Aggregate(temp, (current, bias) => current + bias + " ");
+            temp += Bias.Print();
+            return temp;
         }
 
         public string LoadData(string data) {
@@ -75,7 +72,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
                 for (var j = 0; j < Weights.Columns; j++)
                     Weights.Body[i, j] = double.Parse(dataNumbers[position++]);
 
-            for (var j = 0; j < Bias.Length; j++)
+            for (var j = 0; j < Bias.Size; j++)
                 Bias[j] = double.Parse(dataNumbers[position++]);
 
             return string.Join(" ", dataNumbers.Skip(position).Select(p => p.ToString()).ToArray());

@@ -1,4 +1,7 @@
 ﻿namespace FotNET.NETWORK.MATH.OBJECTS {
+    /// <summary>
+    /// List of matricies
+    /// </summary>
     public class Tensor {
         /// <summary>
         /// Tensor or stack of matrices
@@ -56,9 +59,6 @@
 
         private Tensor IncreaseChannels(int channels) {
             var tensor = new Tensor(Channels);
-
-            var xSize = Channels[0].Rows;
-            var ySize = Channels[0].Columns;
             
             for (var i = 0; i < channels; i++) tensor.Channels.Add(Channels[^1]);
 
@@ -170,6 +170,9 @@
         public Filter AsFilter() => new Filter(Channels);
     }
 
+    /// <summary>
+    /// Tensor with bias value
+    /// </summary>
     public class Filter : Tensor {
         public Filter(List<Matrix> matrix) : base(matrix) {
             Bias     = 0;

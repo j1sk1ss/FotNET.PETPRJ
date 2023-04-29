@@ -24,9 +24,9 @@ public static class CnnClassification {
         new ActivationLayer(new DoubleLeakyReLu()),
         new PoolingLayer(new MaxPooling(), 2),
         new FlattenLayer(),
-        new PerceptronLayer(256, 128, new HeInitialization()),
+        //new PerceptronLayer(256, 128, new HeInitialization()),
         new ActivationLayer(new DoubleLeakyReLu()),
-        new PerceptronLayer(128, 10, new HeInitialization()),
+        //new PerceptronLayer(128, 10, new HeInitialization()),
         new ActivationLayer(new DoubleLeakyReLu()),
         new PerceptronLayer(10)
     });
@@ -40,11 +40,11 @@ public static class CnnClassification {
         new ConvolutionLayer(32, 5, 5, 16, new HeInitialization(), 1, new ValidPadding()),
         new ActivationLayer(new DoubleLeakyReLu()),
         new FlattenLayer(),
-        new PerceptronLayer(512, 256, new HeInitialization()),
+        //new PerceptronLayer(512, 256, new HeInitialization()),
         new ActivationLayer(new DoubleLeakyReLu()),
-        new PerceptronLayer(256, 128, new HeInitialization()),
+        //new PerceptronLayer(256, 128, new HeInitialization()),
         new ActivationLayer(new DoubleLeakyReLu()),
-        new PerceptronLayer(128, 10, new HeInitialization()),
+        //new PerceptronLayer(128, 10, new HeInitialization()),
         new ActivationLayer(new DoubleLeakyReLu()),
         new PerceptronLayer(10)
     });

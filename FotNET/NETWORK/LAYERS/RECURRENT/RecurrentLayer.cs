@@ -20,8 +20,9 @@ public class RecurrentLayer : ILayer {
         HiddenNeurons = new List<Matrix>();
         OutputNeurons = new List<Matrix>();
         
-        HiddenBias    = new double[size];
-        HiddenBias[0] = .01d;
+        HiddenBias    = new Vector(size) {
+            [0] = .01d
+        };
         OutputBias    = .01d;
         
         Function      = function;
@@ -36,7 +37,7 @@ public class RecurrentLayer : ILayer {
     
     public Matrix OutputWeights { get; set; }
     
-    public double[] HiddenBias { get; }
+    public Vector HiddenBias { get; }
     
     public double OutputBias { get; set; }
     
@@ -65,7 +66,7 @@ public class RecurrentLayer : ILayer {
     public Tensor GetValues() => InputData;
 
     public string GetData() => InputWeights.GetValues() + HiddenWeights.GetValues() + OutputWeights.GetValues() 
-                               + new Vector(HiddenBias).Print() + " " + OutputBias;
+                               + HiddenBias.Print() + " " + OutputBias;
     
     public string LoadData(string data) {
         var position = 0;
@@ -83,7 +84,7 @@ public class RecurrentLayer : ILayer {
             for (var y = 0; y < HiddenWeights.Columns; y++)
                 HiddenWeights.Body[x, y] = double.Parse(dataNumbers[position++]);
 
-        for (var i = 0; i < HiddenBias.Length; i++)
+        for (var i = 0; i < HiddenBias.Size; i++)
             HiddenBias[i] = double.Parse(dataNumbers[position++]);
 
         OutputBias = double.Parse(dataNumbers[position++]);

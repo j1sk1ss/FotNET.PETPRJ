@@ -1,4 +1,7 @@
 ﻿namespace FotNET.NETWORK.MATH.OBJECTS {
+    /// <summary>
+    /// Array of double values
+    /// </summary>
     public class Vector {
         /// <summary>
         /// Vector object for working with arrays

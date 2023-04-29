@@ -1,4 +1,7 @@
 ﻿namespace FotNET.NETWORK.MATH.OBJECTS {
+    /// <summary>
+    /// 2D Array of double values
+    /// </summary>
     public class Matrix {
         /// <summary>
         /// Matrix object for working with 2D arrays
@@ -111,16 +114,28 @@
             return endMatrix;
         }
 
-        public static Matrix operator *(Matrix matrix1, Matrix matrix2) {
-            var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
+        /// <summary>
+        /// Element-wise multiplication
+        /// </summary>
+        /// <param name="firstMatrix"> First matrix </param>
+        /// <param name="secondMatrix"> Second matrix </param>
+        /// <returns> Result of element-wise multiplication </returns>
+        public static Matrix operator *(Matrix firstMatrix, Matrix secondMatrix) {
+            var endMatrix = new Matrix(new double[firstMatrix.Rows, firstMatrix.Columns]);
 
-            for (var i = 0; i < matrix1.Rows; i++)
-                for (var j = 0; j < matrix1.Columns; j++)
-                    endMatrix.Body[i, j] = matrix1.Body[i, j] * matrix2.Body[i, j];
+            for (var i = 0; i < firstMatrix.Rows; i++)
+                for (var j = 0; j < firstMatrix.Columns; j++)
+                    endMatrix.Body[i, j] = firstMatrix.Body[i, j] * secondMatrix.Body[i, j];
 
             return endMatrix;
         }
 
+        /// <summary>
+        /// Default multiplication
+        /// </summary>
+        /// <param name="firstMatrix"> First matrix </param>
+        /// <param name="secondMatrix"> Second matrix </param>
+        /// <returns> Result of default multiplication </returns>
         public static Matrix Multiply(Matrix firstMatrix, Matrix secondMatrix) {
             var endMatrix = new Matrix(firstMatrix.Rows, secondMatrix.Columns);
 
@@ -153,16 +168,26 @@
             return endMatrix;
         }
 
-        public static Matrix operator *(Matrix matrix1, double value) {
-            var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
+        public static Matrix operator *(Matrix firstMatrix, double value) {
+            var endMatrix = new Matrix(new double[firstMatrix.Rows, firstMatrix.Columns]);
 
-            for (var i = 0; i < matrix1.Rows; i++)
-                for (var j = 0; j < matrix1.Columns; j++)
-                        endMatrix.Body[i, j] = matrix1.Body[i, j] * value;
+            for (var i = 0; i < firstMatrix.Rows; i++)
+                for (var j = 0; j < firstMatrix.Columns; j++)
+                        endMatrix.Body[i, j] = firstMatrix.Body[i, j] * value;
 
             return endMatrix;
         }
 
+        public static Matrix operator /(Matrix matrix1, Matrix matrix2) {
+            var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
+
+            for (var i = 0; i < matrix1.Rows; i++)
+            for (var j = 0; j < matrix1.Columns; j++)
+                endMatrix.Body[i, j] = matrix1.Body[i, j] / matrix2.Body[i,j];
+
+            return endMatrix;
+        }
+        
         public static Matrix operator /(Matrix matrix1, double value) {
             var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
@@ -182,16 +207,12 @@
 
             return endMatrix;
         }
-        
-        public double Sum() {
-            var sum = 0d;
-            
-            for (var i = 0; i < Rows; i++)
-                for (var j = 0; j < Columns; j++)
-                    sum += Body[i, j];
-            
-            return sum;
-        }
+
+        /// <summary>
+        /// Get sum of matrix
+        /// </summary>
+        /// <returns> Sum of all matrix elements </returns>
+        public double Sum() => GetAsList().Sum();
 
         /// <summary>
         /// Create sub-matrix
@@ -211,6 +232,10 @@
             return subMatrix;
         }
 
+        /// <summary>
+        /// Get all elements
+        /// </summary>
+        /// <returns> String with all elements </returns>
         public string GetValues() {
             var tempValues = "";
 
@@ -221,6 +246,10 @@
             return tempValues;
         }
 
+        /// <summary>
+        /// Print all elements
+        /// </summary>
+        /// <returns> String with all elements </returns>
         public string Print() {
             var tempValues = "";
 
@@ -234,6 +263,10 @@
             return tempValues;
         }
 
+        /// <summary>
+        /// Get element of matrix in list
+        /// </summary>
+        /// <returns> List of elements </returns>
         public IEnumerable<double> GetAsList() {
             var tempValues = new List<double>();
 

@@ -18,9 +18,9 @@ public class PerceptronTests {
         var testTensorData = new Tensor(new Matrix(new double[] { 0, 0, 0, 1, 1, 1 }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new PerceptronLayer(6,5, new XavierInitialization()),
+            //new PerceptronLayer(6,5, new XavierInitialization()),
             new ActivationLayer(new Sigmoid()),
-            new PerceptronLayer(5,4, new XavierInitialization()),
+            //new PerceptronLayer(5,4, new XavierInitialization()),
             new ActivationLayer(new Sigmoid()),
             new PerceptronLayer(4)
         });
@@ -38,9 +38,9 @@ public class PerceptronTests {
         var testTensorData = new Tensor(new Matrix(new[] { 0d, 0d, 0d, 1d, 1d, 1d }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new PerceptronLayer(6,5, new HeInitialization()),
+            //new PerceptronLayer(6,5, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
-            new PerceptronLayer(5,4, new HeInitialization()),
+            //new PerceptronLayer(5,4, new HeInitialization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PerceptronLayer(4)
         });

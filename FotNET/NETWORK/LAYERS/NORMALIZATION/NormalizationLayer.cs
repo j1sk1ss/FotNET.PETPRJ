@@ -15,7 +15,7 @@ public class NormalizationLayer : ILayer {
 
     public Tensor GetNextLayer(Tensor tensor) => Normalization.Normalize(tensor);
 
-    public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) => Normalization.Normalize(error);
+    public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) => error;
 
     public Tensor GetValues() => null!;
 

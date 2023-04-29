@@ -13,7 +13,7 @@ namespace FotNET.NETWORK {
         private List<ILayer> Layers { get; set; }
 
         /// <summary>
-        /// Method for getting acces to layers in model
+        /// Method for getting access to layers in model
         /// </summary>
         /// <returns> List of layers </returns>
         public List<ILayer> GetLayers() => Layers;
