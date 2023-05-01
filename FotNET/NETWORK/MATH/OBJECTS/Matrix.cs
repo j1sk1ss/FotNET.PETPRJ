@@ -215,6 +215,18 @@
         public double Sum() => GetAsList().Sum();
 
         /// <summary>
+        /// Get matrix where all elements get sqrt operation
+        /// </summary>
+        /// <returns> Sqrt matrix </returns>
+        public Matrix Sqrt() {
+            for (var i = 0; i < Rows; i++)
+                for (var j = 0; j < Columns; j++)
+                    Body[i, j] = Math.Sqrt(Body[i, j]);
+            
+            return this;
+        }
+        
+        /// <summary>
         /// Create sub-matrix
         /// </summary>
         /// <param name="x1"> First x coordinate </param>

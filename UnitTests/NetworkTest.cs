@@ -10,6 +10,7 @@ using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.PRELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.RELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.SIGMOID;
 using FotNET.NETWORK.LAYERS.CONVOLUTION;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.ADAM.ADAM_CONVOLUTION;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.VALID;
 using FotNET.NETWORK.LAYERS.DATA;
@@ -48,16 +49,16 @@ public class NetworkTest {
     [Test]
     public void CnnTest() {
         var model = new Network(new List<ILayer> {
-            new ConvolutionLayer(8, 10, 10, 3, new HeInitialization(), 2, new ValidPadding()),
+            new ConvolutionLayer(8, 10, 10, 3, new HeInitialization(), 2, new ValidPadding(), new AdamConvolutionOptimization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PoolingLayer(new MaxPooling(), 2),
-            new ConvolutionLayer(16, 3, 3, 8, new HeInitialization(), 2, new ValidPadding()),
+            new ConvolutionLayer(16, 3, 3, 8, new HeInitialization(), 2, new ValidPadding(), new AdamConvolutionOptimization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PoolingLayer(new MaxPooling(), 2),
             new FlattenLayer(),
-            //new PerceptronLayer(144, 100, new HeInitialization()),
+            new PerceptronLayer(144, 100, new HeInitialization(), new AdamPerceptronOptimization()),
             new ActivationLayer(new DoubleLeakyReLu()),
-            //new PerceptronLayer(100, 2, new HeInitialization()),
+            new PerceptronLayer(100, 2, new HeInitialization(), new AdamPerceptronOptimization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PerceptronLayer(2),
             new SoftMaxLayer()
@@ -177,9 +178,9 @@ public class NetworkTest {
             new NoiseLayer(144, new GaussianNoise()),
             new RoughenLayer(4,4,9),
             new UpSamplingLayer(new NearestNeighbor(), 2), 
-            new ConvolutionLayer(6, 3, 3, 9, new HeInitialization(), 1, new SamePadding(new Tensor(3,3,9))),
+            new ConvolutionLayer(6, 3, 3, 9, new HeInitialization(), 1, new SamePadding(new Tensor(3,3,9)), new AdamConvolutionOptimization()),
             new UpSamplingLayer(new NearestNeighbor(), 2),
-            new ConvolutionLayer(3, 3, 3, 6, new HeInitialization(), 1, new SamePadding(new Tensor(3,3,6))),
+            new ConvolutionLayer(3, 3, 3, 6, new HeInitialization(), 1, new SamePadding(new Tensor(3,3,6)), new AdamConvolutionOptimization()),
             new UpSamplingLayer(new NearestNeighbor(), 2), 
             new NormalizationLayer(new Abs()), 
             new NormalizationLayer(new MinMax(1)),

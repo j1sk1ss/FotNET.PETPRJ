@@ -18,7 +18,7 @@ public class AdamPerceptronOptimization : IPerceptronOptimization {
                 for (var k = 0; k < weights.Columns; ++k) {
                     var grad = neurons[k] * previousError[j];
                     m.Body[j, k] = beta1 * m.Body[j, k] + (1 - beta1) * grad;
-                    v.Body[j, k] = beta2 * v.Body[j, k] + (1 - beta2) * grad * grad;
+                    v.Body[j, k] = beta2 * v.Body[j, k] + (1 - beta2) * Math.Pow(grad, 2);
                     var mHat = m.Body[j, k] / (1 - Math.Pow(beta1, t + 1));
                     var vHat = v.Body[j, k] / (1 - Math.Pow(beta2, t + 1));
                     weights.Body[j, k] -= learningRate * mHat / (Math.Sqrt(vHat) + epsilon);
@@ -29,13 +29,11 @@ public class AdamPerceptronOptimization : IPerceptronOptimization {
 
             for (var j = 0; j < weights.Rows; j++) {
                 bm[j] = beta1 * bm[j] + (1 - beta1) * previousError[j];
-                bv[j] = beta2 * bv[j] + (1 - beta2) * previousError[j] * previousError[j];
+                bv[j] = beta2 * bv[j] + (1 - beta2) * Math.Pow(previousError[j], 2);
                 var mHat = bm[j] / (1 - Math.Pow(beta1, t + 1));
                 var vHat = bv[j] / (1 - Math.Pow(beta2, t + 1));
                 bias[j] -= learningRate * mHat / (Math.Sqrt(vHat) + epsilon);
             }
-
-            t++;
         }
 
         return neuronsError.AsTensor(1, neuronsError.Size, 1);

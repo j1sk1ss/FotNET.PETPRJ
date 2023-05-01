@@ -1,4 +1,5 @@
-﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
+﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.ADAM;
+using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
 using FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION.SCRIPTS;
@@ -15,8 +16,12 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
         /// <param name="stride"> Stride of convolution. </param>
         /// <param name="padding"> Padding type. </param>
+        /// <param name="convolutionOptimization"> Optimization type. </param>
         public ConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth, 
-            IWeightsInitialization weightsInitialization, int stride, Padding padding) {
+            IWeightsInitialization weightsInitialization, int stride, Padding padding,
+            IConvolutionOptimization convolutionOptimization) {
+            ConvolutionOptimization = convolutionOptimization;
+            
             _backPropagate = true;
             _padding       = padding;
             Filters        = new Filter[filters];
@@ -44,7 +49,10 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         /// <param name="filterDepth"> Depth of filters on layer. </param>
         /// <param name="stride"> Stride of convolution. </param>
         /// <param name="padding"> Padding type. </param>
-        public ConvolutionLayer(string filtersPath, int filterDepth, int stride, Padding padding) {
+        /// <param name="convolutionOptimization"> Optimization type. </param>
+        public ConvolutionLayer(string filtersPath, int filterDepth, int stride, Padding padding,
+            IConvolutionOptimization convolutionOptimization) {
+            ConvolutionOptimization = convolutionOptimization;
             var filters = File.ReadAllText(filtersPath).Split("/", StringSplitOptions.RemoveEmptyEntries);
             
             _backPropagate = false;
@@ -70,6 +78,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
         private Filter[] Filters { get; }
         private Tensor Input { get; set; }
+        private IConvolutionOptimization ConvolutionOptimization { get; }
 
         private static Filter[] FlipFilters(Filter[] filters) {
             for (var i = 0; i < filters.Length; i++)
@@ -92,30 +101,9 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
             return Convolution.GetConvolution(_padding.GetPadding(new Tensor(tensor.Channels)), Filters, _stride);
         }
 
-        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
-            var inputTensor = Input;
-            var extendedInput = inputTensor.GetSameChannels(error);
-
-            var originalFilters = new Filter[Filters.Length];
-            for (var i = 0; i < Filters.Length; i++)
-                originalFilters[i] = new Filter(new List<Matrix>(Filters[i].Channels));
-            
-            for (var i = 0; i < originalFilters.Length; i++)
-                originalFilters[i] = originalFilters[i].GetSameChannels(error).AsFilter();
-
-            if (_backPropagate && backPropagate)
-                Parallel.For(0, Filters.Length, filter => {
-                    for (var channel = 0; channel < Filters[filter].Channels.Count; channel++) 
-                        Filters[filter].Channels[channel] -= Convolution.GetConvolution(
-                            extendedInput.Channels[filter],error.Channels[filter],
-                            _stride, Filters[filter].Bias) * learningRate;
-                    
-                    Filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;
-                });
-
-            return Convolution.GetConvolution(new SamePadding(originalFilters[0]).GetPadding(error), 
-                FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
-        }
+        public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) =>
+            ConvolutionOptimization.BackPropagate(error, learningRate, backPropagate, Input, Filters, _backPropagate,
+                _stride);
 
         public string GetData() {
             var temp = "";

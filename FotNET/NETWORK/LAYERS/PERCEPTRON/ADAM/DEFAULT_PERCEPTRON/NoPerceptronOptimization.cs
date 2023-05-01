@@ -11,8 +11,8 @@ public class NoPerceptronOptimization : IPerceptronOptimization {
         var neuronsError = previousError * weights.Transpose();
         if (backPropagate) {
             for (var j = 0; j < weights.Rows; ++j)
-            for (var k = 0; k < weights.Columns; ++k)
-                weights.Body[j, k] -= neurons[k] * previousError[j] * learningRate;
+                for (var k = 0; k < weights.Columns; ++k)
+                    weights.Body[j, k] -= neurons[k] * previousError[j] * learningRate;
     
             for (var j = 0; j < weights.Rows; j++)
                 bias[j] -= previousError[j] * learningRate;

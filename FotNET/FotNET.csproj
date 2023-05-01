@@ -14,9 +14,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>RNN, GAN, CNN, R-CNN, FNN, Classification, Prediction</PackageTags>
     <PackageIcon>packageIcon.png</PackageIcon>
-    <PackageVersion>2.5.1</PackageVersion>
-    <PackageReleaseNotes>Fixed bugs 
-Group, Instance and Batch normalization</PackageReleaseNotes>
+    <PackageVersion>2.5.2</PackageVersion>
+    <PackageReleaseNotes>Relise version</PackageReleaseNotes>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
