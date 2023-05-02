@@ -1,4 +1,4 @@
-using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
+using FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION.ADAM;
 using FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.MATH.Initialization;
 using FotNET.NETWORK.MATH.OBJECTS;
@@ -13,8 +13,10 @@ public class TransposedConvolutionLayer : ILayer {
     /// <param name="filterDepth"> Depth of filters on layer. </param>
     /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
     /// <param name="stride"> Stride of deconvolution. </param>
+    /// <param name="transposedConvolutionOptimization"> Optimization type </param>
     public TransposedConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth,
-        IWeightsInitialization weightsInitialization, int stride) {
+        IWeightsInitialization weightsInitialization, int stride, ITransposedConvolutionOptimization transposedConvolutionOptimization) {
+        TransposedConvolutionOptimization = transposedConvolutionOptimization;
         Filters = new Filter[filters];
             
         for (var j = 0; j < filters; j++) {
@@ -39,48 +41,16 @@ public class TransposedConvolutionLayer : ILayer {
     
     private Filter[] Filters { get; }
     private Tensor Input { get; set; }
-    
-    private static Filter[] FlipFilters(Filter[] filters) {
-        for (var i = 0; i < filters.Length; i++)
-            filters[i] = filters[i].Flip().AsFilter();
+    private ITransposedConvolutionOptimization TransposedConvolutionOptimization { get; }
 
-        return filters;
-    }
-    
-    private static Filter[] GetFiltersWithoutBiases(Filter[] filters) {
-        for (var i = 0; i < filters.Length; i++)
-            filters[i] = new Filter(filters[i].Channels);
-
-        return filters;
-    }
-    
     public Tensor GetNextLayer(Tensor tensor) {
         Input = new Tensor(new List<Matrix>(tensor.Channels));
         return TransposedConvolution.GetTransposedConvolution(tensor, Filters, _stride);
     }
 
-    public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
-        var inputTensor = Input;
-        var extendedError = error.GetSameChannels(inputTensor);
-        
-        var originalFilters = new Filter[Filters.Length];
-        for (var i = 0; i < Filters.Length; i++)
-            originalFilters[i] = new Filter(new List<Matrix>(Filters[i].Channels));
-
-        if (backPropagate)
-            Parallel.For(0, Filters.Length, filter => {
-                for (var channel = 0; channel < Filters[filter].Channels.Count; channel++) {
-                    Filters[filter].Channels[channel] -= Convolution.GetConvolution(
-                        extendedError.Channels[filter], Input.Channels[filter],
-                        _stride, Filters[filter].Bias) * learningRate;
-                }
-
-                Filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;
-            });
-        
-        return Convolution.GetConvolution(extendedError, 
-            FlipFilters(GetFiltersWithoutBiases(originalFilters)), _stride);
-    }
+    public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) =>
+        TransposedConvolutionOptimization.BackPropagate(error, learningRate, backPropagate, Input, Filters,
+            _stride);
 
     public Tensor GetValues() => Input;
 
