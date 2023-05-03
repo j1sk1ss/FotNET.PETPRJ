@@ -35,6 +35,7 @@ using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.MSE;
 using FotNET.NETWORK.MATH.OBJECTS;
 using FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK;
+using FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK.IMAGES;
 using FotNET.SCRIPTS.REGION_CONVOLUTION;
 
 namespace UnitTests;
@@ -131,8 +132,8 @@ public class NetworkTest {
         //Console.WriteLine(a);
         //Console.WriteLine(b);
         
-        var network = new GaNetwork(generator, discriminator);
-        network.DiscriminatorFitting(1, GaNetwork.LoadReal(path + "faces", 40, 40), .05d);
+        var network = new ImageGaNetwork(generator, discriminator);
+        network.DiscriminatorFitting(1, ImageGaNetwork.LoadReal(path + "faces", 40, 40), .05d);
         //
         //File.WriteAllText(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.txt", network.GetDiscriminator().GetWeights());
         
