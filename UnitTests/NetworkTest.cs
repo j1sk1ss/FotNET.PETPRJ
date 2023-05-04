@@ -41,9 +41,11 @@ namespace UnitTests;
 public class NetworkTest {
     [Test]
     public void RCnnTest() {
-        var bitmap = (Bitmap)Image.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//test.jpg");
-        RegionConvolution.ForwardFeed(bitmap, 50, 3, CnnClassification.DeepConvolutionNetwork, .2, 28, 28)
-            .Save(@$"D:\загрузки\{Guid.NewGuid()}.png", ImageFormat.Png);
+        var model = CnnClassification.DeepConvolutionNetwork;
+
+        var bitmap = (Bitmap)Image.FromFile(@"C://Users//j1sk1ss//Desktop//RCNN_TEST//test2.jpg");
+        RegionConvolution.ForwardFeed(bitmap, 50, 3, model, .2, 28, 28)
+            .Save(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//answer.png", ImageFormat.Png);
     }
 
     [Test]
@@ -97,15 +99,8 @@ public class NetworkTest {
 
         var generator = new Network(new List<ILayer> {
             new NoiseLayer(128, new GaussianNoise()),
-            //new PerceptronLayer(128, 324, new HeInitialization()),
+            new PerceptronLayer(128, 4800, new HeInitialization(), new AdamPerceptronOptimization()),
             new ActivationLayer(new PReLu(.2d)),
-            new RoughenLayer(6,6,9),
-            new UpSamplingLayer(new NearestNeighbor(), 2),
-            new FlattenLayer(),
-            //new PerceptronLayer(1296, 2100, new HeInitialization()),
-            new ActivationLayer(new PReLu(.2d)),
-            //new PerceptronLayer(2100, 4800, new HeInitialization()),
-            new ActivationLayer(new Sigmoid()),
             new RoughenLayer(40,40,3),
             new NormalizationLayer(new Abs()),
             new NormalizationLayer(new MinMax(1)),
@@ -113,30 +108,15 @@ public class NetworkTest {
         });
         
         var discriminator = new Network(new List<ILayer> {
-            //new PerceptronLayer(4800, 100, new HeInitialization()),
-            new ActivationLayer(new DoubleLeakyReLu()),
-            //new PerceptronLayer(100, 10, new HeInitialization()),
-            new ActivationLayer(new DoubleLeakyReLu()),
-            //new PerceptronLayer(10, 2, new HeInitialization()),
+            new PerceptronLayer(4800, 2, new HeInitialization(), new AdamPerceptronOptimization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PerceptronLayer(2),
             new SoftMaxLayer()
         });
         
-        //discriminator.LoadWeights(File.ReadAllText(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//ForTest.txt"));
-        //var a = discriminator.ForwardFeed(Parser.ImageToTensor(
-          //@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//faces//41d3e9385e34ebc0e3ba.jpeg"), AnswerType.Value);
-        //var b = discriminator.ForwardFeed(generator.ForwardFeed(null), AnswerType.Value);
-        //Console.WriteLine(a);
-        //Console.WriteLine(b);
-        
         var network = new GaNetwork(generator, discriminator);
-        network.DiscriminatorFitting(1, GaNetwork.LoadReal(path + "faces", 40, 40), .05d);
-        //
-        //File.WriteAllText(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.txt", network.GetDiscriminator().GetWeights());
-        
-        //var network = new GaNetwork(generator, discriminator);
-        network.GeneratorFitting(1000, .5d, 1, @$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png");
+        network.DiscriminatorFitting(100, GaNetwork.LoadReal(path + "faces", 40, 40), .005d);
+        network.GeneratorFitting(100000, .5d, 1000, @$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//faceGen//");
     }
 
     [Test]

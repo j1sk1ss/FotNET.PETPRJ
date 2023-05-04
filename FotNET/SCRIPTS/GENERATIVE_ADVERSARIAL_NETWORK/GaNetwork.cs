@@ -97,10 +97,11 @@ public class GaNetwork {
     public void GeneratorFitting(int epochs, double learningRate, int saveStep, string path) {
         for (var i = 0; i < epochs; i++) {
             var generated = Generator.ForwardFeed(null!);
-            if (i % saveStep == 0)
-                Parser.TensorToImage(generated).Save(path + new Guid() + ".png", ImageFormat.Png);
-            var answer = Discriminator.ForwardFeed(generated, AnswerType.Class);
             
+            if (i % saveStep == 0)
+                Parser.TensorToImage(generated).Save($"{path}{new Guid()}.png", ImageFormat.Png);
+            
+            var answer = Discriminator.ForwardFeed(generated, AnswerType.Class);
             if (Math.Abs(answer - 1) > .1)
                 Generator.BackPropagation(Discriminator.BackPropagation(1, 1,
                     new Mae(), learningRate, false), learningRate, true);
