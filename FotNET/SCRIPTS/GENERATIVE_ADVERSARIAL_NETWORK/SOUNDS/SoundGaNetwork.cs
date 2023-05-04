@@ -1,27 +1,25 @@
-﻿using System.Drawing;
-using System.Drawing.Imaging;
-using FotNET.DATA.IMAGE;
+using FotNET.DATA.SOUND;
 using FotNET.NETWORK;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.MAE;
 using FotNET.NETWORK.MATH.OBJECTS;
+using FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK.SOUNDS.SCRIPTS;
 
-namespace FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK;
+namespace FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK.SOUNDS;
 
-
-public class GaNetwork {
+public class SoundGaNetwork {
     /// <summary>
     /// Generative Adversarial model 
     /// </summary>
     /// <param name="generator"> Generator model </param>
     /// <param name="discriminator"> Discriminator model </param>
-    public GaNetwork(Network generator, Network discriminator) {
-        Generator = generator;
+    public SoundGaNetwork(Network generator, Network discriminator) {
+        Generator     = generator;
         Discriminator = discriminator;
     }
-
+    
     private Network Generator { get; }
     private Network Discriminator { get; }
-
+    
     public Network GetDiscriminator() => Discriminator;
     
     private List<Tensor> GenerateFake(int count) {
@@ -31,19 +29,15 @@ public class GaNetwork {
         
         return fake;
     }
-
+    
     /// <summary>
     /// Generate real data set
     /// </summary>
     /// <param name="directoryPath"> Path for directory with images </param>
-    /// <param name="resizeX"> End size of bitmap </param>
-    /// <param name="resizeY"> End size of bitmap </param>
-    /// <returns></returns>
-    public static List<Tensor> LoadReal(string directoryPath, int resizeX, int resizeY) {
-        var files = Directory.GetFiles(directoryPath);
-        return files.Select(file => Parser.ImageToTensor
-            (new Bitmap((Bitmap)Image.FromFile(file), new Size(resizeX, resizeY)))).ToList();
-    }
+    /// <returns> Data set of real sounds </returns>
+    public static List<Tensor> LoadReal(string directoryPath) =>
+         Directory.GetFiles(directoryPath).Select(file => 
+             new Tensor(Parser.ConvertSoundToSpectrogram(file))).ToList();
     
     /// <summary>
     /// Discriminator fitting
@@ -67,7 +61,7 @@ public class GaNetwork {
                 }
         }
     }
-
+    
     /// <summary>
     /// Generator fitting
     /// </summary>
@@ -86,7 +80,7 @@ public class GaNetwork {
                     new Mae(), learningRate, false);
         }
     }
-
+    
     /// <summary>
     /// Generator fitting with saving steps of fitting
     /// </summary>
@@ -97,11 +91,10 @@ public class GaNetwork {
     public void GeneratorFitting(int epochs, double learningRate, int saveStep, string path) {
         for (var i = 0; i < epochs; i++) {
             var generated = Generator.ForwardFeed(null!);
-            
             if (i % saveStep == 0)
-                Parser.TensorToImage(generated).Save($"{path}{new Guid()}.png", ImageFormat.Png);
-            
+                Parser.ConvertArrayToSound(new Vector(SoundConverter.SpectrogramToWaveform(generated.Channels[0], 1, 1)), path);
             var answer = Discriminator.ForwardFeed(generated, AnswerType.Class);
+            
             if (Math.Abs(answer - 1) > .1)
                 Generator.BackPropagation(Discriminator.BackPropagation(1, 1,
                     new Mae(), learningRate, false), learningRate, true);
@@ -112,17 +105,9 @@ public class GaNetwork {
     }
 
     /// <summary>
-    /// Generate bitmap by generator model
-    /// </summary>
-    /// <returns> Generated bitmap </returns>
-    public Bitmap GenerateBitmap() =>
-        Parser.TensorToImage(Generator.ForwardFeed(null!));
-
-    /// <summary>
     /// Generate tensor by generator model
     /// </summary>
     /// <returns> Generated tensor </returns>
-    public Tensor GenerateTensor() {
-        return Generator.ForwardFeed(null!);
-    }
+    public Tensor GenerateTensor() =>
+         Generator.ForwardFeed(null!);
 }

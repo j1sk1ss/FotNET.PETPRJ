@@ -1,8 +1,6 @@
 ﻿using FotNET.NETWORK.LAYERS.CONVOLUTION.ADAM;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING;
-using FotNET.NETWORK.LAYERS.CONVOLUTION.SCRIPTS.PADDING.SAME;
-using FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION.SCRIPTS;
 using FotNET.NETWORK.MATH.Initialization;
 using FotNET.NETWORK.MATH.OBJECTS;
 
@@ -79,20 +77,6 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         private Filter[] Filters { get; }
         private Tensor Input { get; set; }
         private IConvolutionOptimization ConvolutionOptimization { get; }
-
-        private static Filter[] FlipFilters(Filter[] filters) {
-            for (var i = 0; i < filters.Length; i++)
-                filters[i] = filters[i].Flip().AsFilter();
-
-            return filters;
-        }
-
-        private static Filter[] GetFiltersWithoutBiases(Filter[] filters) {
-            for (var i = 0; i < filters.Length; i++)
-                filters[i] = new Filter(filters[i].Channels);
-
-            return filters;
-        }
 
         public Tensor GetValues() => Input;
 
