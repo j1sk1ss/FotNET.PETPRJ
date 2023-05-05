@@ -6,22 +6,8 @@ namespace FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION.ADAM.DEFAULT_TRANSPOSED_C
 /// <summary>
 /// Transposed convolution without any optimization
 /// </summary>
-public class NoTransposedConvolutionOptimization : ITransposedConvolutionOptimization {
-    private static Filter[] FlipFilters(Filter[] filters) {
-        for (var i = 0; i < filters.Length; i++)
-            filters[i] = filters[i].Flip().AsFilter();
-
-        return filters;
-    }
-
-    private static Filter[] GetFiltersWithoutBiases(Filter[] filters) {
-        for (var i = 0; i < filters.Length; i++)
-            filters[i] = new Filter(filters[i].Channels);
-
-        return filters;
-    }
-    
-    public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate, Tensor input, Filter[] filters, int stride,
+public class NoTransposedConvolutionOptimization : TransposedConvolutionOptimization {
+    public override Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate, Tensor input, Filter[] filters, int stride,
         double beta1 = 0.9, double beta2 = 0.999, double epsilon = 1e-8) {
         var inputTensor = input;
         var extendedError = error.GetSameChannels(inputTensor);

@@ -15,7 +15,7 @@ public class TransposedConvolutionLayer : ILayer {
     /// <param name="stride"> Stride of deconvolution. </param>
     /// <param name="transposedConvolutionOptimization"> Optimization type </param>
     public TransposedConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth,
-        IWeightsInitialization weightsInitialization, int stride, ITransposedConvolutionOptimization transposedConvolutionOptimization) {
+        IWeightsInitialization weightsInitialization, int stride, TransposedConvolutionOptimization transposedConvolutionOptimization) {
         TransposedConvolutionOptimization = transposedConvolutionOptimization;
         Filters = new Filter[filters];
             
@@ -41,7 +41,7 @@ public class TransposedConvolutionLayer : ILayer {
     
     private Filter[] Filters { get; }
     private Tensor Input { get; set; }
-    private ITransposedConvolutionOptimization TransposedConvolutionOptimization { get; }
+    private TransposedConvolutionOptimization TransposedConvolutionOptimization { get; }
 
     public Tensor GetNextLayer(Tensor tensor) {
         Input = new Tensor(new List<Matrix>(tensor.Channels));

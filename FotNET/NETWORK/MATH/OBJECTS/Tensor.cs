@@ -18,13 +18,13 @@
         /// <summary>
         /// Tensor or stack of matrices
         /// </summary>
-        /// <param name="x"> X size of tensor </param>
-        /// <param name="y"> Y size of tensor </param>
+        /// <param name="rows"> X size of tensor </param>
+        /// <param name="columns"> Y size of tensor </param>
         /// <param name="depth"> Depth of tensor </param>
-        public Tensor(int x, int y, int depth) {
+        public Tensor(int rows, int columns, int depth) {
             Channels = new List<Matrix>();
             for (var i = 0; i < depth; i++)
-                Channels.Add(new Matrix(x, y));
+                Channels.Add(new Matrix(rows, columns));
         }
         
         public List<Matrix> Channels { get; protected init; }
@@ -167,7 +167,7 @@
                                    $"y: {Channels[0].Columns}\n" +
                                    $"depth: {Channels.Count}";
         
-        public Filter AsFilter() => new Filter(Channels);
+        public Filter AsFilter() => new(Channels);
     }
 
     /// <summary>
@@ -179,8 +179,35 @@
             Channels = matrix;
         }
 
+        /// <summary>
+        /// Filter or stack of matrices
+        /// </summary>
+        /// <param name="rows"> X size of tensor </param>
+        /// <param name="columns"> Y size of tensor </param>
+        /// <param name="depth"> Depth of tensor </param>
+        public Filter(int rows, int columns, int depth) : base(rows, columns, depth) {
+            Bias = 0;
+            
+            for (var i = 0; i < depth; i++) 
+                Channels.Add(new Matrix(rows, columns));
+        }
+        
+        /// <summary>
+        /// Filter or stack of matrices
+        /// </summary>
+        /// <param name="rows"> X size of tensor </param>
+        /// <param name="columns"> Y size of tensor </param>
+        /// <param name="depth"> Depth of tensor </param>
+        /// <param name="bias"> Bias of filter </param>
+        public Filter(int rows, int columns, int depth, double bias) : base(rows, columns, depth) {
+            Bias = bias;
+            
+            for (var i = 0; i < depth; i++) 
+                Channels.Add(new Matrix(rows, columns));
+        }
+        
         public double Bias { get; set; }
 
-        public Tensor AsTensor() => new Tensor(Channels);
+        public Tensor AsTensor() => new(Channels);
     }
 }

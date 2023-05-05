@@ -17,7 +17,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         /// <param name="convolutionOptimization"> Optimization type. </param>
         public ConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth, 
             IWeightsInitialization weightsInitialization, int stride, Padding padding,
-            IConvolutionOptimization convolutionOptimization) {
+            ConvolutionOptimization convolutionOptimization) {
             ConvolutionOptimization = convolutionOptimization;
             
             _backPropagate = true;
@@ -49,7 +49,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         /// <param name="padding"> Padding type. </param>
         /// <param name="convolutionOptimization"> Optimization type. </param>
         public ConvolutionLayer(string filtersPath, int filterDepth, int stride, Padding padding,
-            IConvolutionOptimization convolutionOptimization) {
+            ConvolutionOptimization convolutionOptimization) {
             ConvolutionOptimization = convolutionOptimization;
             var filters = File.ReadAllText(filtersPath).Split("/", StringSplitOptions.RemoveEmptyEntries);
             
@@ -76,7 +76,7 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
 
         private Filter[] Filters { get; }
         private Tensor Input { get; set; }
-        private IConvolutionOptimization ConvolutionOptimization { get; }
+        private ConvolutionOptimization ConvolutionOptimization { get; }
 
         public Tensor GetValues() => Input;
 

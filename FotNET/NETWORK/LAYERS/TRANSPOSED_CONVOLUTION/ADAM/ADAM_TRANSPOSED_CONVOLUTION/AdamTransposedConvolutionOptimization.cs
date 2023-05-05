@@ -6,22 +6,10 @@ namespace FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION.ADAM.ADAM_TRANSPOSED_CONV
 /// <summary>
 /// Transposed convolution with Adam optimization
 /// </summary>
-public class AdamTransposedConvolutionOptimization : ITransposedConvolutionOptimization {
-    private static Filter[] FlipFilters(Filter[] filters) {
-        for (var i = 0; i < filters.Length; i++)
-            filters[i] = filters[i].Flip().AsFilter();
-
-        return filters;
-    }
-
-    private static Filter[] GetFiltersWithoutBiases(Filter[] filters) {
-        for (var i = 0; i < filters.Length; i++)
-            filters[i] = new Filter(filters[i].Channels);
-
-        return filters;
-    }
+public class AdamTransposedConvolutionOptimization : TransposedConvolutionOptimization {
+    private int _iteration;
     
-    public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate, Tensor input, Filter[] filters, int stride,
+    public override Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate, Tensor input, Filter[] filters, int stride,
         double beta1 = 0.9, double beta2 = 0.999, double epsilon = 1e-8) {
 
         var inputTensor = input;
@@ -35,29 +23,31 @@ public class AdamTransposedConvolutionOptimization : ITransposedConvolutionOptim
             originalFilters[i] = originalFilters[i].GetSameChannels(error).AsFilter();
 
         if (backPropagate) {
-            var m = new Filter[filters.Length];
-            var v = new Filter[filters.Length];
+            var momentum = new Filter[filters.Length];
+            var velocity = new Filter[filters.Length];
 
             for (var i = 0; i < filters.Length; i++) {
-                m[i] = new Filter(new List<Matrix>(filters[i].Channels.Select(channel => new Matrix(channel.Rows, channel.Columns))));
-                v[i] = new Filter(new List<Matrix>(filters[i].Channels.Select(channel => new Matrix(channel.Rows, channel.Columns))));
+                momentum[i] = new Filter(filters[0].Channels[0].Rows, filters[0].Channels[0].Columns, filters[0].Channels.Count);
+                velocity[i] = new Filter(filters[0].Channels[0].Rows, filters[0].Channels[0].Columns, filters[0].Channels.Count);
             }
-            
-            var t = 0;
+
             Parallel.For(0, filters.Length, filter => {
                 for (var channel = 0; channel < filters[filter].Channels.Count; channel++) {
-                    var grad = Convolution.GetConvolution(extendedError.Channels[filter], input.Channels[filter], stride, filters[filter].Bias);
-                    m[filter].Channels[channel] = m[filter].Channels[channel] * beta1 + grad * (1 - beta1);
-                    v[filter].Channels[channel] = v[filter].Channels[channel] * beta2 + grad * grad * (1 - beta2);
-                    var mHat = m[filter].Channels[channel] / (1 - Math.Pow(beta1, t + 1));
-                    var vHat = v[filter].Channels[channel] / (1 - Math.Pow(beta2, t + 1));
-                    filters[filter].Channels[channel] -= mHat * learningRate / (vHat.Sqrt() + epsilon);
+                    var current = _iteration++ + 1;
+                    var grad = Convolution.GetConvolution(extendedError.Channels[filter], 
+                        input.Channels[filter], stride, filters[filter].Bias);
+                    
+                    momentum[filter].Channels[channel] = momentum[filter].Channels[channel] * beta1 + grad * (1 - beta1);
+                    velocity[filter].Channels[channel] = velocity[filter].Channels[channel] * beta2 + grad * grad * (1 - beta2);
+                    
+                    var momentumHat = momentum[filter].Channels[channel] / (1 - Math.Pow(beta1, current));
+                    var velocityHat = velocity[filter].Channels[channel] / (1 - Math.Pow(beta2, current));
+                    
+                    filters[filter].Channels[channel] -= momentumHat * learningRate / (velocityHat.Sqrt() + epsilon);
                 }
 
                 filters[filter].Bias -= error.Channels[filter].Sum() * learningRate;
             });
-
-            t++;
         }
 
         return Convolution.GetConvolution(extendedError, 
