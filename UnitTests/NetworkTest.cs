@@ -99,15 +99,8 @@ public class NetworkTest {
 
         var generator = new Network(new List<ILayer> {
             new NoiseLayer(128, new GaussianNoise()),
-            //new PerceptronLayer(128, 324, new HeInitialization()),
+            new PerceptronLayer(128, 4800, new HeInitialization(), new AdamPerceptronOptimization()),
             new ActivationLayer(new PReLu(.2d)),
-            new RoughenLayer(6,6,9),
-            new UpSamplingLayer(new NearestNeighbor(), 2),
-            new FlattenLayer(),
-            //new PerceptronLayer(1296, 2100, new HeInitialization()),
-            new ActivationLayer(new PReLu(.2d)),
-            //new PerceptronLayer(2100, 4800, new HeInitialization()),
-            new ActivationLayer(new Sigmoid()),
             new RoughenLayer(40,40,3),
             new NormalizationLayer(new Abs()),
             new NormalizationLayer(new MinMax(1)),
@@ -115,11 +108,7 @@ public class NetworkTest {
         });
         
         var discriminator = new Network(new List<ILayer> {
-            //new PerceptronLayer(4800, 100, new HeInitialization()),
-            new ActivationLayer(new DoubleLeakyReLu()),
-            //new PerceptronLayer(100, 10, new HeInitialization()),
-            new ActivationLayer(new DoubleLeakyReLu()),
-            //new PerceptronLayer(10, 2, new HeInitialization()),
+            new PerceptronLayer(4800, 2, new HeInitialization(), new AdamPerceptronOptimization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PerceptronLayer(2),
             new SoftMaxLayer()

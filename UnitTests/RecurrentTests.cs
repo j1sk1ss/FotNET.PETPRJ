@@ -24,7 +24,7 @@ public class RecurrentTests {
         var testTensorData = new Tensor(new Matrix(new double[] { 0, 0, 0, 1, 1, 1 }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new DoubleLeakyReLu(), new ExtendedManyToMany(), 10, new HeInitialization()),
+            new RecurrentValidManyToMany(new DoubleLeakyReLu(), 10, new HeInitialization()),
             new SoftMaxLayer()
         });
         model.ForwardFeed(testTensorData, AnswerType.Class);
@@ -38,7 +38,7 @@ public class RecurrentTests {
         var testTensorData = new Tensor(new Matrix(new double[] { .9, .1, .1, .1, 1, 1 }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new DoubleLeakyReLu(), new ManyToOne(), 10, new HeInitialization()),
+            new RecurrentManyToOne(new DoubleLeakyReLu(), 10, new HeInitialization()),
             new SoftMaxLayer()
         });
         model.ForwardFeed(testTensorData, AnswerType.Class);
@@ -52,7 +52,7 @@ public class RecurrentTests {
         var testTensorData = new Tensor(new Matrix(new double[] { .012d }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new DoubleLeakyReLu(), new OneToMany(), 10, new HeInitialization()),
+            new RecurrentOneToMany(new DoubleLeakyReLu(), 10, new HeInitialization()),
             new SoftMaxLayer()
         });
         model.ForwardFeed(testTensorData, AnswerType.Class);
@@ -66,7 +66,7 @@ public class RecurrentTests {
         var testTensorData = new Tensor(new Matrix(new[] { .7d, .1d, .3d, .21d, .14d, .77d }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new HyperbolicTangent(), new ExtendedManyToMany(), 10, new XavierInitialization()),
+            new RecurrentExtendedManyToMany(new DoubleLeakyReLu(), 10, new HeInitialization()),
             new DataLayer(DataType.InputTensor)
         });
 
@@ -90,7 +90,7 @@ public class RecurrentTests {
         var testTensorData = new Tensor(new Matrix(new[] { .60, .35, .11 }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentLayer(new HyperbolicTangent(), new ManyToOne(), 10, new XavierInitialization()),
+            new RecurrentManyToOne(new DoubleLeakyReLu(), 10, new HeInitialization()),
             new PerceptronLayer(1)
         });
 
@@ -112,7 +112,7 @@ public class RecurrentTests {
     public void BackPropagation_OTM() {
         var testTensorData = new Tensor(new Matrix(new[] { .12d }));
         var model = new Network(new List<ILayer> {
-            new RecurrentLayer(new HyperbolicTangent(), new ValidManyToMany(), 5, new HeInitialization()),
+            new RecurrentValidManyToMany(new DoubleLeakyReLu(), 10, new HeInitialization()),
             new FlattenLayer(),
             new DataLayer(DataType.InputTensor)
         });
