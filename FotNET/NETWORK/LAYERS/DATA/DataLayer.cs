@@ -16,12 +16,12 @@ public class DataLayer : ILayer {
     private Tensor Data { get; set; }
 
     public Tensor GetNextLayer(Tensor tensor) {
-        if (DataType == DataType.InputTensor) Data = tensor;
+        if (DataType == DataType.InputTensor) Data = tensor.Copy();
         return tensor;
     }
 
     public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) {
-        if (DataType == DataType.ErrorTensor) Data = error;
+        if (DataType == DataType.ErrorTensor) Data = error.Copy();
         return error;
     }
 

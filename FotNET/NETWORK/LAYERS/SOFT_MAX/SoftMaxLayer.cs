@@ -10,7 +10,7 @@ public class SoftMaxLayer : ILayer {
     private Tensor InputTensor { get; set; }
     
     public Tensor GetNextLayer(Tensor tensor) {
-        InputTensor = new Tensor(new List<Matrix>(tensor.Channels));
+        InputTensor = tensor.Copy();
         return new Vector(SoftMax.Softmax(tensor.Flatten()).ToArray())
             .AsTensor(InputTensor.Channels[0].Rows, InputTensor.Channels[0].Columns, InputTensor.Channels.Count);
     }

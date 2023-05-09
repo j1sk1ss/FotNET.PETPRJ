@@ -162,6 +162,12 @@
 
             return endTensor;
         }
+
+        /// <summary>
+        /// Copy tensor
+        /// </summary>
+        /// <returns> Copied tensor </returns>
+        public Tensor Copy() => new(new List<Matrix>(Channels));
         
         public string GetInfo() => $"x: {Channels[0].Rows}\n" +
                                    $"y: {Channels[0].Columns}\n" +

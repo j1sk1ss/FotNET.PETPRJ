@@ -13,9 +13,12 @@ public class RecurrentOneToMany : RecurrentLayer {
     /// </summary>
     /// <param name="function"> RNN activation function </param>
     /// <param name="size"> Size of hidden layers </param>
+    /// <param name="outPutSize"> Size of output sequense </param>
     /// <param name="weightsInitialization"> Initialization type for weights </param>
-    public RecurrentOneToMany(Function function, int size, 
+    public RecurrentOneToMany(Function function, int size, int outPutSize, 
         IWeightsInitialization weightsInitialization) {
+        OutPutSize = outPutSize;
+        
         InputWeights  = weightsInitialization.Initialize(new Matrix(1, size));
         HiddenWeights = weightsInitialization.Initialize(new Matrix(size, size));
         OutputWeights = weightsInitialization.Initialize(new Matrix(size, 1));
@@ -33,6 +36,8 @@ public class RecurrentOneToMany : RecurrentLayer {
         InputData = new Tensor(new List<Matrix>());
     }
     
+    private int OutPutSize { get; }
+    
     public override Tensor GetNextLayer(Tensor tensor) {
         HiddenNeurons!.Clear();
         OutputNeurons!.Clear();
@@ -41,10 +46,10 @@ public class RecurrentOneToMany : RecurrentLayer {
         
         var currentElement = tensor.Flatten()[0];
 
-        for (var step = 0; step < HiddenWeights!.Columns; step++) {
+        for (var step = 0; step < OutPutSize; step++) {
             if (step > 0)
                 HiddenNeurons!.Add(Matrix.Multiply(HiddenNeurons[step - 1],
-                    HiddenWeights) + HiddenBias!.AsMatrix(1, HiddenBias.Size));
+                    HiddenWeights!) + HiddenBias!.AsMatrix(1, HiddenBias.Size));
             else
                 HiddenNeurons!.Add(Matrix.Multiply(new Matrix(new[] { currentElement }), InputWeights!));
 
@@ -65,7 +70,7 @@ public class RecurrentOneToMany : RecurrentLayer {
         var transposedOutputWeights = OutputWeights!.Transpose();
         var transposedHiddenWeights = HiddenWeights!.Transpose();
         
-        for (var step = HiddenWeights.Columns - 1; step >= 0; step--) {
+        for (var step = sequence.Count - 1; step >= 0; step--) {
             OutputWeights -= Matrix.Multiply(HiddenNeurons![step].Transpose(),
                 new Matrix(new[] { sequence[step] })) * learningRate;
             OutputBias -= sequence[step] * learningRate;

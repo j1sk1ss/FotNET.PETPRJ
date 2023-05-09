@@ -52,7 +52,7 @@ public class RecurrentTests {
         var testTensorData = new Tensor(new Matrix(new double[] { .012d }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            new RecurrentOneToMany(new DoubleLeakyReLu(), 10, new HeInitialization()),
+            new RecurrentOneToMany(new DoubleLeakyReLu(), 10, 10, new HeInitialization()),
             new SoftMaxLayer()
         });
         model.ForwardFeed(testTensorData, AnswerType.Class);

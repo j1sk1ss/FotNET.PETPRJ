@@ -20,8 +20,8 @@ namespace FotNET.NETWORK.LAYERS.POOLING {
         public Tensor GetValues() => _inputTensor;
 
         public Tensor GetNextLayer(Tensor tensor) {
-            _inputTensor = new Tensor(new List<Matrix>(tensor.Channels));
-            return Pooling.Pool(new Tensor(new List<Matrix>(tensor.Channels)), _poolSize);
+            _inputTensor = tensor.Copy();
+            return Pooling.Pool(tensor.Copy(), _poolSize);
         }
 
         public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) =>

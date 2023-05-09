@@ -44,7 +44,7 @@ public class TransposedConvolutionLayer : ILayer {
     private TransposedConvolutionOptimization TransposedConvolutionOptimization { get; }
 
     public Tensor GetNextLayer(Tensor tensor) {
-        Input = new Tensor(new List<Matrix>(tensor.Channels));
+        Input = tensor.Copy();
         return TransposedConvolution.GetTransposedConvolution(tensor, Filters, _stride);
     }
 

@@ -113,20 +113,9 @@ public class NetworkTest {
             new PerceptronLayer(2),
             new SoftMaxLayer()
         });
-        
-        //discriminator.LoadWeights(File.ReadAllText(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//ForTest.txt"));
-        //var a = discriminator.ForwardFeed(Parser.ImageToTensor(
-          //@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//faces//41d3e9385e34ebc0e3ba.jpeg"), AnswerType.Value);
-        //var b = discriminator.ForwardFeed(generator.ForwardFeed(null), AnswerType.Value);
-        //Console.WriteLine(a);
-        //Console.WriteLine(b);
-        
+
         var network = new ImageGaNetwork(generator, discriminator);
         network.DiscriminatorFitting(1, ImageGaNetwork.LoadReal(path + "faces", 40, 40), .05d);
-        //
-        //File.WriteAllText(@$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.txt", network.GetDiscriminator().GetWeights());
-        
-        //var network = new GaNetwork(generator, discriminator);
         network.GeneratorFitting(1000, .5d, 1, @$"C://Users//j1sk1ss//Desktop//RCNN_TEST//answers//{Guid.NewGuid()}.png");
     }
 

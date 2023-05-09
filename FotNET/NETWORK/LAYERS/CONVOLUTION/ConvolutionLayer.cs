@@ -81,8 +81,8 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
         public Tensor GetValues() => Input;
 
         public Tensor GetNextLayer(Tensor tensor) {
-            Input = new Tensor(new List<Matrix>(_padding.GetPadding(new Tensor(tensor.Channels)).Channels));
-            return Convolution.GetConvolution(_padding.GetPadding(new Tensor(tensor.Channels)), Filters, _stride);
+            Input = _padding.GetPadding(tensor.Copy());
+            return Convolution.GetConvolution(_padding.GetPadding(tensor.Copy()), Filters, _stride);
         }
 
         public Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate) =>
