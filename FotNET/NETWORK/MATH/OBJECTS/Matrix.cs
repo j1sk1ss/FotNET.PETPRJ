@@ -40,6 +40,16 @@
         /// <summary>
         /// Matrix object for working with 2D arrays
         /// </summary>
+        /// <param name="shape"> Matrix shape </param>
+        public Matrix((int Rows, int Columns) shape) {
+            Rows    = shape.Rows;
+            Columns = shape.Columns;
+            Body    = new double[Rows, Columns];
+        }
+
+        /// <summary>
+        /// Matrix object for working with 2D arrays
+        /// </summary>
         /// <param name="data"> String with matrix data </param>
         public Matrix(string data) {
             var rows = data.Split("\n", StringSplitOptions.RemoveEmptyEntries);
@@ -182,8 +192,8 @@
             var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
             for (var i = 0; i < matrix1.Rows; i++)
-            for (var j = 0; j < matrix1.Columns; j++)
-                endMatrix.Body[i, j] = matrix1.Body[i, j] / matrix2.Body[i,j];
+                for (var j = 0; j < matrix1.Columns; j++)
+                    endMatrix.Body[i, j] = matrix1.Body[i, j] / matrix2.Body[i,j];
 
             return endMatrix;
         }
@@ -192,8 +202,8 @@
             var endMatrix = new Matrix(new double[matrix1.Rows, matrix1.Columns]);
 
             for (var i = 0; i < matrix1.Rows; i++)
-            for (var j = 0; j < matrix1.Columns; j++)
-                endMatrix.Body[i, j] = matrix1.Body[i, j] / value;
+                for (var j = 0; j < matrix1.Columns; j++)
+                    endMatrix.Body[i, j] = matrix1.Body[i, j] / value;
 
             return endMatrix;
         }

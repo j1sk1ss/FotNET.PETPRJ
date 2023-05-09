@@ -8,14 +8,12 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
     public class ConvolutionLayer : ILayer {
         /// <summary> Layer that perform tensor convolution by filters and biases. </summary>
         /// <param name="filters"> Count of filters on layer. </param>
-        /// <param name="filterWeight"> Weight of filters on layer. </param>
-        /// <param name="filterHeight"> Height of filters on layer. </param>
-        /// <param name="filterDepth"> Depth of filters on layer. </param>
+        /// <param name="filterShape"> Shape of filters </param>
         /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
         /// <param name="stride"> Stride of convolution. </param>
         /// <param name="padding"> Padding type. </param>
         /// <param name="convolutionOptimization"> Optimization type. </param>
-        public ConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth, 
+        public ConvolutionLayer(int filters, (int Weight, int Height, int Depth) filterShape, 
             IWeightsInitialization weightsInitialization, int stride, Padding padding,
             ConvolutionOptimization convolutionOptimization) {
             ConvolutionOptimization = convolutionOptimization;
@@ -29,9 +27,9 @@ namespace FotNET.NETWORK.LAYERS.CONVOLUTION {
                     Bias = .001d
                 };
 
-                for (var i = 0; i < filterDepth; i++)
+                for (var i = 0; i < filterShape.Depth; i++)
                     Filters[j].Channels.Add(new Matrix(
-                        new double[filterWeight, filterHeight]));
+                        new double[filterShape.Weight, filterShape.Height]));
             }
 
             foreach (var filter in Filters)

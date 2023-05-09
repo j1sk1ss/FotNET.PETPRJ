@@ -8,13 +8,11 @@ namespace FotNET.NETWORK.LAYERS.TRANSPOSED_CONVOLUTION;
 public class TransposedConvolutionLayer : ILayer {
     /// <summary> Layer that perform tensor deconvolution by filters and biases. </summary>
     /// <param name="filters"> Count of filters on layer. </param>
-    /// <param name="filterWeight"> Weight of filters on layer. </param>
-    /// <param name="filterHeight"> Height of filters on layer. </param>
-    /// <param name="filterDepth"> Depth of filters on layer. </param>
+    /// <param name="filterShape"> Shape of filters </param>
     /// <param name="weightsInitialization"> Type of weights initialization of filters on layer. </param>
     /// <param name="stride"> Stride of deconvolution. </param>
     /// <param name="transposedConvolutionOptimization"> Optimization type </param>
-    public TransposedConvolutionLayer(int filters, int filterWeight, int filterHeight, int filterDepth,
+    public TransposedConvolutionLayer(int filters, (int Weight, int Height, int Depth) filterShape,
         IWeightsInitialization weightsInitialization, int stride, TransposedConvolutionOptimization transposedConvolutionOptimization) {
         TransposedConvolutionOptimization = transposedConvolutionOptimization;
         Filters = new Filter[filters];
@@ -24,9 +22,9 @@ public class TransposedConvolutionLayer : ILayer {
                 Bias = .001d
             };
 
-            for (var i = 0; i < filterDepth; i++)
+            for (var i = 0; i < filterShape.Depth; i++)
                 Filters[j].Channels.Add(new Matrix(
-                    new double[filterWeight, filterHeight]));
+                    new double[filterShape.Weight, filterShape.Height]));
         }
 
         foreach (var filter in Filters)

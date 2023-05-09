@@ -1,6 +1,6 @@
 ﻿namespace FotNET.NETWORK.MATH.OBJECTS {
     /// <summary>
-    /// List of matricies
+    /// List of matrices
     /// </summary>
     public class Tensor {
         /// <summary>
@@ -25,6 +25,16 @@
             Channels = new List<Matrix>();
             for (var i = 0; i < depth; i++)
                 Channels.Add(new Matrix(rows, columns));
+        }
+
+        /// <summary>
+        /// Tensor or stack of matrices
+        /// </summary>
+        /// <param name="shape"> Tensor shape </param>
+        public Tensor((int Rows, int Columns, int Depth) shape) {
+            Channels = new List<Matrix>();
+            for (var i = 0; i < shape.Depth; i++)
+                Channels.Add(new Matrix(shape.Rows, shape.Columns));
         }
         
         public List<Matrix> Channels { get; protected init; }
@@ -108,6 +118,13 @@
         /// </summary>
         /// <returns> Max value in tensor </returns>
         public double Max() => Flatten().Max();
+
+        /// <summary>
+        /// Returns tensor shape
+        /// </summary>
+        /// <returns> Tensor shape </returns>
+        public (int Weight, int Height, int Depth) GetShape() =>
+            (Channels[0].Rows, Channels[0].Columns, Channels.Count);
         
         public static Tensor operator +(Tensor tensor1, Tensor tensor2) {
             var endTensor = new Tensor(tensor1.Channels);

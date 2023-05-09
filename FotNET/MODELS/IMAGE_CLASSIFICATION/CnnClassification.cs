@@ -19,10 +19,10 @@ public static class CnnClassification {
     /// CNN model for MNIST data set. Takes 28x28 tensor.
     /// </summary>
     public static Network SimpleConvolutionNetwork = new Network(new List<ILayer> {
-        new ConvolutionLayer(6, 5,5,3, new HeInitialization(), 1, new ValidPadding(), new NoConvolutionOptimization()),
+        new ConvolutionLayer(6, (5, 5, 3), new HeInitialization(), 1, new ValidPadding(), new NoConvolutionOptimization()),
         new ActivationLayer(new DoubleLeakyReLu()),
         new PoolingLayer(new MaxPooling(), 2),
-        new ConvolutionLayer(16, 5, 5, 6, new HeInitialization(), 1, new ValidPadding(), new NoConvolutionOptimization()),
+        new ConvolutionLayer(16, (5, 5, 6), new HeInitialization(), 1, new ValidPadding(), new NoConvolutionOptimization()),
         new ActivationLayer(new DoubleLeakyReLu()),
         new PoolingLayer(new MaxPooling(), 2),
         new FlattenLayer(),
@@ -37,9 +37,9 @@ public static class CnnClassification {
     /// Big CNN model for MNIST data set. Takes 28x28 tensor.
     /// </summary>
     public static Network DeepConvolutionNetwork = new Network(new List<ILayer> {
-        new ConvolutionLayer(16, 5,5,3, new HeInitialization(), 1, new ValidPadding(), new NoConvolutionOptimization()),
+        new ConvolutionLayer(16, (5, 5, 3), new HeInitialization(), 1, new ValidPadding(), new NoConvolutionOptimization()),
         new ActivationLayer(new DoubleLeakyReLu()),
-        new ConvolutionLayer(32, 5, 5, 16, new HeInitialization(), 1, new ValidPadding(), new NoConvolutionOptimization()),
+        new ConvolutionLayer(32, (5, 5, 16), new HeInitialization(), 1, new ValidPadding(), new NoConvolutionOptimization()),
         new ActivationLayer(new DoubleLeakyReLu()),
         new FlattenLayer(),
         new PerceptronLayer(512, 256, new HeInitialization(), new NoPerceptronOptimization()),

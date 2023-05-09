@@ -51,10 +51,10 @@ public class NetworkTest {
     [Test]
     public void CnnTest() {
         var model = new Network(new List<ILayer> {
-            new ConvolutionLayer(8, 10, 10, 3, new HeInitialization(), 2, new ValidPadding(), new AdamConvolutionOptimization()),
+            new ConvolutionLayer(8, (10, 10, 3), new HeInitialization(), 2, new ValidPadding(), new AdamConvolutionOptimization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PoolingLayer(new MaxPooling(), 2),
-            new ConvolutionLayer(16, 3, 3, 8, new HeInitialization(), 2, new ValidPadding(), new AdamConvolutionOptimization()),
+            new ConvolutionLayer(16, (3, 3, 8), new HeInitialization(), 2, new ValidPadding(), new AdamConvolutionOptimization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PoolingLayer(new MaxPooling(), 2),
             new FlattenLayer(),
@@ -78,13 +78,13 @@ public class NetworkTest {
     public void GeneratorTest() {
         var model = new Network(new List<ILayer> {
             new RoughenLayer(3,3,32),
-            new TransposedConvolutionLayer(16, 2,2,32, new HeInitialization(), 2, new NoTransposedConvolutionOptimization()),
+            new TransposedConvolutionLayer(16, (2,2,32), new HeInitialization(), 2, new NoTransposedConvolutionOptimization()),
             new ActivationLayer(new ReLu()),
-            new TransposedConvolutionLayer(8, 6, 6, 16, new HeInitialization(), 2, new NoTransposedConvolutionOptimization()),
+            new TransposedConvolutionLayer(8, (6, 6, 16), new HeInitialization(), 2, new NoTransposedConvolutionOptimization()),
             new ActivationLayer(new ReLu()),
-            new TransposedConvolutionLayer(4, 6, 6, 8, new HeInitialization(), 2, new NoTransposedConvolutionOptimization()),
+            new TransposedConvolutionLayer(4, (6, 6, 8), new HeInitialization(), 2, new NoTransposedConvolutionOptimization()),
             new ActivationLayer(new ReLu()),
-            new TransposedConvolutionLayer(3, 6, 6, 4, new HeInitialization(), 2, new NoTransposedConvolutionOptimization()),
+            new TransposedConvolutionLayer(3, (6, 6, 4), new HeInitialization(), 2, new NoTransposedConvolutionOptimization()),
             new ActivationLayer(new ReLu()),
             new DataLayer(DataType.InputTensor)
         });
@@ -143,11 +143,11 @@ public class NetworkTest {
         var generator1 = new Network(new List<ILayer> {
             new NoiseLayer(144, new GaussianNoise()),
             new RoughenLayer(4,4,9),
-            new TransposedConvolutionLayer(6,4,4,9, new HeInitialization(), 1, new NoTransposedConvolutionOptimization()),
+            new TransposedConvolutionLayer(6,(4,4,9), new HeInitialization(), 1, new NoTransposedConvolutionOptimization()),
             new ActivationLayer(new PReLu(.2d)),
-            new TransposedConvolutionLayer(3,12,12,6, new HeInitialization(), 1, new NoTransposedConvolutionOptimization()),
+            new TransposedConvolutionLayer(3,(12,12,6), new HeInitialization(), 1, new NoTransposedConvolutionOptimization()),
             new ActivationLayer(new PReLu(.2d)),
-            new TransposedConvolutionLayer(3,23,23,6, new HeInitialization(), 1, new NoTransposedConvolutionOptimization()),
+            new TransposedConvolutionLayer(3,(23,23,6), new HeInitialization(), 1, new NoTransposedConvolutionOptimization()),
             new ActivationLayer(new Sigmoid()),
             new NormalizationLayer(new Abs()),
             new NormalizationLayer(new MinMax(1)),
@@ -158,9 +158,9 @@ public class NetworkTest {
             new NoiseLayer(144, new GaussianNoise()),
             new RoughenLayer(4,4,9),
             new UpSamplingLayer(new NearestNeighbor(), 2), 
-            new ConvolutionLayer(6, 3, 3, 9, new HeInitialization(), 1, new SamePadding(new Tensor(3,3,9)), new AdamConvolutionOptimization()),
+            new ConvolutionLayer(6, (3, 3, 9), new HeInitialization(), 1, new SamePadding(new Tensor(3,3,9)), new AdamConvolutionOptimization()),
             new UpSamplingLayer(new NearestNeighbor(), 2),
-            new ConvolutionLayer(3, 3, 3, 6, new HeInitialization(), 1, new SamePadding(new Tensor(3,3,6)), new AdamConvolutionOptimization()),
+            new ConvolutionLayer(3, (3, 3, 6), new HeInitialization(), 1, new SamePadding(new Tensor(3,3,6)), new AdamConvolutionOptimization()),
             new UpSamplingLayer(new NearestNeighbor(), 2), 
             new NormalizationLayer(new Abs()), 
             new NormalizationLayer(new MinMax(1)),

@@ -26,11 +26,9 @@
 
         public double this[int key] {
             get => Body[key];
-            set => SetElement(key, value);
+            set => Body[key] = value;
         }
-
-        private void SetElement(int index, double value) => Body[index] = value;
-
+        
         public static Vector operator +(Vector firstVector, Vector secondVector) {
             for (var i = 0; i < firstVector.Size; i++) 
                 firstVector[i] += secondVector[i];
