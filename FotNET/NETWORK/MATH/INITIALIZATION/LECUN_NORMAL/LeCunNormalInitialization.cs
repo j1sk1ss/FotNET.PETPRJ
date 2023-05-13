@@ -16,10 +16,8 @@ public class LeCunNormalInitialization : IWeightsInitialization {
         return matrix;
     }
     
-    private double NextGaussian(double mean, double stdDev) {
-        var u1 = 1.0 - new Random().NextDouble();
-        var u2 = 1.0 - new Random().NextDouble();
-        var normal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
-        return mean + stdDev * normal;
-    }
+    private static double NextGaussian(double mean, double stdDev) => 
+        mean + stdDev * Math.Sqrt(-2.0 * Math.Log(1.0 - new Random().NextDouble())) 
+                      * Math.Sin(2.0 * Math.PI * (1.0 - new Random().NextDouble()));
+    
 }

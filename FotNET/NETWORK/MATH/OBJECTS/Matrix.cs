@@ -104,11 +104,8 @@
             var endVector = new Vector(matrix.Rows);
 
             Parallel.For(0, matrix.Rows, i => {
-                double tmp = 0;
                 for (var y = 0; y < matrix.Columns; ++y)
-                    tmp += matrix.Body[i, y] * vector[y];
-
-                endVector[i] = tmp;
+                    endVector[i] += matrix.Body[i, y] * vector[y];
             });
 
             return endVector;
@@ -133,10 +130,11 @@
         public static Matrix operator *(Matrix firstMatrix, Matrix secondMatrix) {
             var endMatrix = new Matrix(new double[firstMatrix.Rows, firstMatrix.Columns]);
 
-            for (var i = 0; i < firstMatrix.Rows; i++)
+            Parallel.For(0, firstMatrix.Rows, i => {
                 for (var j = 0; j < firstMatrix.Columns; j++)
                     endMatrix.Body[i, j] = firstMatrix.Body[i, j] * secondMatrix.Body[i, j];
-
+            });
+            
             return endMatrix;
         }
 

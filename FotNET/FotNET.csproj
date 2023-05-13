@@ -14,7 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>RNN, GAN, CNN, R-CNN, FNN, Classification, Prediction</PackageTags>
     <PackageIcon>packageIcon.png</PackageIcon>
-    <PackageVersion>2.5.2</PackageVersion>
+    <PackageVersion>2.5.3</PackageVersion>
     <PackageReleaseNotes>Relise version</PackageReleaseNotes>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>

@@ -3,11 +3,26 @@ using FotNET.NETWORK.MATH.OBJECTS;
 namespace FotNET.NETWORK.LAYERS.ROUGHEN;
 
 public class RoughenLayer : ILayer {
-    /// <summary> Layer that convert 1D vector-data tensor to multi-dimension data tensor. </summary>
+    /// <summary>
+    /// Layer that convert 1D vector-data tensor to multi-dimension data tensor.
+    /// </summary>
+    /// <param name="xSize"> Rows of Tensor </param>
+    /// <param name="ySize"> Columns of Tensor </param>
+    /// <param name="depth"> Depth of Tensor </param>
     public RoughenLayer(int xSize, int ySize, int depth) {
         XSize = xSize;
         YSize = ySize;
         Depth = depth;
+    }
+    
+    /// <summary>
+    /// Layer that convert 1D vector-data tensor to multi-dimension data tensor.
+    /// </summary>
+    /// <param name="shape"> Shape of tensor </param>
+    public RoughenLayer((int Rows, int Columns, int Depth) shape) {
+        XSize = shape.Rows;
+        YSize = shape.Columns;
+        Depth = shape.Depth;
     }
     
     private int XSize { get; }

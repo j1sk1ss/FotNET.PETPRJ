@@ -119,6 +119,20 @@
             return tensor;
         }
 
+        /// <summary>
+        /// Method for converting vector to tensor
+        /// </summary>
+        /// <param name="shape"> Shape of tensor </param>
+        /// <returns> Tensor from vector </returns>
+        public Tensor AsTensor((int Rows, int Columns, int Depth) shape) {
+            var tensor = new Tensor(new List<Matrix>());
+
+            for (var k = 0; k < shape.Depth; k++) 
+                tensor.Channels.Add(AsMatrix(shape.Rows, shape.Columns, shape.Rows * shape.Columns * k));
+
+            return tensor;
+        }
+
         public string Print() =>
             Body.Aggregate("", (current, t) => current + " " + t);
     }
