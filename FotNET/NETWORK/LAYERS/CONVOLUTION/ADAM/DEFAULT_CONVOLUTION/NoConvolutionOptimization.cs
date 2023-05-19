@@ -5,8 +5,8 @@ using FotNET.NETWORK.MATH.OBJECTS;
 namespace FotNET.NETWORK.LAYERS.CONVOLUTION.ADAM.DEFAULT_CONVOLUTION;
 
 public class NoConvolutionOptimization : ConvolutionOptimization {
-    public override Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate, Tensor input, Filter[] filters, bool update, int stride,
-        double firstBeta = 0.9, double secondBeta = 0.999, double epsilon = 1e-8) {
+    public override Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate, Tensor input,
+        Filter[] filters, bool update, int stride) {
         var inputTensor = input;
         var extendedInput = inputTensor.GetSameChannels(error);
 
@@ -19,7 +19,7 @@ public class NoConvolutionOptimization : ConvolutionOptimization {
 
         if (update && backPropagate)
             Parallel.For(0, filters.Length, filter => {
-                for (var channel = 0; channel < filters[filter].Channels.Count; channel++) 
+                for (var channel = 0; channel < filters[filter].Shape.Depth; channel++) 
                     filters[filter].Channels[channel] -= Convolution.GetConvolution(
                         extendedInput.Channels[filter],error.Channels[filter],
                         stride, filters[filter].Bias) * learningRate;

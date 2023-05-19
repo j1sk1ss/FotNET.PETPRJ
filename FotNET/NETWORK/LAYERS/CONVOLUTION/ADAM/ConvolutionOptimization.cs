@@ -18,6 +18,5 @@ public abstract class ConvolutionOptimization {
     }
     
     public abstract Tensor BackPropagate(Tensor error, double learningRate, bool backPropagate, Tensor input, Filter[] filters,
-        bool update, int stride,
-        double firstBeta = 0.9, double secondBeta = 0.999, double epsilon = 1e-8);
+        bool update, int stride);
 }

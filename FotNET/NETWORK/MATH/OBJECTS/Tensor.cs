@@ -39,6 +39,8 @@
         
         public List<Matrix> Channels { get; protected init; }
 
+        public (int Rows, int Columns, int Depth) Shape => (Channels[0].Rows, Channels[0].Columns, Channels.Count);
+
         public List<double> Flatten() {
             var flatten = new List<double>();
             foreach (var matrix in Channels) flatten.AddRange(matrix.GetAsList());

@@ -29,4 +29,34 @@ public class GaussianNoise : INoise {
 
         return new Vector(noise);
     }
+    
+    public Matrix GenerateNoise((int Rows, int Columns) shape) {
+        var body = new double[shape.Rows, shape.Columns];
+
+        for (var i = 0; i < shape.Rows; i++)
+            for (var j = 0; j < shape.Columns; j++) {
+                var u1 = new Random().NextDouble();
+                var u2 = new Random().NextDouble();
+
+                var z1 = Math.Sqrt(-2 * Math.Log(u1)) * Math.Cos(2 * Math.PI * u2);
+                var z2 = Math.Sqrt(-2 * Math.Log(u1)) * Math.Sin(2 * Math.PI * u2);
+
+                body[i, j] = Mean + StdDev * z1;
+                    
+                if (j + 1 < shape.Columns) 
+                    body[i, j + 1] = Mean + StdDev * z2;
+            }
+        
+        
+        return new Matrix(body);
+    }
+
+    public Tensor GenerateNoise((int Rows, int Columns, int Depth) shape) {
+        var body = new List<Matrix>();
+
+        for (var i = 0; i < shape.Depth; i++) 
+            body.Add(GenerateNoise((shape.Rows, shape.Columns)));
+        
+        return new Tensor(body);
+    }
 }

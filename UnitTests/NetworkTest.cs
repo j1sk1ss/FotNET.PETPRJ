@@ -51,10 +51,10 @@ public class NetworkTest {
     [Test]
     public void CnnTest() {
         var model = new Network(new List<ILayer> {
-            new ConvolutionLayer(8, (10, 10, 3), new HeInitialization(), 2, new ValidPadding(), new AdamConvolutionOptimization()),
+            new ConvolutionLayer(8, (10, 10, 3), new HeInitialization(), 2, new ValidPadding(), new AdamConvolutionOptimization((.9d,.99d,1e-8))),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PoolingLayer(new MaxPooling(), 2),
-            new ConvolutionLayer(16, (3, 3, 8), new HeInitialization(), 2, new ValidPadding(), new AdamConvolutionOptimization()),
+            new ConvolutionLayer(16, (3, 3, 8), new HeInitialization(), 2, new ValidPadding(), new AdamConvolutionOptimization((.9d, .99d, 1e-8))),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PoolingLayer(new MaxPooling(), 2),
             new FlattenLayer(),
@@ -158,9 +158,9 @@ public class NetworkTest {
             new NoiseLayer(144, new GaussianNoise()),
             new RoughenLayer(4,4,9),
             new UpSamplingLayer(new NearestNeighbor(), 2), 
-            new ConvolutionLayer(6, (3, 3, 9), new HeInitialization(), 1, new SamePadding(new Tensor(3,3,9)), new AdamConvolutionOptimization()),
+            new ConvolutionLayer(6, (3, 3, 9), new HeInitialization(), 1, new SamePadding(new Tensor(3,3,9)), new AdamConvolutionOptimization((.9d,.99d,1e-8))),
             new UpSamplingLayer(new NearestNeighbor(), 2),
-            new ConvolutionLayer(3, (3, 3, 6), new HeInitialization(), 1, new SamePadding(new Tensor(3,3,6)), new AdamConvolutionOptimization()),
+            new ConvolutionLayer(3, (3, 3, 6), new HeInitialization(), 1, new SamePadding(new Tensor(3,3,6)), new AdamConvolutionOptimization((.9d,.99d,1e-8))),
             new UpSamplingLayer(new NearestNeighbor(), 2), 
             new NormalizationLayer(new Abs()), 
             new NormalizationLayer(new MinMax(1)),
