@@ -1,4 +1,5 @@
-﻿using FotNET.NETWORK.MATH.OBJECTS;
+﻿using FotNET.NETWORK.MATH.LOSS_FUNCTION.REGULARIZATION;
+using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.MATH.LOSS_FUNCTION.MAE;
 
@@ -6,9 +7,19 @@ namespace FotNET.NETWORK.MATH.LOSS_FUNCTION.MAE;
 /// Mean absolute error (MAE)
 /// </summary>
 public class Mae : LossFunction {
+    public Mae(Regularization regularization) =>
+        Regularization = regularization;
+        
+    public Mae() =>
+        Regularization = null!;
+    
+    private Regularization Regularization { get; }
+    
     protected override double Calculate(Tensor expected, Tensor predicted, int channel, int x, int y) => 
-        Math.Abs(expected.Channels[channel].Body[x, y] - predicted.Channels[channel].Body[x, y]);
+        Math.Abs(expected.Channels[channel].Body[x, y] - predicted.Channels[channel].Body[x, y]) 
+        + Regularization.GetRegularization() / expected.Flatten().Count;
     
     protected override double Derivation(Tensor expected, Tensor predicted, int channel, int x, int y) => 
-        predicted.Channels[channel].Body[x, y] - expected.Channels[channel].Body[x, y];
+        predicted.Channels[channel].Body[x, y] - expected.Channels[channel].Body[x, y] 
+        + Regularization.GetRegularization() / expected.Flatten().Count;
 }
