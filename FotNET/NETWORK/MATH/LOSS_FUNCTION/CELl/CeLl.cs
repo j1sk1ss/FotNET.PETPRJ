@@ -1,4 +1,5 @@
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.REGULARIZATION;
+using FotNET.NETWORK.MATH.LOSS_FUNCTION.REGULARIZATION.NO_REGULARIZATION;
 using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.MATH.LOSS_FUNCTION.CELl;
@@ -8,7 +9,7 @@ public class CeLl : LossFunction {
         Regularization = regularization;
         
     public CeLl() =>
-        Regularization = null!;
+        Regularization = new NoRegularization();
     
     private Regularization Regularization { get; }
     

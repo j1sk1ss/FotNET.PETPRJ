@@ -1,4 +1,5 @@
 ﻿using FotNET.NETWORK.MATH.LOSS_FUNCTION.REGULARIZATION;
+using FotNET.NETWORK.MATH.LOSS_FUNCTION.REGULARIZATION.NO_REGULARIZATION;
 using FotNET.NETWORK.MATH.OBJECTS;
 
 namespace FotNET.NETWORK.MATH.LOSS_FUNCTION.MAPE;
@@ -11,7 +12,7 @@ public class Mape : LossFunction {
         Regularization = regularization;
         
     public Mape() =>
-        Regularization = null!;
+        Regularization = new NoRegularization();
     
     private Regularization Regularization { get; }
     
