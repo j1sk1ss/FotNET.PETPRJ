@@ -5,6 +5,8 @@ using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.DOUBLE_LEAKY_RELU;
 using FotNET.NETWORK.LAYERS.ACTIVATION.ACTIVATION_FUNCTION.SIGMOID;
 using FotNET.NETWORK.LAYERS.FLATTEN;
 using FotNET.NETWORK.LAYERS.PERCEPTRON;
+using FotNET.NETWORK.LAYERS.PERCEPTRON.ADAM.ADAM_PERCEPTRON;
+using FotNET.NETWORK.LAYERS.PERCEPTRON.ADAM.DEFAULT_PERCEPTRON;
 using FotNET.NETWORK.MATH.Initialization.HE;
 using FotNET.NETWORK.MATH.Initialization.Xavier;
 using FotNET.NETWORK.MATH.LOSS_FUNCTION.MSE;
@@ -39,9 +41,9 @@ public class PerceptronTests {
         var testTensorData = new Tensor(new Matrix(new[] { 0d, 0d, 0d, 1d, 1d, 1d }));
         var model = new Network(new List<ILayer> {
             new FlattenLayer(),
-            //new PerceptronLayer(6,5, new HeInitialization()),
+            new PerceptronLayer(6,5, new HeInitialization(), new AdamPerceptronOptimization()),
             new ActivationLayer(new DoubleLeakyReLu()),
-            //new PerceptronLayer(5,4, new HeInitialization()),
+            new PerceptronLayer(5,4, new HeInitialization(), new NoPerceptronOptimization()),
             new ActivationLayer(new DoubleLeakyReLu()),
             new PerceptronLayer(4)
         });
@@ -55,7 +57,7 @@ public class PerceptronTests {
            var ex = new Vector(new Tensor(new Matrix(new[] { 0d, 1d, 0d, 0d })).Flatten().ToArray()).AsTensor(1, 4, 1);
            
     
-            model.BackPropagation(ex, new Mse(), .5d, true); 
+            model.BackPropagation(ex, new Mse(new L1(model)), .5d, true); 
         }
         
         Console.WriteLine(model.ForwardFeed(testTensorData, AnswerType.Class));

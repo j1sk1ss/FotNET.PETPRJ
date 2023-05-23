@@ -12,7 +12,8 @@ public class L2 : Regularization {
         var sum = 0d;
 
         foreach (var value in values)
-            if (double.TryParse(value, out var cur)) sum += Math.Abs(cur);
+            if (double.TryParse(value, out var cur)) sum += Math.Pow(cur, 2);
+            else sum += 0;
 
         return sum;
     }
