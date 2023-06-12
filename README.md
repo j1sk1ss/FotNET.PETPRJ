@@ -80,17 +80,17 @@ For creating neural network class u need do **SIMPLE** steps:
 
 1.1.1. Every layer needs a parametrs, that u should choose by ur self:
 
-		new ConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, weightInitialization, convolutionStride);
+		new ConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, weightInitialization, convolutionStride, optimization);
 		// or
 		new ConvolutionLayer(pathToFilter, convolutionStride); // path to filter is a path to ur custom filter. Example of custom filters u can find in the end of ReadMe.
 		
 		new ActivationLayer(activateFunction);
 		new PoolingLayer(poolingType, poolingSize);
-		new PerceptronLayer(size, sizeOfNextLayer, weightInitialization);
+		new PerceptronLayer(size, sizeOfNextLayer, weightInitialization, optimization);
 		new PerceptronLayer(size);
 		new DropoutLayer(percentOfDropped);
 		new RecurrentLayer(activationFunction, recurrencyType, hiddenLayerSize, weightInitialization);
-		new DeconvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, weightInitialization, convolutionStride);
+		new TransposedConvolutionLayer(filterCount, filterHeight, filterWeight, filterDepth, weightInitialization, convolutionStride);
 		new NormalizationLayer(normalizationType);
 		
 1.1.1.1. Types of pooling u can find here:
@@ -120,6 +120,16 @@ For creating neural network class u need do **SIMPLE** steps:
 		new NearestNeighbor();
 		new BilinearInterpolation();
 		new BicubicInterpolation();
+
+1.1.1.5 Types of Perceptron Optimization:
+
+		new AdamPerceptronOptimization();
+		new NoPerceptronOptimization();
+		
+1.1.1.6 Types of Convolution Optimization:
+
+		new AdamConvolutionOptimization();
+		new NoConvolutionOptimization();
 
 1.2. After it u should choose one of **ACTIVATION FUNCTIONS** or create ur own, but dont forget add Function abstract class:
 
@@ -175,7 +185,13 @@ U can see lossFunction option:
 		new CeLl();
 		new Mape();
 		new Mbe();
+		
+Also u can add Regularization param like below:
 
+		new *LOSS_FUNC*(new L1());
+		new *LOSS_FUNC*(new L2());
+		new *LOSS_FUNC*(new NoRegularization());
+		
 If expected class is different that was predicted, we should use **BACKPROPAGATION** method.
 
 ------------
