@@ -31,7 +31,7 @@ public static class Parser {
     /// </summary>
     /// <param name="path"> Path to image </param>
     /// <returns> 3D array </returns>
-    public static double[,,] ImageToArray(string path) {
+    private static double[,,] ImageToArray(string path) {
         var bitmap = (Bitmap)Image.FromFile(path);
         var array = new double[bitmap.Height, bitmap.Width, 3];
         

@@ -1,7 +1,8 @@
 using System.Numerics;
 using FotNET.NETWORK.MATH.OBJECTS;
+using FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK.SOUNDS.SCRIPTS;
 
-namespace FotNET.SCRIPTS.GENERATIVE_ADVERSARIAL_NETWORK.SOUNDS.SCRIPTS;
+namespace FotNET.DATA.SOUND;
 
 public static class SoundConverter {
     public static Matrix Convert(string path, int sampleRate = 44100, int frameSize = 1024, int hopSize = 512,
