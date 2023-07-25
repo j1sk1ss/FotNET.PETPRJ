@@ -2,10 +2,17 @@
 
 namespace FotNET.NETWORK.LAYERS.NOISE.SCRIPTS;
 
-public interface INoise {
-    public Vector GenerateNoise(int size);
+public abstract class Noise {
+    public abstract Vector GenerateNoise(int size);
 
-    public Matrix GenerateNoise((int Rows, int Columns) shape);
+    protected abstract Matrix GenerateNoise((int Rows, int Columns) shape);
 
-    public Tensor GenerateNoise((int Rows, int Columns, int Depth) shape);
+    public Tensor GenerateNoise((int Rows, int Columns, int Depth) shape) {
+        var body = new List<Matrix>();
+
+        for (var i = 0; i < shape.Depth; i++) 
+            body.Add(GenerateNoise((shape.Rows, shape.Columns)));
+        
+        return new Tensor(body);
+    }
 }

@@ -22,9 +22,11 @@ public static class FourierTransform {
 
         var fft = new Complex[complexesLength];
         for (var k = 0; k < complexesLength / 2; k++) {
+            /*
             var complex = fftOdd[k] * Complex.Exp(-2.0 * Math.PI * Complex.ImaginaryOne * k / complexesLength);
             fft[k] = fftEven[k] + complex;
             fft[k + complexesLength / 2] = fftEven[k] - complex;
+            */ // TODO: FIX COMPLEX
         }
         
         return fft;

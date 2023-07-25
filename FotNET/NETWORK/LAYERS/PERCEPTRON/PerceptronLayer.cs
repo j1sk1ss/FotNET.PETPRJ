@@ -57,12 +57,7 @@ namespace FotNET.NETWORK.LAYERS.PERCEPTRON {
             PerceptronOptimization.BackPropagate(error, learningRate, backPropagate, _isEndLayer, Weights, Neurons,
                 Bias);
 
-        public string GetData() {
-            var temp = "";
-            temp += Weights.GetValues();
-            temp += Bias.Print();
-            return temp;
-        }
+        public string GetData() => Weights.GetValues() + Bias.Print();
 
         public string LoadData(string data) {
             var position = 0;

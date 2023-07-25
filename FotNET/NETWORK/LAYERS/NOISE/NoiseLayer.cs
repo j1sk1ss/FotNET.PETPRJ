@@ -9,13 +9,13 @@ public class NoiseLayer : ILayer {
     /// </summary>
     /// <param name="size"> Size of noise tensor </param>
     /// <param name="noise"> Noise type </param>
-    public NoiseLayer(int size, INoise noise) {
+    public NoiseLayer(int size, Noise noise) {
         Noise = noise;
         Size  = size;
     }
 
     private int Size { get; }
-    private INoise Noise { get; }
+    private Noise Noise { get; }
     
     public Tensor GetNextLayer(Tensor? tensor) => tensor ?? Noise.GenerateNoise(Size).AsTensor(1, Size, 1);
 

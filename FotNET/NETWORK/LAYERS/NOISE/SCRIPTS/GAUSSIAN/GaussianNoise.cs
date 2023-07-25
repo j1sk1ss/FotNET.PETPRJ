@@ -2,7 +2,7 @@
 
 namespace FotNET.NETWORK.LAYERS.NOISE.SCRIPTS.GAUSSIAN;
 
-public class GaussianNoise : INoise {
+public class GaussianNoise : Noise {
     public GaussianNoise(double mean = 0, double stdDev = 1) {
         Mean   = mean;
         StdDev = stdDev;
@@ -11,7 +11,7 @@ public class GaussianNoise : INoise {
     private double Mean { get; }
     private double StdDev { get; }
     
-    public Vector GenerateNoise(int size) {
+    public override Vector GenerateNoise(int size) {
         var noise = new double[size];
 
         for (var i = 0; i < size; i += 2) {
@@ -30,7 +30,7 @@ public class GaussianNoise : INoise {
         return new Vector(noise);
     }
     
-    public Matrix GenerateNoise((int Rows, int Columns) shape) {
+    protected override Matrix GenerateNoise((int Rows, int Columns) shape) {
         var body = new double[shape.Rows, shape.Columns];
 
         for (var i = 0; i < shape.Rows; i++)
@@ -49,14 +49,5 @@ public class GaussianNoise : INoise {
         
         
         return new Matrix(body);
-    }
-
-    public Tensor GenerateNoise((int Rows, int Columns, int Depth) shape) {
-        var body = new List<Matrix>();
-
-        for (var i = 0; i < shape.Depth; i++) 
-            body.Add(GenerateNoise((shape.Rows, shape.Columns)));
-        
-        return new Tensor(body);
     }
 }
